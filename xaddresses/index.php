@@ -1,6 +1,6 @@
 <?php
 include_once 'header.php';
-// template d'affichage
+// template
 $xoopsOption['template_main'] = 'xaddresses_index.html';
 include_once XOOPS_ROOT_PATH.'/header.php';
 
@@ -11,7 +11,7 @@ $locationHandler =& xoops_getModuleHandler('location', 'xaddresses');
 
 // pour les permissions
 $categories = xaddresses_MygetItemIds();
-//affichage des catégories:
+//affichage des categories:
 $criteria = new CriteriaCompo();
 $criteria->setSort('weight ASC, cat_title');
 $criteria->setOrder('ASC');
@@ -48,8 +48,8 @@ foreach (array_keys($downloadscat_arr) as $i) {
     $count++;
 }
 
-//pour afficher les résumés
-//téléchargements récents
+//pour afficher les rï¿½sumï¿½s
+//tï¿½lï¿½chargements rï¿½cents
 if($xoopsModuleConfig['bldate']==1){
     $criteria = new CriteriaCompo();
     $criteria->add(new Criteria('status', 0, '!='));
@@ -67,7 +67,7 @@ if($xoopsModuleConfig['bldate']==1){
         $xoopsTpl->append('bl_date', array('id' => $downloads_arr[$i]->getVar('loc_id'),'cid' => $downloads_arr[$i]->getVar('cid'),'date' => $date,'title' => $title));
     }
 }
-//plus téléchargés
+//plus tï¿½lï¿½chargï¿½s
 if($xoopsModuleConfig['blpop']==1){
     $criteria = new CriteriaCompo();
     $criteria->add(new Criteria('status', 0, '!='));
@@ -84,7 +84,7 @@ if($xoopsModuleConfig['blpop']==1){
         $xoopsTpl->append('bl_pop', array('id' => $downloads_arr[$i]->getVar('loc_id'),'cid' => $downloads_arr[$i]->getVar('cid'),'hits' => $downloads_arr[$i]->getVar('hits'),'title' => $title));
     }
 }
-//mieux notés
+//mieux notï¿½s
 if($xoopsModuleConfig['blrating']==1){
     $criteria = new CriteriaCompo();
     $criteria->add(new Criteria('status', 0, '!='));
@@ -109,8 +109,8 @@ if ($xoopsModuleConfig['bldate']==0 and $xoopsModuleConfig['blpop']==0 and $xoop
 }
 $xoopsTpl->assign('bl_affichage', $bl_affichage);
 
-// affichage des téléchargements
-//Utilisation d'une copie d'écran avec la largeur selon les préférences
+// affichage des tï¿½lï¿½chargements
+//Utilisation d'une copie d'ï¿½cran avec la largeur selon les prï¿½fï¿½rences
 if ($xoopsModuleConfig['useshots'] == 1) {
     $xoopsTpl->assign('shotwidth', $xoopsModuleConfig['shotwidth']);
     $xoopsTpl->assign('show_screenshot', true);
@@ -155,7 +155,7 @@ foreach (array_keys($downloads_arr) as $i) {
     $loc_id = $downloads_arr[$i]->getVar('loc_id');
     $submitter = XoopsUser::getUnameFromId($downloads_arr[$i]->getVar('submitter'));
     $description = $downloads_arr[$i]->getVar('description');
-    // pour référentiel de module
+    // pour rï¿½fï¿½rentiel de module
     $description = str_replace('[block]','<h2><u>' . _MD_XADDRESSES_SUP_BLOCS . '</u></h2>',$description);
     $description = str_replace('[notes]','<h2><u>' . _MD_XADDRESSES_SUP_NOTES . '</u></h2>',$description);
     $description = str_replace('[evolutions]','<h2><u>' . _MD_XADDRESSES_SUP_EVOLUTIONS . '</u></h2>',$description);
@@ -169,11 +169,11 @@ foreach (array_keys($downloads_arr) as $i) {
     } else {
         $description_short = substr($description,0,strpos($description,'[pagebreak]'));
     }
-    // pour les vignettes "new" et "mis à jour"
+    // pour les vignettes "new" et "mis ï¿½ jour"
     $new = nouveau_image($downloads_arr[$i]->getVar('date'), $downloads_arr[$i]->getVar('status'));
     $pop = populaire_image($downloads_arr[$i]->getVar('hits'));
     
-    // Défini si la personne est un admin
+    // Dï¿½fini si la personne est un admin
     if (is_object($xoopsUser) && $xoopsUser->isAdmin($xoopsModule->mid())) {
         $adminlink = '<a href="' . XOOPS_URL . '/modules/TDMDownloads/admin/addresses.php?op=view_downloads&amp;downloads_loc_id=' . $loc_id . '" title="' . _MD_XADDRESSES_EDITTHISDL . '"><img src="' . XOOPS_URL . '/modules/TDMDownloads/images/editicon.png" width="16px" height="16px" border="0" alt="' . _MD_XADDRESSES_EDITTHISDL . '" /></a>';
     } else {
@@ -184,7 +184,7 @@ foreach (array_keys($downloads_arr) as $i) {
     //pour les mots clef
     $keywords .= $dtitle . ',';
 }
-// référencement
+// rï¿½fï¿½rencement
 //description
 $xoTheme->addMeta('meta', 'description', strip_tags($xoopsModule->name()));
 //keywords
