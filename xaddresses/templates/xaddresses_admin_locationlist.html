@@ -1,0 +1,56 @@
+<div><{$sortbyform}></div>
+<form action="location.php" method="post" id="locationform">
+<table>
+    <tr>
+        <th><{$smarty.const._XADDRESSES_AM_LOC_TITLE}></th>
+        <th><{$smarty.const._XADDRESSES_AM_LOC_CAT}></th>
+        <th><{$smarty.const._XADDRESSES_AM_LOC_WEIGHT}></th>
+        <th><{$smarty.const._XADDRESSES_AM_LOC_DATE}></th>
+        <th><{$smarty.const._XADDRESSES_AM_LOC_SUBMITTER}></th>
+        <th><{$smarty.const._XADDRESSES_AM_LOC_STATUS}></th>
+        <th><{$smarty.const._XADDRESSES_AM_LOC_HITS}></th>
+        <th><{$smarty.const._XADDRESSES_AM_LOC_RATING}></th>
+        <th><{$smarty.const._XADDRESSES_AM_ACTION}></th>
+    </tr>
+<{foreach from=$locations item='location'}>
+    <tr class="<{cycle values='odd, even'}>">
+        <td><{$location.loc_title}></td>
+        <td><{$categories[$location.loc_cat_id]}></td>
+        <td><{$location.loc_weight}></td>
+        <td><{$location.loc_date}></td>
+        <td><{$location.loc_submitter}></td>
+        <td>
+        <{if ($location.loc_status != 0)}>
+            OK
+        <{else}>
+            NOT OK
+        <{/if}>
+        </td>
+        <td>IN PROGRESS</td>
+        <td>IN PROGRESS</td>
+        <td>
+            <{if ($location.canView)}>
+                <a href="location.php?op=view_location&amp;loc_id=<{$location.loc_id}>" title="<{$smarty.const._XADDRESSES_AM_DISPLAY}>"><{$smarty.const._XADDRESSES_AM_DISPLAY}></a>
+                &nbsp;
+            <{/if}>
+            <{if ($location.canEdit)}>
+               <{if ($location.loc_status == 1)}>
+                    <a href="location.php?op=lock_status&amp;loc_id=<{$location.loc_id}>" title="<{$smarty.const._EDIT}>"><{$smarty.const._XADDRESSES_AM_LOC_LOCK}></a>
+                    &nbsp;
+                <{else}>
+                    <a href="location.php?op=unlock_status&loc_id=<{$location.loc_id}>" title="<{$smarty.const._EDIT}>"><{$smarty.const._XADDRESSES_AM_LOC_UNLOCK}></a>
+                    &nbsp;
+                <{/if}>
+                <a href="location.php?op=edit_location&amp;loc_id=<{$location.loc_id}>" title="<{$smarty.const._EDIT}>"><{$smarty.const._EDIT}></a>
+                &nbsp;
+            <{/if}>
+            <{if $location.canDelete}>
+                <a href="location.php?op=delete_location&amp;loc_id=<{$location.loc_id}>" title="<{$smarty.const._EDIT}>"><{$smarty.const._DELETE}></a>
+                &nbsp;
+            <{/if}>
+        </td>
+    </tr>
+<{/foreach}>
+</table>
+<div><{$pagenav}></div>
+</form>
