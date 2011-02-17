@@ -155,6 +155,7 @@ case 'list_locations':
     $GLOBALS['xoopsTpl']->assign('pagenav', $pagenav);
 
     // sort by form
+    // IN_PROGRESS - TO DO: use Xoops form objects
     $sortbyform = '<form id="form_sort_by" name="form_sort_by" method="get" action="' . $currentFile . '">';
     $sortbyform.= _XADDRESSES_AM_TRIPAR . "<select name=\"sort_by\" id=\"sort_by\" onchange=\"location='" . XOOPS_URL . "/modules/" . $xoopsModule->dirname() . "/admin/location.php?status_display=$status_display&sort_order=$sort_order&sort_by='+this.options[this.selectedIndex].value\">";
     $sortbyform.= '<option value="loc_date"' . ($sort_by == 'loc_date' ? ' selected="selected"' : '') . '>' . _XADDRESSES_AM_FORMDATE . '</option>';
@@ -171,9 +172,7 @@ case 'list_locations':
 
 
     if ($numRows > 0) {
-        //Affichage du tableau des téléchargements
-    
-        $locations = $locationHandler->getObjects($criteria, true, false); // get an array of arrays
+        $locations = $locationHandler->getObjects($criteria, true, false); // get an array of arrays, loc_id as key
         unset($criteria);
 
         // Get ids of categories in which locations can be viewed/edited/submitted
@@ -183,17 +182,18 @@ case 'list_locations':
         $deletableCategories = $groupPermHandler->getItemIds('in_category_delete', $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid') );
         $submitableCategories = $groupPermHandler->getItemIds('in_category_submit', $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid') );
 
-        foreach (array_keys($locations) as $i ) {
-            $locations[$i]['canView'] = (in_array($i, $viewableCategories)); // IN PROGRESS
-            $locations[$i]['canEdit'] = (in_array($i, $editableCategories)); // IN PROGRESS
-            $locations[$i]['canDelete'] = (in_array($i, $deletableCategories)); // IN PROGRESS
-            $submitter =& $memberHandler->getUser($locations[$i]['loc_submitter']);
-            $locations[$i]['loc_submitter'] = $submitter->getVar('uname');
+        foreach (array_keys($locations) as $loc_id ) {
+            $locations[$loc_id]['canView'] = (in_array($locations[$loc_id]['loc_cat_id'], $viewableCategories)); // IN PROGRESS
+            $locations[$loc_id]['canEdit'] = (in_array($locations[$loc_id]['loc_cat_id'], $editableCategories)); // IN PROGRESS
+            $locations[$loc_id]['canDelete'] = (in_array($locations[$loc_id]['loc_cat_id'], $deletableCategories)); // IN PROGRESS
+            $submitter =& $memberHandler->getUser($locations[$loc_id]['loc_submitter']);
+            $locations[$loc_id]['loc_submitter_name'] = $submitter->getVar('uname');
+            $locations[$loc_id]['loc_submitter_id'] = $submitter->getVar('uid');
             unset($submitter);
-            $locations[$i]['loc_date'] = formatTimeStamp($locations[$i]['loc_date'], _DATESTRING);
+            $locations[$loc_id]['loc_date'] = formatTimeStamp($locations[$loc_id]['loc_date'], _DATESTRING);
          }
         $GLOBALS['xoopsTpl']->assign('locations', $locations);
-    
+
         $GLOBALS['xoopsTpl']->assign('token', $GLOBALS['xoopsSecurity']->getTokenHTML() );
         $GLOBALS['xoopsTpl']->display("db:xaddresses_admin_locationlist.html");
     } else {
@@ -232,7 +232,7 @@ case 'save_location':
     // Get ids of fields that can be edited
     $gperm_handler =& xoops_gethandler('groupperm');
     //$editable_fields = $gperm_handler->getItemIds('profile_edit', $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid') );
-    
+
     $locationfields = $locationHandler->getLocationVars();
 
     $loc_id = empty($_POST['loc_id']) ? 0 : intval($_POST['loc_id']);
@@ -244,7 +244,7 @@ case 'save_location':
         }
     } else {
         $location = $locationHandler->create();
-        
+
         $location->setVar('loc_submitter', $xoopsUser->uid());
         $location->setVar('loc_date', time()); // creation date
         if (count($fields) > 0) {
@@ -476,7 +476,7 @@ case 'view_location':
             $addressesfielddata = $addressesfielddata_handler->getall($criteria);
             foreach (array_keys($addressesfielddata) as $j) {
                 $contenu = $addressesfielddata[$j]->getVar('data');
-            }                    
+            }
             echo '<td>' . $contenu . '</td>';
         }
         echo '</tr>';
@@ -495,31 +495,31 @@ case 'view_location':
             foreach (array_keys($tags_array['tags']) as $i) {
                 $tags .= $tags_array['delimiter'] . ' ' . $tags_array['tags'][$i] . ' ';
             }
-            
+
             $class = ($class == 'even') ? 'odd' : 'even';
             echo '<tr class="' . $class . '">';
             echo '<td width="30%">' . $tags_array['title'] . ' </td>';
             echo '<td>' . $tags . '</td>';
             echo '</tr>';
         }
-    }        
+    }
     if ( $xoopsModuleConfig['useshots']){
         $class = ($class == 'even') ? 'odd' : 'even';
         echo '<tr class="' . $class . '">';
         echo '<td width="30%">' . _XADDRESSES_AM_FORMIMG . ' </td>';
         echo '<td><img src="' . $uploadurl . $view_location->getVar('logourl') . '" alt="" title=""></td>';
         echo '</tr>';
-    }      
+    }
 	$class = ($class == 'even') ? 'odd' : 'even';
 	echo '<tr class="' . $class . '">';
 	echo '<td width="30%">' . _XADDRESSES_AM_FORMDATE . ' </td>';
 	echo '<td>' . formatTimestamp($view_location->getVar('date')) . '</td>';
-	echo '</tr>';        
+	echo '</tr>';
 	$class = ($class == 'even') ? 'odd' : 'even';
 	echo '<tr class="' . $class . '">';
 	echo '<td width="30%">' . _XADDRESSES_AM_FORMPOSTER . ' </td>';
 	echo '<td>' . XoopsUser::getUnameFromId($view_location->getVar('submitter')) . '</td>';
-	echo '</tr>';        
+	echo '</tr>';
 	$class = ($class == 'even') ? 'odd' : 'even';
 	echo '<tr class="' . $class . '">';
 	echo '<td width="30%">' . _XADDRESSES_AM_FORMHITS . ' </td>';
@@ -545,16 +545,16 @@ case 'view_location':
     <img src="../images/icon/delete_mini.gif" alt="' . _XADDRESSES_AM_FORMDEL . '" title="' . _XADDRESSES_AM_FORMDEL . '"></a></td>';
 	echo '</tr>';
 	echo '</table>';
-	echo '<br />';        
+	echo '<br />';
     // Affichage des votes:
-    
+
     // Utilisateur enregistré
     echo '<hr>';
     $criteria = new CriteriaCompo();
     $criteria->add(new Criteria('loc_id', $_REQUEST['addresses_loc_id']));
     $criteria->add(new Criteria('ratinguser', 0, '!='));
     $addressesvotedata_arr = $votedataHandler->getall($criteria);
-    $total_vote = $votedataHandler->getCount($criteria);        
+    $total_vote = $votedataHandler->getCount($criteria);
     echo '<table width="100%">';
     echo '<tr><td colspan="5"><b>';
     printf(_XADDRESSES_AM_ADDRESSES_VOTESUSER, $total_vote);
@@ -571,7 +571,7 @@ case 'view_location':
         echo myTextForm('location.php?op=del_vote&loc_id=' . $addressesvotedata_arr[$i]->getVar('loc_id') . '&rid=' . $addressesvotedata_arr[$i]->getVar('ratingid') , 'X');
         echo '</td>';
         echo '</tr>';
-    }        
+    }
     // Utilisateur anonyme
     $criteria = new CriteriaCompo();
     $criteria->add(new Criteria('loc_id', $_REQUEST['addresses_loc_id']));
@@ -580,7 +580,7 @@ case 'view_location':
     $total_vote = $votedataHandler->getCount($criteria);
     echo '<tr><td colspan="5"><br /><b>';
     printf(_XADDRESSES_AM_ADDRESSES_VOTESANONYME, $total_vote);
-    echo '</b><br /><br /></td></tr>';   
+    echo '</b><br /><br /></td></tr>';
     echo '<tr><td colspan="2"><b>' . _XADDRESSES_AM_ADDRESSES_VOTE_IP . '</b></td>' . '<td align="center"><b>' . _XADDRESSES_AM_FORMRATING . '</b></td>'
     . '<td><b>' . _XADDRESSES_AM_FORMDATE . '</b></td>' . '<td align="center"><b>' . _XADDRESSES_AM_FORMDEL . '</b></td></tr>';
     foreach (array_keys($addressesvotedata_arr) as $i) {
@@ -614,8 +614,168 @@ case 'lock_status':
     $obj->setVar('loc_status', false);
     if ($locationHandler->insert($obj, true)) {
         redirect_header($currentFile . '?op=list_locations&status_display=0', 1, _XADDRESSES_AM_REDIRECT_SAVE);
-    }        
+    }
     echo $obj->getHtmlErrors();
+    break;
+
+
+
+case 'list_locations_broken':
+    // redirection if no broken locations
+    if ($brokenHandler->getCount() == 0) {
+        redirect_header($currentFile . '?op=list_locations', 2, _XADDRESSES_AM_REDIRECT_NOBROKENLOC);
+    }
+    echo "IN_PROGRESS";
+    echo "IN_PROGRESS";
+    echo "IN_PROGRESS";
+    echo "IN_PROGRESS";
+    echo "IN_PROGRESS";
+    break;
+
+
+
+case 'list_locations_modified':
+    // redirection if no modified locations
+    $criteria = new CriteriaCompo();
+    $criteria->add(new Criteria('loc_mod_id', 0, '!='));
+    if ($locationHandler->getCount($criteria) == 0) {
+        redirect_header($currentFile . '?op=list_locations', 2, _XADDRESSES_AM_REDIRECT_NOMODIFIEDLOC);
+    }
+
+    // get fields categories
+    $criteria = new CriteriaCompo();
+    $criteria->setSort('cat_weight');
+    $cats = $categoryHandler->getObjects($criteria, true);
+    unset($criteria);
+    //$categories[0] = _XADDRESSES_AM_DEFAULT;
+    if ( count($cats) > 0 ) {
+        foreach (array_keys($cats) as $i ) {
+            $categories[$cats[$i]->getVar('cat_id')] = $cats[$i]->getVar('cat_title');
+        }
+    }
+    $GLOBALS['xoopsTpl']->assign('categories', $categories);
+    unset($categories);
+
+    $criteria = new CriteriaCompo();
+    $criteria->add(new Criteria('loc_mod_id', 0, '!='));
+
+    $numRows = $locationHandler->getCount($criteria);
+
+    // get limit
+    if (isset($_REQUEST['limit'])) {
+        $criteria->setLimit($_REQUEST['limit']);
+        $limit = $_REQUEST['limit'];
+    } else {
+        $criteria->setLimit($xoopsModuleConfig['perpageadmin']);
+        $limit = $xoopsModuleConfig['perpageadmin'];
+    }
+    // get start
+    if (isset($_REQUEST['start'])) {
+        $criteria->setStart($_REQUEST['start']);
+        $start = $_REQUEST['start'];
+    } else {
+        $criteria->setStart(0);
+        $start = 0;
+    }
+    // get sort_by
+    $sort_by = 'loc_date';
+    if (isset($_REQUEST['sort_by'])) {
+        if ($_REQUEST['sort_by'] == 'loc_date') {
+            $criteria->setSort('loc_date');
+            $sort_by = 'loc_date';
+        }
+        if ($_REQUEST['sort_by'] == 'loc_title') {
+            $criteria->setSort('loc_title');
+            $sort_by = 'loc_title';
+        }
+        if ($_REQUEST['sort_by'] == 'loc_cat_id') {
+            $criteria->setSort('loc_cat_id');
+            $sort_by = 'loc_cat_id';
+        }
+    } else {
+        $criteria->setSort('loc_date');
+    }
+    // get sort_order
+    $sort_order = 'DESC';
+    if (isset($_REQUEST['sort_order'])) {
+        if ($_REQUEST['sort_order'] == 'DESC') {
+            $criteria->setOrder('DESC');
+            $sort_order = 'DESC';
+        }
+        if ($_REQUEST['sort_order'] == 'ASC') {
+            $criteria->setOrder('ASC');
+            $sort_order = 'ASC';
+        }
+    } else {
+        $criteria->setOrder('DESC');
+    }
+
+    // page navigation form
+    if ($numRows > $limit) {
+        $pagenav = new XoopsPageNav($numRows, $limit, $start, 'start', 'op=list_locations&limit=' . $limit . '&sort_by=' . $sort_by. '&sort_order=' . $sort_order . '&status_display=' . $status_display);
+        $pagenav = $pagenav->renderNav(4);
+    } else {
+        $pagenav = '';
+    }
+    $GLOBALS['xoopsTpl']->assign('pagenav', $pagenav);
+
+    // sort by form
+    $sortbyform = '<form id="form_sort_by" name="form_sort_by" method="get" action="' . $currentFile . '">';
+    $sortbyform.= _XADDRESSES_AM_TRIPAR . "<select name=\"sort_by\" id=\"sort_by\" onchange=\"location='" . XOOPS_URL . "/modules/" . $xoopsModule->dirname() . "/admin/location.php?status_display=$status_display&sort_order=$sort_order&sort_by='+this.options[this.selectedIndex].value\">";
+    $sortbyform.= '<option value="loc_date"' . ($sort_by == 'loc_date' ? ' selected="selected"' : '') . '>' . _XADDRESSES_AM_FORMDATE . '</option>';
+    $sortbyform.= '<option value="loc_title"' . ($sort_by == 'loc_title' ? ' selected="selected"' : '') . '>' . _XADDRESSES_AM_FORMTITLE . '</option>';
+    $sortbyform.= '<option value="loc_cat_id"' . ($sort_by == 'loc_cat_id' ? ' selected="selected"' : '') . '>' . _XADDRESSES_AM_FORMCAT . '</option>';
+    $sortbyform.= '</select> ';
+    $sortbyform.= _XADDRESSES_AM_ORDER . "<select name=\"order_tri\" id=\"order_tri\" onchange=\"location='" . XOOPS_URL . "/modules/" . $xoopsModule->dirname() . "/admin/location.php?status_display=$status_display&sort_by=$sort_by&sort_order='+this.options[this.selectedIndex].value\">";
+    $sortbyform.= '<option value="DESC"' . ($sort_order == 'DESC' ? ' selected="selected"' : '') . '>DESC</option>';
+    $sortbyform.= '<option value="ASC"' . ($sort_order == 'ASC' ? ' selected="selected"' : '') . '>ASC</option>';
+    $sortbyform.= '</select> ';
+    $sortbyform.= '</form>';
+    $GLOBALS['xoopsTpl']->assign('sortbyform', $sortbyform);
+
+
+
+    if ($numRows > 0) {
+        //Affichage du tableau des téléchargements
+
+        $modifiedLocations = $locationHandler->getObjects($criteria, true, false); // get an array of arrays
+        unset($criteria);
+
+        // Get ids of categories in which locations can be viewed/edited/submitted
+        $groupPermHandler =& xoops_gethandler('groupperm');
+        $viewableCategories = $groupPermHandler->getItemIds('in_category_view', $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid') );
+        $editableCategories = $groupPermHandler->getItemIds('in_category_edit', $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid') );
+        $deletableCategories = $groupPermHandler->getItemIds('in_category_delete', $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid') );
+        $submitableCategories = $groupPermHandler->getItemIds('in_category_submit', $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid') );
+
+        foreach (array_keys($modifiedLocations) as $loc_id ) {
+            $modifiedLocations[$loc_id]['canView'] = (in_array($modifiedLocations[$loc_id]['loc_cat_id'], $viewableCategories)); // IN PROGRESS
+            $modifiedLocations[$loc_id]['canEdit'] = (in_array($modifiedLocations[$loc_id]['loc_cat_id'], $editableCategories)); // IN PROGRESS
+            $modifiedLocations[$loc_id]['canDelete'] = (in_array($modifiedLocations[$loc_id]['loc_cat_id'], $deletableCategories)); // IN PROGRESS
+            $submitter =& $memberHandler->getUser($modifiedLocations[$loc_id]['loc_submitter']);
+            $modifiedLocations[$loc_id]['loc_submitter_name'] = $submitter->getVar('uname');
+            $modifiedLocations[$loc_id]['loc_submitter_id'] = $submitter->getVar('uid');
+            unset($submitter);
+            $modifiedLocations[$loc_id]['loc_date'] = formatTimeStamp($modifiedLocations[$loc_id]['loc_date'], _DATESTRING);
+            // get original location
+            $criteria = new CriteriaCompo();
+            $criteria->add(new Criteria('loc_id', $modifiedLocations[$i]['loc_mod_id']));
+            $originalLocation = $locationHandler->get($criteria, true); // get an array of arrays
+            $modifiedLocations[$i]['original_location'] = $originalLocation;
+
+            unset($criteria);
+            }
+
+        $GLOBALS['xoopsTpl']->assign('modifiedlocations', $modifiedLocations);
+
+
+
+
+        $GLOBALS['xoopsTpl']->assign('token', $GLOBALS['xoopsSecurity']->getTokenHTML() );
+        $GLOBALS['xoopsTpl']->display("db:xaddresses_admin_locationmodifiedlist.html");
+    } else {
+        echo '<div class="errorMsg">' . _XADDRESSES_AM_ERROR_NOADDRESSES . '</div>';
+    }
     break;
 
 
