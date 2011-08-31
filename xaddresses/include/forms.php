@@ -196,6 +196,9 @@ function xaddresses_getFieldForm(&$field, $action = false)
         case "file":
         case "multiplefile":
         case "kmlmap":
+                $fieldlengthtext = new XoopsFormText(_XADDRESSES_AM_FIELD_LENGTH, 'field_length', 35, 35, $field->getVar('field_length', 'e'));
+                $fieldlengthtext->setDescription(_XADDRESSES_AM_FIELD_LENGTH_DESC);
+            $form->addElement($fieldlengthtext);
                 $fieldmaxlengthtext = new XoopsFormText(_XADDRESSES_AM_FIELD_MAXLENGTH, 'field_maxlength', 35, 35, $field->getVar('field_maxlength', 'e'));
                 $fieldmaxlengthtext->setDescription(_XADDRESSES_AM_FIELD_MAXLENGTH_DESC);
             $form->addElement($fieldmaxlengthtext);
@@ -295,9 +298,15 @@ function xaddresses_getFieldForm(&$field, $action = false)
         $form->addElement($fieldeditableselectgroup);
     }
 
-    // buttons
     $form->addElement(new XoopsFormHidden('op', 'save_field') );
-    $form->addElement(new XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
+    // Submit button		
+        $button_tray = new XoopsFormElementTray(_XADDRESSES_AM_ACTION, '' ,'');
+        $button_tray->addElement(new XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
+        $button_tray->addElement(new XoopsFormButton('', 'reset', _RESET, 'reset'));
+            $cancel_button = new XoopsFormButton('', 'cancel', _CANCEL, 'button');
+            $cancel_button->setExtra("onclick='javascript:history.back();'");
+        $button_tray->addElement($cancel_button);
+    $form->addElement($button_tray);
 
     return $form;
 }
@@ -321,7 +330,7 @@ function xaddresses_getLocationForm(&$location, $action = false)
     $locationHandler =& xoops_getModuleHandler('location', 'xaddresses');
     $fieldCategoryHandler =& xoops_getmodulehandler('fieldcategory', 'xaddresses');
     $fieldHandler =& xoops_getmodulehandler('field', 'xaddresses');
-    include_once XOOPS_ROOT_PATH . '/modules/xaddresses/class/formgooglemap.php'; // IN PROGRESS individuare la posizione migliore
+    xoops_load('formgooglemap', 'xaddresses');
 
 
     include_once $GLOBALS['xoops']->path('class/xoopsformloader.php');
@@ -337,7 +346,7 @@ function xaddresses_getLocationForm(&$location, $action = false)
     // location title
         $formLocTitle = new XoopsFormText(_XADDRESSES_AM_LOC_TITLE, 'loc_title', 35, 255, $location->getVar('loc_title'));
         $formLocTitle->setDescription(_XADDRESSES_AM_LOC_TITLE_DESC);
-    $form->addElement($formLocTitle);
+    $form->addElement($formLocTitle, true);
 
     // location coordinates
     $value = array(
@@ -362,14 +371,16 @@ function xaddresses_getLocationForm(&$location, $action = false)
     $criteria->add(new Criteria('cat_id', ' (' . implode(',', $editableCategories) . ')', 'IN'));
     $criteria->setOrder('ASC');
     $categoriesArray = $categoryHandler->getall($criteria);
-    $mytree = new XoopsObjectTree($categoriesArray, 'cat_id', 'cat_pid');
-        $formLocCategory = new XoopsFormLabel(_XADDRESSES_AM_LOC_CAT, $mytree->makeSelBox('loc_cat_id', 'cat_title','--',$location->getVar('loc_cat_id'), false));
+    $categoriesTree = new XoopsObjectTree($categoriesArray, 'cat_id', 'cat_pid');
+        //$categoryId = (!is_null($location->getVar('loc_cat_id')) ? $location->getVar('loc_cat_id') : $categoriesArray[1]->getVar('cat_id'));
+        $categoryId = $location->getVar('loc_cat_id');
+        $formLocCategory = new XoopsFormLabel(_XADDRESSES_AM_LOC_CAT, $categoriesTree->makeSelBox('loc_cat_id', 'cat_title', '--', $categoryId, true));
         $formLocCategory->setDescription(_XADDRESSES_AM_LOC_CAT_DESC);
-    $form->addElement($formLocCategory);
+    $form->addElement($formLocCategory, true);
 
     // Get extra fields categories
     $fieldsCategoriesArray = array();
-    $fieldsCategoriesArray[0]= array(
+    $fieldsCategoriesArray[0] = array(
         'cat_id' => 0,
         'cat_title' => _XADDRESSES_AM_FIELD_CATEGORY_DEFAULT,
         'cat_description' => _XADDRESSES_AM_FIELD_CATEGORY_DEFAULT_DESC,
@@ -379,51 +390,59 @@ function xaddresses_getLocationForm(&$location, $action = false)
     $criteria->setOrder('ASC');
     $fieldsCategories = $fieldCategoryHandler->getall($criteria, null, false, true); //get fieldscategories as array
     $fieldsCategoriesArray = array_merge($fieldsCategoriesArray, $fieldsCategories);
-    
+
     // Get all extra fields
     $fields = $locationHandler->loadFields();
+    if (count($fields) > 0) {
+        // populate $elements[cat_id][field_weight][] tri-dimensional array with {@link XaddressesField} objects
+        // $elements[cat_id][field_weight][]['element'] is a {@link XaddressesField} object
+        // $elements[cat_id][field_weight][]['required'] is bool (true: required, false: not required)
+        $elements = array();
+        foreach ($fields as $field) {
+            // check if field is editable by user
+            if (in_array($field->getVar('field_id'), $editableFields)) {
+            // Set default value for location fields if available
+                if ($location->isNew()) {
+                    $default = $field->getVar('field_default');
+                    if ($default !== '' && $default !== null) {
+                        $location->setVar($field->getVar('field_name'), $default);
+                    }
+                }
+            // Fill elements array indexed by cat_id and field_weight
+            $element = array();
+            $element['element'] = $field->getEditElement($location);
+            $element['required'] = $field->getVar('field_required');
+            $elements[$field->getVar('cat_id')][$field->getVar('field_weight')][] = $element;
+            unset($categorySubElement);
+            }
+        }
 
-    // populate $elements[cat_id][field_weight][] tri-dimensional array with {@link XaddressesField} objects
-    // $elements[cat_id][field_weight][]['element'] is a {@link XaddressesField} object
-    // $elements[cat_id][field_weight][]['required'] is bool (true: required, false: not required)
-    $elements = array();
-    foreach ($fields as $field) {
-        // check if field is editable by user
-        if (in_array($field->getVar('field_id'), $editableFields)) {
-        // Set default value for location fields if available
-            if ($location->isNew()) {
-                $default = $field->getVar('field_default');
-                if ($default !== '' && $default !== null) {
-                    $location->setVar($field->getVar('field_name'), $default);
+        //ksort($elements);
+    
+        foreach ($fieldsCategoriesArray as $fieldsCategoryArray) {
+            $form->addElement(new XoopsFormLabel ('<h3>' . $fieldsCategoryArray['cat_title'] . '</h3>', $fieldsCategoryArray['cat_description']));
+            $cat_id = $fieldsCategoryArray['cat_id'];
+            $elementsByCategory = array();
+            $elementsByCategory = $elements[$cat_id];
+            foreach ($elementsByCategory as $elementsByWeight) {
+                foreach ($elementsByWeight as $element) {
+                    $form->addElement($element['element'], $element['required']);
                 }
             }
-        // Fill elements array indexed by cat_id and field_weight
-        $element = array();
-        $element['element'] = $field->getEditElement($location);
-        $element['required'] = $field->getVar('field_required');
-        $elements[$field->getVar('cat_id')][$field->getVar('field_weight')][] = $element;
-        unset($categorySubElement);
+            unset($elementsByCategory);
         }
-    }
-
-    //ksort($elements);
-
-    foreach ($fieldsCategoriesArray as $fieldsCategoryArray) {
-        $form->addElement(new XoopsFormLabel ('<h3>' . $fieldsCategoryArray['cat_title'] . '</h3>', $fieldsCategoryArray['cat_description']));
-        $cat_id = $fieldsCategoryArray['cat_id'];
-        $elementsByCategory = array();
-        $elementsByCategory = $elements[$cat_id];
-        foreach ($elementsByCategory as $elementsByWeight) {
-            foreach ($elementsByWeight as $element) {
-                $form->addElement($element['element'], $element['required']);
-            }
-        }
-        unset($elementsByCategory);
     }
 
     $form->addElement(new XoopsFormHidden('loc_id', $location->getVar('loc_id')));
     $form->addElement(new XoopsFormHidden('op', 'save_location'));
-    $form->addElement(new XoopsFormButton('', 'submit', _US_SAVECHANGES, 'submit'));
+    // Submit button		
+        $button_tray = new XoopsFormElementTray(_XADDRESSES_AM_ACTION, '' ,'');
+        $button_tray->addElement(new XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
+        $button_tray->addElement(new XoopsFormButton('', 'reset', _RESET, 'reset'));
+            $cancel_button = new XoopsFormButton('', 'cancel', _CANCEL, 'button');
+            $cancel_button->setExtra("onclick='javascript:history.back();'");
+        $button_tray->addElement($cancel_button);
+    $form->addElement($button_tray);
     return $form;
 }
 ?>

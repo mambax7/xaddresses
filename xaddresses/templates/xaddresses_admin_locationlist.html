@@ -2,6 +2,7 @@
 <form action="location.php" method="post" id="locationform">
 <table>
     <tr>
+        <th><{$smarty.const._XADDRESSES_AM_LOC_ID}></th>
         <th><{$smarty.const._XADDRESSES_AM_LOC_TITLE}></th>
         <th><{$smarty.const._XADDRESSES_AM_LOC_CAT}></th>
         <th><{$smarty.const._XADDRESSES_AM_LOC_WEIGHT}></th>
@@ -14,16 +15,17 @@
     </tr>
 <{foreach from=$locations item='location'}>
     <tr class="<{cycle values='odd, even'}>">
+        <td><{$location.loc_id}></td>
         <td><{$location.loc_title}></td>
         <td><{$categories[$location.loc_cat_id]}></td>
         <td><{$location.loc_weight}></td>
         <td><{$location.loc_date}></td>
-        <td><{$location.loc_submitter}></td>
+        <td><{$location.loc_submitter_linkeduname}></td>
         <td>
         <{if ($location.loc_status != 0)}>
-            OK
+            <{$smarty.const._XADDRESSES_AM_LOC_STATUS_OK}>
         <{else}>
-            NOT OK
+            <{$smarty.const._XADDRESSES_AM_LOC_STATUS_NOT_OK}>
         <{/if}>
         </td>
         <td>IN PROGRESS</td>

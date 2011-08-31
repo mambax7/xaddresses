@@ -1,40 +1,44 @@
 <?php
 // Module name
-define('_XADDRESSES_MI_NAME', 'Xaddresses + GoogleMaps');
+define("_XADDRESSES_MI_NAME","Xaddresses + GoogleMaps");
 
 // Module descroption
-define('_XADDRESSES_MI_DESC', 'Creates an addresses section where users can submit/rate various addresses.');
+define("_XADDRESSES_MI_DESC","Creates an addresses section where users can submit/rate various addresses.");
 
 // Blocks
-define('_XADDRESSES_MI_BNAME1', 'Recent Addresses');
-define('_XADDRESSES_MI_BNAMEDSC1', 'Display Recent Addresses');
-define('_XADDRESSES_MI_BNAME2', 'Top Address');
-define('_XADDRESSES_MI_BNAMEDSC2', 'Display Top Addresses');
-define('_XADDRESSES_MI_BNAME3', 'Top Rated Address');
-define('_XADDRESSES_MI_BNAMEDSC3', 'Display Top Rated Addresses');
-define('_XADDRESSES_MI_BNAME4', 'Random Addresses');
-define('_XADDRESSES_MI_BNAMEDSC4', 'Display viwed addresses randomly');
-
-// Install
-define('_XADDRESSES_MI_INDEX_ERRORPHP', 'ERROR: Sorry, this Module requires at least PHP 5.0 or more');
-define('_XADDRESSES_MI_INDEX_ERRORXOOPSVERSION', 'ERROR: Sorry, this Module requires at least Xoops v2.4.5');
-
+define("_XADDRESSES_MI_BNAME1","Recent Addresses");
+define("_XADDRESSES_MI_BNAMEDSC1","Display Recent Addresses");
+define("_XADDRESSES_MI_BNAME2","Top Address");
+define("_XADDRESSES_MI_BNAMEDSC2","Display Top Addresses");
+define("_XADDRESSES_MI_BNAME3","Top Rated Address");
+define("_XADDRESSES_MI_BNAMEDSC3","Display Top Rated Addresses");
+define("_XADDRESSES_MI_BNAME4","Random Addresses");
+define("_XADDRESSES_MI_BNAMEDSC4","Display viwed addresses randomly");
 
 // Sub menu
-define('_XADDRESSES_MI_SMNAME1','Suggest');
-define('_XADDRESSES_MI_SMNAME2','Files List');
+define("_XADDRESSES_MI_SMNAME1","Suggest");
+define("_XADDRESSES_MI_SMNAME2","Files List");
 
 // Menu administration
-define('_XADDRESSES_MI_ADMENU_INDEX', 'Index');
-define('_XADDRESSES_MI_ADMENU_LOCATIONCATEGORY', 'Locations Categories Management');
-define('_XADDRESSES_MI_ADMENU_LOCATION', 'Locations Management');
-define('_XADDRESSES_MI_ADMENU_LOCATIONPERMISSIONS', 'Permissions');
-define('_XADDRESSES_MI_ADMENU_FIELDCATEGORY', 'Extra Fields Categories Management');
-define('_XADDRESSES_MI_ADMENU_FIELD', 'Extra Fields Management');
-define('_XADDRESSES_MI_ADMENU_FIELDPERMISSIONS', 'Extra Fields Permissions');
-define('_XADDRESSES_MI_ADMENU_ABOUT', 'About');
-define('_XADDRESSES_MI_ADMENU_UPDATE', 'Update Module');
-define('_XADDRESSES_MI_ADMENU10', 'Import');
+define("_XADDRESSES_MI_ADMENU_INDEX", "Index");
+define("_XADDRESSES_MI_ADMENU_INDEX_DESC", "");
+define("_XADDRESSES_MI_ADMENU_ITEMCATEGORY","Locations Categories Management");
+define("_XADDRESSES_MI_ADMENU_ITEMCATEGORY_DESC","");
+define("_XADDRESSES_MI_ADMENU_ITEM","Locations Management");
+define("_XADDRESSES_MI_ADMENU_ITEM_DESC","");
+define("_XADDRESSES_MI_ADMENU_FIELDCATEGORY","Extra Fields Categories Management");
+define("_XADDRESSES_MI_ADMENU_FIELDCATEGORY_DESC","");
+define("_XADDRESSES_MI_ADMENU_FIELD","Extra Fields Management");
+define("_XADDRESSES_MI_ADMENU_FIELD_DESC","");
+define("_XADDRESSES_MI_ADMENU_PERMISSIONS", "Permissions");
+define("_XADDRESSES_MI_ADMENU_PERMISSIONS_DESC", "");
+define("_XADDRESSES_MI_ADMENU_ABOUT","About");
+define("_XADDRESSES_MI_ADMENU_ABOUT_DESC","");
+define("_XADDRESSES_MI_ADMENU_HELP", "Help");
+define("_XADDRESSES_MI_ADMENU_HELP_DESC", "");
+define("_XADDRESSES_MI_ADMENU_IMPORT", "Import data");
+define("_XADDRESSES_MI_ADMENU_IMPORT_DESC", "");
+
 
 // Preferences
 define('_XADDRESSES_MI_POPULAR', 'Number of hits for addresses to be marked as popular');
@@ -132,4 +136,7 @@ define('_XADDRESSES_MI_FILE_APPROVE_NOTIFY', 'Address Approved');
 define('_XADDRESSES_MI_FILE_APPROVE_NOTIFYCAP', 'Notify me when this file is approved.');
 define('_XADDRESSES_MI_FILE_APPROVE_NOTIFYDSC', 'Receive notification when this file is approved.');
 define('_XADDRESSES_MI_FILE_APPROVE_NOTIFYSBJ', '[{X_SITENAME}] {X_MODULE} auto-notify : Address Approved');
+
+// for install/uninstall/update
+define('_XADDRESSES_MI_WARNING_DIRNOTCREATED', '<strong><span style="color:red;">WARNING: %s directory not created!</span></strong><br />');
 ?>

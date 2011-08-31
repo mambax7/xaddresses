@@ -1,39 +1,10 @@
 <?php
 defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 
-/**
- * Create a new directory that contains the file 'index.html'
- *
- */
-function makeDir($dir) {
-    if (!is_dir($dir)){
-        if (!mkdir($dir, 0777)){
-            return false;
-        } else {
-    		chmod($dir, 0777);
-            if ($fh = @fopen($dir . '/index.html', 'w'))
-                fwrite($fh, '<script>history.go(-1);</script>');
-            @fclose($fh);
-            return true;
-        }
-    }
-}
-
 function xoops_module_pre_install_xaddresses(&$xoopsModule) {
-	$moduleId = $xoopsModule->getVar('mid');
-	$moduleName = $xoopsModule->getVar('name');
-	$moduleDirname = $xoopsModule->getVar('dirname');
-	$moduleVersion = $xoopsModule->getVar('version');
-    xoops_loadLanguage('modinfo', $moduleDirname);
-
-    // Check if this PHP version is at least PHP 5.0
-    if (phpversion() <= 5) {
-        $xoopsModule->setErrors(_XADDRESSES_MI_INDEX_ERRORPHP);
-        return false;
-    }
-    // Check if this XOOPS version is at least v2.4.5
+    // Check if this XOOPS version is supported
     $minSupportedVersion = explode('.', '2.4.5');
-    $currentVersion = explode('.', substr(XOOPS_VERSION, 6));
+    $currentVersion = explode('.', substr(XOOPS_VERSION,6));
     if($currentVersion[0] > $minSupportedVersion[0]) {
         return true;
     } elseif($currentVersion[0] == $minSupportedVersion[0]) {
@@ -47,17 +18,19 @@ function xoops_module_pre_install_xaddresses(&$xoopsModule) {
             }
         }
     }
-    $xoopsModule->setErrors(_XADDRESSES_MI_INDEX_ERRORXOOPSVERSION);
     return false;
 }
 
 function xoops_module_install_xaddresses(&$xoopsModule) {
-	$moduleId = $xoopsModule->getVar('mid');
-	$moduleName = $xoopsModule->getVar('name');
-	$moduleDirname = $xoopsModule->getVar('dirname');
-	$moduleVersion = $xoopsModule->getVar('version');
-    xoops_loadLanguage('modinfo', $moduleDirname);
+    xoops_loadLanguage('modinfo', $xoopsModule->getVar('dirname'));
+    include_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/functions.php';
 
+    $ret = true;
+    $msg = '';
+    // Create xaddresses main upload directory
+    $dir = XOOPS_ROOT_PATH . "/uploads/xaddresses";
+	if (!makeDir($dir))
+        $msg.= sprintf(_XADDRESSES_MI_WARNING_DIRNOTCREATED, $dir);
 /*
     $xaddressesfield_Handler =& xoops_getModuleHandler('field', 'xaddresses');
     $obj =& $xaddressesfield_Handler->create();
@@ -93,11 +66,9 @@ function xoops_module_install_xaddresses(&$xoopsModule) {
     $obj->setVar('status_def', 1);
     $xaddressesfield_Handler->insert($obj);
 */   
-
-	makeDir(XOOPS_UPLOAD_PATH . '/' . $moduleName .'');
-    // make directory for ajaxfilemanager file manager
-	makeDir(XOOPS_UPLOAD_PATH . '/' . $moduleName . '/files');
-
-	return true;
+    if (empty($msg))
+        return $ret;
+    else
+        return $msg;
 }
 ?>

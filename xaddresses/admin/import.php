@@ -1,14 +1,12 @@
 <?php
-include 'admin_header.php';
+include_once 'admin_header.php';
+$currentFile = basename(__FILE__);
+
 xoops_cp_header();
 
-//appel du menu admin
-if ( !is_readable(XOOPS_ROOT_PATH . "/Frameworks/art/functions.admin.php"))	{
-    xaddressesAdminMenu(10, _XADDRESSES_MI_ADMENU2);
-} else {
-    include_once XOOPS_ROOT_PATH.'/Frameworks/art/functions.admin.php';
-    loadModuleAdminMenu (10, _XADDRESSES_MI_ADMENU2);
-}
+// main admin menu
+include (XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->dirname() . '/admin/menu.php');
+echo moduleAdminTabMenu($adminmenu, $currentFile);
 
 //Action dans switch
 if (isset($_REQUEST['op'])) {

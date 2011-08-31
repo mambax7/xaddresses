@@ -18,6 +18,7 @@ class XaddressesField extends XoopsObject
         $this->initVar('field_title', XOBJ_DTYPE_TXTBOX);
         $this->initVar('field_description', XOBJ_DTYPE_TXTAREA);
         $this->initVar('field_required', XOBJ_DTYPE_INT, 0); //0 = no, 1 = yes
+        $this->initVar('field_length', XOBJ_DTYPE_INT, 0);
         $this->initVar('field_maxlength', XOBJ_DTYPE_INT, 0);
         $this->initVar('field_weight', XOBJ_DTYPE_INT, 0);
         $this->initVar('field_default', XOBJ_DTYPE_TXTAREA, "");
@@ -95,7 +96,7 @@ class XaddressesField extends XoopsObject
                 break;
 
             case "textbox":
-                $element = new XoopsFormText($caption, $name, 35, $this->getVar('field_maxlength'), $value);
+                $element = new XoopsFormText($caption, $name, $this->getVar('field_length'), $this->getVar('field_maxlength'), $value);
                 break;
 
             case "textarea":
@@ -209,10 +210,10 @@ class XaddressesField extends XoopsObject
                 break;
 
             case "image":
-                $element = new FormXoopsImage ($caption, $name, $value); // custom form class
+                $element = new FormXoopsImage ($caption, $name, $this->getVar('field_length'), $this->getVar('field_maxlength'), $value); // custom form class
                 break;
             case "multipleimage":
-                $element = new FormMultipleXoopsImage ($caption, $name, $value); // custom form class
+                $element = new FormMultipleXoopsImage ($caption, $name, $this->getVar('field_length'), $this->getVar('field_maxlength'), $value); // custom form class
                 break;
 
             case "kmlmap":
@@ -555,6 +556,7 @@ class XaddressesFieldHandler extends XoopsPersistableObjectHandler
                 $changetype = "CHANGE `" . $obj->getVar('field_name', 'n') . "`";
             }
             $maxlengthstring = $obj->getVar('field_maxlength') > 0 ? "(" . $obj->getVar('field_maxlength') . ")" : "";
+            $lengthstring = $obj->getVar('field_length') > 0 ? "(" . $obj->getVar('field_length') . ")" : "";
             $notnullstring = " NOT NULL";
             //set type
             switch ($obj->getVar('field_valuetype')) {
@@ -570,6 +572,12 @@ class XaddressesFieldHandler extends XoopsPersistableObjectHandler
                 case XOBJ_DTYPE_TXTBOX:
                 case XOBJ_DTYPE_URL:
                     $type = "varchar";
+                    // varchars must have a length
+                    if (!$lengthstring) {
+                        //so set it to max if length is not set - or should it fail?
+                        $lengthstring = "(40)";
+                        $obj->setVar('field_length', 40);
+                    }
                     // varchars must have a maxlength
                     if (!$maxlengthstring) {
                         //so set it to max if maxlength is not set - or should it fail?

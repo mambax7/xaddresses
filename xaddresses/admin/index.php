@@ -5,86 +5,124 @@ $currentFile = basename(__FILE__);
 // load classes
 $categoryHandler =& xoops_getModuleHandler('locationcategory', 'xaddresses');
 $locationHandler =& xoops_getModuleHandler('location', 'xaddresses');
+// IN PROGRESS
 $brokenHandler =& xoops_getModuleHandler('broken', 'xaddresses');
+//$addresses_mod_Handler =& xoops_getModuleHandler('xaddresses_mod', 'xaddresses');
 
+
+// count location categories
+$countCategories = $categoryHandler->getCount();
+
+// count valid locations
+$criteria = new CriteriaCompo();
+$criteria->add(new Criteria('loc_status', 0, '!='));
+$countLocations = $locationHandler->getCount($criteria);
+unset($criteria);
+
+// count waiting/not valid locations
+$criteria = new CriteriaCompo();
+$criteria->add(new Criteria('loc_status', 0));
+$waitingLocations = $locationHandler->getCount($criteria);
+unset($criteria);
+
+// count broken locations
+$brokenLocations = 0;
+
+// count modified locations
+$modifiedLocations = 0;
+/*
+// compte le nombre de rapport de tÈlÈchargements brisÈs
+$countLocations_broken = $addresses_broken_Handler->getCount();
+// compte le nombre de demande de modifications
+$countLocations_modified = $addresses_mod_Handler->getCount();
+*/
+
+
+
+$op = (isset($_GET['op']))? $_GET['op'] : "";
 
 
 
 xoops_cp_header();
 
 // main admin menu
-if ( !is_readable(XOOPS_ROOT_PATH . "/Frameworks/art/functions.admin.php"))	{
-    xaddressesAdminMenu(1, _XADDRESSES_MI_ADMENU_INDEX);
-} else {
-    include_once XOOPS_ROOT_PATH.'/Frameworks/art/functions.admin.php';
-    loadModuleAdminMenu (1, _XADDRESSES_MI_ADMENU_INDEX);
+include (XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->dirname() . '/admin/menu.php');
+echo moduleAdminTabMenu($adminmenu, $currentFile);
+
+// index menu
+include_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->dirname() . '/class/menu.php';
+//$menu = new moduleMenu();
+$menu = new testMenu();
+foreach ($adminmenu as $menuitem) {
+    $menu->addItem($menuitem['name'], '../' . $menuitem['link'], '../' . $menuitem['icon'], $menuitem['title']);
 }
 
-// count valid locations
-$criteria = new CriteriaCompo();
-//$criteria->add(new Criteria('loc_status', 0, '!='));
-$countLocations = $locationHandler->getCount($criteria);
-
-// count waiting/not valid locations
-$criteria = new CriteriaCompo();
-$criteria->add(new Criteria('loc_status', 0));
-$waitingLocations = $locationHandler->getCount($criteria);
-
-// count broken locations
-$brokenLocations = $brokenHandler->getCount();
-
-// count modified locations
-$criteria = new CriteriaCompo();
-$criteria->add(new Criteria('loc_mod_id', 0, '!='));
-$modifiedLocations = $locationHandler->getCount($criteria);
-
-include_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->dirname() . '/class/menu.php';
-//showIndex();
-$menu = new xaddressesMenu();
-$menu->addItem('Addresses Categories',      'locationcategory.php',     '../images/icons/folder_map.png', _XADDRESSES_MI_ADMENU_LOCATIONCATEGORY);
-$menu->addItem('Addresses',                 'location.php',             '../images/icons/map.png', _XADDRESSES_MI_ADMENU_LOCATION);
-$menu->addItem('Permissions',               'locationpermissions.php',  '../images/icons/lock_map.png', _XADDRESSES_MI_ADMENU_LOCATIONPERMISSIONS);
-$menu->addItem('Extra Fields Categories',   'fieldcategory.php',        '../images/icons/folder_database.png', _XADDRESSES_MI_ADMENU_FIELDCATEGORY);
-$menu->addItem('Extra Fields',              'field.php',                '../images/icons/database.png', _XADDRESSES_MI_ADMENU_FIELD);
-$menu->addItem('Extra Fields Permissions',  'fieldpermissions.php',     '../images/icons/lock_database.png', _XADDRESSES_MI_ADMENU_FIELDPERMISSIONS);
-
-$menu->addItem('About',                     'about.php',                '../images/icons/information.png', _XADDRESSES_MI_ADMENU_ABOUT);
-//$menu->addItem('Update',                    '../../system/admin.php?fct=modulesadmin&op=update&module=TDMDownloads', '../images/icons/update.png', _XADDRESSES_MI_ADMENU_UPDATE);
-//$menu->addItem('Import',                    'import.php',               '../images/icons/folder_put.png', _XADDRESSES_MI_ADMENU10);
-$menu->addItem('Preference',                '../../system/admin.php?fct=preferences&amp;op=showmod&amp;mod=' . $xoopsModule ->getVar('mid') . '&amp;&confcat_id=1', '../images/icons/prefs.png', _PREFERENCES);
+$menu->addItem('Preferences', '../../system/admin.php?fct=preferences&amp;op=showmod&amp;mod=' . $xoopsModule ->getVar('mid') . '&amp;&confcat_id=1', '../images/icons/32x32/prefs.png', _PREFERENCES);
 
 echo $menu->getCSS();
 echo '<table width="100%" border="0" cellspacing="10" cellpadding="4">';
-echo '<tr><td>' . $menu->render() . '</td>';
+echo '<tr>';
 
+
+
+echo '<td>' . $menu->render() . '</td>';
 echo '<td valign="top" width="60%">';
-echo '<fieldset><legend class="CPmediumTitle">' . _XADDRESSES_AM_INDEX_INFO . '</legend>';
+
+echo '<fieldset>';
+echo '<legend class="CPmediumTitle">' . _XADDRESSES_AM_INDEX_INFO . '</legend>';
+echo '<h3>' . _XADDRESSES_AM_INDEX_SCONFIG . '</h3>';
 echo '<br/>';
-printf(_XADDRESSES_AM_INDEX_LOCATIONS, $countLocations);
+echo '<h3>' . _XADDRESSES_AM_INDEX_DATABASE . '</h3>';
+printf(_XADDRESSES_AM_INDEX_COUNTCATEGORIES, $countCategories);
+echo '<br />';
+printf(_XADDRESSES_AM_INDEX_COUNTLOCATIONS, $countLocations);
+echo '<br />';
+printf(_XADDRESSES_AM_INDEX_COUNTWAITING, $waitingLocations);
 echo '<br/>';
-printf(_XADDRESSES_AM_INDEX_WAITING, $waitingLocations);
+printf(_XADDRESSES_AM_INDEX_COUNTBROKEN, $brokenLocations);
 echo '<br/>';
-printf(_XADDRESSES_AM_INDEX_BROKEN, $brokenLocations);
-echo '<br/>';
-printf(_XADDRESSES_AM_INDEX_MODIFIED, $modifiedLocations);
+printf(_XADDRESSES_AM_INDEX_COUNTMODIFIED, $modifiedLocations);
 echo '<br/>';
 echo '</fieldset>';
 
 
+echo '<br/>';
+
+
+echo '<fieldset>';
+echo '<legend class="CPmediumTitle">' . _XADDRESSES_AM_INDEX_SERVERSTATUS . '</legend>';
+echo '<h3>' . _XADDRESSES_AM_INDEX_SPHPINI . '</h3>';
+$safeMode = (ini_get('safe_mode')) ? _XADDRESSES_AM_INDEX_ON . _XADDRESSES_AM_INDEX_SAFEMODEPROBLEMS : _XADDRESSES_AM_INDEX_OFF;
+$registerGlobals = (!ini_get('register_globals')) ? '<span style="color: green;">' . _XADDRESSES_AM_INDEX_OFF . '</span>' : '<span style="color: red;">' . _XADDRESSES_AM_INDEX_ON . '</span>';
+$magicQuotesGpc = (get_magic_quotes_gpc()) ? _XADDRESSES_AM_INDEX_ON : _XADDRESSES_AM_INDEX_OFF;
+$downloads = (ini_get('file_uploads')) ? '<span style="color: green;">' . _XADDRESSES_AM_INDEX_ON . '</span>' : '<span style="color: red;">' . _XADDRESSES_AM_INDEX_OFF . '</span>';
+$gdLib = (function_exists('gd_info')) ? '<span style="color: green;">' . _XADDRESSES_AM_INDEX_GDON . '</span>' : '<span style="color: red;">' . _XADDRESSES_AM_INDEX_GDOFF . '</span>';
+$zipLib = (class_exists('ZipArchive')) ? '<span style="color: green;">' . _XADDRESSES_AM_INDEX_ZIPON . '</span>' : '<span style="color: red;">' . _XADDRESSES_AM_INDEX_ZIPOFF . '</span>';
+echo '<ul>';
+echo '<li>' . _XADDRESSES_AM_INDEX_GDLIBSTATUS . $gdLib;
+if (function_exists('gd_info')) {
+    if (true == $gdLib = gd_info()) {
+        echo '<li>' . _XADDRESSES_AM_INDEX_GDLIBVERSION . '<b>' . $gdLib['GD Version'] . '</b>';
+    }
+}
+echo '<li>' . _XADDRESSES_AM_INDEX_ZIPLIBSTATUS . $zipLib;
+echo '</ul>';
+echo '<ul>';
+echo '<li>' . _XADDRESSES_AM_INDEX_SAFEMODESTATUS . $safeMode;
+echo '<li>' . _XADDRESSES_AM_INDEX_REGISTERGLOBALS . $registerGlobals;
+echo '<li>' . _XADDRESSES_AM_INDEX_MAGICQUOTESGPC . $magicQuotesGpc;
+echo '<li>' . _XADDRESSES_AM_INDEX_SERVERUPLOADSTATUS . $downloads;
+echo '<li>' . _XADDRESSES_AM_INDEX_MAXUPLOADSIZE . ' <b><span style="color: blue;">' . ini_get('upload_max_filesize') . '</span></b>';
+echo '<li>' . _XADDRESSES_AM_INDEX_MAXPOSTSIZE . ' <b><span style="color: blue;">' . ini_get('post_max_size') . '</span></b>';
+echo '<li>' . _XADDRESSES_AM_INDEX_SERVERPATH . ' <b>' . XOOPS_ROOT_PATH . '</b>';
+
+echo '</ul>';
+echo '</fieldset>';
+
+
+
 echo '</td></tr>';
 echo '</table>';
-/*
-// message d'erreur si la copie du dossier dans uploads n'a pss march√© √† l'installation
-$url_folder = XOOPS_ROOT_PATH . '/uploads/xaddresses/';
-if (!is_dir($url_folder)){
-    echo '<div class="errorMsg" style="text-align: left;">' . sprintf(_XADDRESSES_MI_INDEX_ERRORPFOLDER, XOOPS_ROOT_PATH) . '</div>'; 
-}
 
-//syst√®me pour indiquer si l'on utilise la derni√®re version
-//moduleLastVersionInfo( $GLOBALS['xoopsModule']->getVar('version'), $xoopsModule->dirname() );
-
-echo '<div align="center"><a href="http://www.tdmxoops.net" target="_blank"><img src="http://www.tdmxoops.net/images/logo_modules.gif" alt="TDM" title="TDM"></a></div>';
-*/
-//Affichage de la partie basse de l'administration de Xoops
 xoops_cp_footer();
 ?>

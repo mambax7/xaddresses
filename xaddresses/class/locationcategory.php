@@ -41,7 +41,7 @@ class XaddressesLocationcategory extends XoopsObject
         $form = new XoopsThemeForm($form_title, 'locationcategoryform', $action, 'post', true);
         $form->setExtra('enctype="multipart/form-data"');
 
-        $form->addElement(new XoopsFormText(_XADDRESSES_AM_CAT_TITLE, 'cat_title', 35, 255, $this->getVar('cat_title')));
+        $form->addElement(new XoopsFormText(_XADDRESSES_AM_CAT_TITLE, 'cat_title', 35, 255, $this->getVar('cat_title')), true);
         if (!$this->isNew()) {
             //Load groups
             $form->addElement(new XoopsFormHidden('cat_id', $this->getVar('cat_id')));
@@ -61,7 +61,7 @@ class XaddressesLocationcategory extends XoopsObject
         //$form->addElement(new XoopsFormTextArea(_XADDRESSES_AM_DESCRIPTION, 'cat_description', $this->getVar('cat_description', 'e')));
 
         //image
-        $form->addElement(new FormXoopsImage (_XADDRESSES_AM_CAT_IMG, 'cat_imgurl', $this->getVar('cat_imgurl'))); // custom form class
+        $form->addElement(new FormXoopsImage (_XADDRESSES_AM_CAT_IMG, 'cat_imgurl', 40, 255, $this->getVar('cat_imgurl'))); // custom form class
 
         //parent category
         $xaddressescat_Handler =& xoops_getModuleHandler('locationcategory', 'xaddresses');
@@ -73,7 +73,7 @@ class XaddressesLocationcategory extends XoopsObject
 		$form->addElement(new XoopsFormLabel(_XADDRESSES_AM_CAT_PARENT, $mytree->makeSelBox('cat_pid', 'cat_title','--',$this->getVar('cat_pid'), true)));
 
         //weight
-        $form->addElement(new XoopsFormText(_XADDRESSES_AM_CAT_WEIGHT, 'cat_weight', 35, 35, $this->getVar('cat_weight', 'e')));
+        $form->addElement(new XoopsFormText(_XADDRESSES_AM_CAT_WEIGHT, 'cat_weight', 35, 35, $this->getVar('cat_weight', 'e')), true);
 
         $form->addElement(new XoopsFormHidden('op', 'save_locationcategory') );
 

@@ -7,14 +7,13 @@ class XaddressesLocation extends XoopsObject
     function __construct($fields)
     {
         $this->initVar('loc_id', XOBJ_DTYPE_INT, null, true);
-        $this->initVar('loc_mod_id', XOBJ_DTYPE_INT, null); // if null object is an original location, else is the loc_id of modified location
         $this->initVar('loc_cat_id', XOBJ_DTYPE_INT, null, true);
         $this->initVar('loc_title', XOBJ_DTYPE_TXTBOX);
         $this->initVar('loc_lat', XOBJ_DTYPE_DECIMAL);
         $this->initVar('loc_lng', XOBJ_DTYPE_DECIMAL);
         $this->initVar('loc_zoom', XOBJ_DTYPE_INT);
-        $this->initVar('loc_submitter', XOBJ_DTYPE_INT, null, true); // location submitter id
-        $this->initVar('loc_status', XOBJ_DTYPE_INT, 0); // 0 = no, 1 = yes
+        $this->initVar('loc_submitter', XOBJ_DTYPE_INT, null, true);
+        $this->initVar('loc_status', XOBJ_DTYPE_INT, 0); //0 = no, 1 = yes
         $this->initVar('loc_date', XOBJ_DTYPE_INT, 0);
         //extra fields
         $this->init($fields);

@@ -10,29 +10,20 @@ $fieldHandler =& xoops_getmodulehandler('field', 'xaddresses');
 
 
 
-xoops_cp_header();
-
-// main admin manu
-if (!is_readable(XOOPS_ROOT_PATH . "/Frameworks/art/functions.admin.php"))	{
-    xaddressesAdminMenu(5, _XADDRESSES_MI_ADMENU_FIELD);
-} else {
-    include_once XOOPS_ROOT_PATH.'/Frameworks/art/functions.admin.php';
-    loadModuleAdminMenu (5, _XADDRESSES_MI_ADMENU_FIELD);
-}
-
-
-
-// Submenu
-$status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
-$submenuItem[] = ($op == 'new_field' ? _XADDRESSES_AM_FIELD_NEW : '<a href="' . $currentFile . '?op=new_field">' . _XADDRESSES_AM_FIELD_NEW . '</a>');
-$submenuItem[] = ($op == 'list_fields' ? _XADDRESSES_AM_FIELD_LIST : '<a href="' . $currentFile . '?op=list_fields">' . _XADDRESSES_AM_FIELD_LIST . '</a>');
-xaddressesAdminSubmenu ($submenuItem);
-
-
-
 switch ($op) {
 default:
 case 'list_fields':
+    // render start here
+    xoops_cp_header();
+    // main admin menu
+    include (XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->dirname() . '/admin/menu.php');
+    echo moduleAdminTabMenu($adminmenu, $currentFile);
+    // submenu
+    $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
+    $submenuItem[] = ($op == 'new_field' ? _XADDRESSES_AM_FIELD_NEW : '<a href="' . $currentFile . '?op=new_field">' . _XADDRESSES_AM_FIELD_NEW . '</a>');
+    $submenuItem[] = ($op == 'list_fields' ? _XADDRESSES_AM_FIELD_LIST : '<a href="' . $currentFile . '?op=list_fields">' . _XADDRESSES_AM_FIELD_LIST . '</a>');
+    xaddressesAdminSubmenu ($submenuItem);
+
     // get fields categories
     $criteria = new CriteriaCompo();
     $criteria->setSort('cat_weight');
@@ -102,15 +93,30 @@ case 'list_fields':
 
     $GLOBALS['xoopsTpl']->assign('token', $GLOBALS['xoopsSecurity']->getTokenHTML() );
     $GLOBALS['xoopsTpl']->display("db:xaddresses_admin_fieldlist.html");
+    
+    xoops_cp_footer();
     break;
 
 
 
 case 'new_field':
+    // render start here
+    xoops_cp_header();
+    // main admin menu
+    include (XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->dirname() . '/admin/menu.php');
+    echo moduleAdminTabMenu($adminmenu, $currentFile);
+    // submenu
+    $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
+    $submenuItem[] = ($op == 'new_field' ? _XADDRESSES_AM_FIELD_NEW : '<a href="' . $currentFile . '?op=new_field">' . _XADDRESSES_AM_FIELD_NEW . '</a>');
+    $submenuItem[] = ($op == 'list_fields' ? _XADDRESSES_AM_FIELD_LIST : '<a href="' . $currentFile . '?op=list_fields">' . _XADDRESSES_AM_FIELD_LIST . '</a>');
+    xaddressesAdminSubmenu ($submenuItem);
+
     include_once('../include/forms.php');
     $obj =& $fieldHandler->create();
     $form = xaddresses_getFieldForm($obj);
     $form->display();
+    
+    xoops_cp_footer();
     break;
 
 
@@ -120,9 +126,22 @@ case 'edit_field':
     if ( !$obj->getVar('field_config') && !$obj->getVar('field_show') && !$obj->getVar('field_edit')  ) { //If no configs exist
         redirect_header($currentFile, 2, _XADDRESSES_AM_FIELDNOTCONFIGURABLE);
     }
+    // render start here
+    xoops_cp_header();
+    // main admin menu
+    include (XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->dirname() . '/admin/menu.php');
+    echo moduleAdminTabMenu($adminmenu, $currentFile);
+    // submenu
+    $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
+    $submenuItem[] = ($op == 'new_field' ? _XADDRESSES_AM_FIELD_NEW : '<a href="' . $currentFile . '?op=new_field">' . _XADDRESSES_AM_FIELD_NEW . '</a>');
+    $submenuItem[] = ($op == 'list_fields' ? _XADDRESSES_AM_FIELD_LIST : '<a href="' . $currentFile . '?op=list_fields">' . _XADDRESSES_AM_FIELD_LIST . '</a>');
+    xaddressesAdminSubmenu ($submenuItem);
+    
     include_once('../include/forms.php');
     $form = xaddresses_getFieldForm($obj);
     $form->display();
+    
+    xoops_cp_footer();
     break;
 
 
@@ -348,8 +367,4 @@ case 'delete_field':
     }
     break;
 }
-
-
-
-xoops_cp_footer();
 ?>

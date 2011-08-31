@@ -1,6 +1,7 @@
 <form action="locationcategory.php" method="post" id="locationcategoryform">
 <table>
     <tr>
+        <th><{$smarty.const._XADDRESSES_AM_CAT_ID}></th>
         <th><{$smarty.const._XADDRESSES_AM_CAT_TITLE}></th>
         <th><{$smarty.const._XADDRESSES_AM_CAT_DESCRIPTION}></th>
         <th><{$smarty.const._XADDRESSES_AM_CAT_IMG}></th>
@@ -9,6 +10,7 @@
     </tr>
 <{foreach from=$categoriesList item='category'}>
     <tr class="<{cycle values='odd, even'}>">
+        <td><{$category.category->getVar('cat_id')}></td>
         <td><{$category.prefix}><{$category.category->getVar('cat_title')}><{$category.sufix}></td>
         <td><{$category.category->getVar('cat_description')}></td>
         <td>
@@ -43,7 +45,7 @@
     </tr>
 <{/foreach}>
     <tr class="<{cycle values='odd, even'}>">
-        <td colspan="3">
+        <td colspan="4">
         </td>
         <td>
             <{$token}>

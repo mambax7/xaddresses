@@ -1,6 +1,7 @@
 <?php
 include 'admin_header.php';
 $currentFile = basename(__FILE__);
+
 $op = isset($_REQUEST['op']) ? $_REQUEST['op'] : (isset($_REQUEST['cat_id']) ? "edit_locationcategory" : 'list_locationcategories');
 
 //load classes
@@ -13,29 +14,20 @@ $locationHandler =& xoops_getModuleHandler('location', 'xaddresses');
 
 
 
-xoops_cp_header();
-
-// main admin menu
-if ( !is_readable(XOOPS_ROOT_PATH . "/Frameworks/art/functions.admin.php")) {
-    xaddressesAdminMenu(2, _XADDRESSES_MI_ADMENU_ITEMCATEGORY);
-} else {
-    include_once XOOPS_ROOT_PATH.'/Frameworks/art/functions.admin.php';
-    loadModuleAdminMenu (2, _XADDRESSES_MI_ADMENU_ITEMCATEGORY);
-}
-
-
-
-// Submenu
-$status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
-$submenuItem[] = ($op == 'new_locationcategory' ? _XADDRESSES_AM_CAT_NEW : '<a href="' . $currentFile . '?op=new_locationcategory">' . _XADDRESSES_AM_CAT_NEW . '</a>');
-$submenuItem[] = ($op == 'list_locationcategories' ? _XADDRESSES_AM_CAT_LIST : '<a href="' . $currentFile . '?op=list_locationcategories">' . _XADDRESSES_AM_CAT_LIST . '</a>');
-xaddressesAdminSubmenu ($submenuItem);
-
-
-
 switch ($op) {
 default:
 case 'list_locationcategories':
+    // render start here
+    xoops_cp_header();
+    // render main admin menu
+    include (XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->dirname() . '/admin/menu.php');
+    echo moduleAdminTabMenu($adminmenu, $currentFile);
+    // Submenu
+    $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
+    $submenuItem[] = ($op == 'new_locationcategory' ? _XADDRESSES_AM_CAT_NEW : '<a href="' . $currentFile . '?op=new_locationcategory">' . _XADDRESSES_AM_CAT_NEW . '</a>');
+    $submenuItem[] = ($op == 'list_locationcategories' ? _XADDRESSES_AM_CAT_LIST : '' . _XADDRESSES_AM_CAT_LIST . '');
+    xaddressesAdminSubmenu ($submenuItem);
+
     $criteria = new CriteriaCompo();
     $criteria->add(new Criteria('cat_pid', 0));
     $criteria->setSort('cat_weight ASC, cat_title');
@@ -64,21 +56,30 @@ case 'list_locationcategories':
     $groupPermHandler =& xoops_gethandler('groupperm');
     $viewableCategories = $groupPermHandler->getItemIds('in_category_view', $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid') );
     $editableCategories = $groupPermHandler->getItemIds('in_category_edit', $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid') );
-    $deletableCategories = $groupPermHandler->getItemIds('in_category_delete', $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid') );
     $submitableCategories = $groupPermHandler->getItemIds('in_category_submit', $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid') );
 
     foreach ($categoriesList as $key=>$categoriesListItem) {
         $category = $categoriesListItem['category'];
-        $categoriesList[$key]['canView'] = (in_array($category->getVar('cat_id'), $viewableCategories)); // IN PROGRESS
-        $categoriesList[$key]['canEdit'] = (in_array($category->getVar('cat_id'), $editableCategories)); // IN PROGRESS
-        $categoriesList[$key]['canDelete'] = (in_array($category->getVar('cat_id'), $deletableCategories)); // IN PROGRESS
+        if ($xoopsUser->isAdmin($GLOBALS['xoopsModule']->mid())) {
+            // admin can do everything
+            $categoriesList[$key]['canView'] = true;
+            $categoriesList[$key]['canEdit'] = true;
+            $categoriesList[$key]['canDelete'] = true;
+        } else {
+            $categoriesList[$key]['canView'] = (in_array($category->getVar('cat_id'), $viewableCategories)); // IN PROGRESS
+            $categoriesList[$key]['canEdit'] = (in_array($category->getVar('cat_id'), $editableCategories)); // IN PROGRESS
+            $categoriesList[$key]['canDelete'] = (in_array($category->getVar('cat_id'), $editableCategories)); // IN PROGRESS
+        }
         unset($category);
         }
+
 
     $GLOBALS['xoopsTpl']->assign('categoriesList', $categoriesList);
 
     $GLOBALS['xoopsTpl']->assign('token', $GLOBALS['xoopsSecurity']->getTokenHTML() );
     $GLOBALS['xoopsTpl']->display("db:xaddresses_admin_locationcategorylist.html");
+
+    xoops_cp_footer();
     break;
 
 
@@ -121,18 +122,42 @@ case 'reorder_locationcategories':
 
 // new category form
 case "new_locationcategory":
+    xoops_cp_header();
+    // main admin menu
+    include (XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->dirname() . '/admin/menu.php');
+    echo moduleAdminTabMenu($adminmenu, $currentFile);
+    // Submenu
+    $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
+    $submenuItem[] = ($op == 'new_locationcategory' ? _XADDRESSES_AM_CAT_NEW : '<a href="' . $currentFile . '?op=new_locationcategory">' . _XADDRESSES_AM_CAT_NEW . '</a>');
+    $submenuItem[] = ($op == 'list_locationcategories' ? _XADDRESSES_AM_CAT_LIST : '<a href="' . $currentFile . '?op=list_locationcategories">' . _XADDRESSES_AM_CAT_LIST . '</a>');
+    xaddressesAdminSubmenu ($submenuItem);
+
     $obj =& $categoryHandler->create();
     $form = $obj->getForm($currentFile);
     $form->display();
+    
+    xoops_cp_footer();
     break;
 
 
 
 // edit category form
 case "edit_locationcategory":
+    xoops_cp_header();
+    // main admin menu
+    include (XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->dirname() . '/admin/menu.php');
+    echo moduleAdminTabMenu($adminmenu, $currentFile);
+    // Submenu
+    $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
+    $submenuItem[] = ($op == 'new_locationcategory' ? _XADDRESSES_AM_CAT_NEW : '<a href="' . $currentFile . '?op=new_locationcategory">' . _XADDRESSES_AM_CAT_NEW . '</a>');
+    $submenuItem[] = ($op == 'list_locationcategories' ? _XADDRESSES_AM_CAT_LIST : '<a href="' . $currentFile . '?op=list_locationcategories">' . _XADDRESSES_AM_CAT_LIST . '</a>');
+    xaddressesAdminSubmenu ($submenuItem);
+
     $obj = $categoryHandler->get($_REQUEST['cat_id']);
     $form = $obj->getForm($currentFile);
     $form->display();
+
+    xoops_cp_footer();
     break;
 
 
@@ -390,5 +415,5 @@ case 'save_locationcategory':
 
 
 
-xoops_cp_footer();
+
 ?>

@@ -1,49 +1,79 @@
 <?php
 if (!defined('XOOPS_ROOT_PATH')) die('XOOPS root path not defined');
+$moduleDirname = basename( dirname( __FILE__ ) ) ;
 
 $modversion['name'] = _XADDRESSES_MI_NAME;
 $modversion['version'] = 1.0;
 $modversion['description'] = _XADDRESSES_MI_DESC;
 $modversion['author'] = "Rota Lucio";
+$modversion['author_mail'] = 'lucio.rota@gmail.com';
+$modversion['author_website_url'] = 'http://luciorota.altervista.org';
+$modversion['author_website_name'] = 'http://luciorota.altervista.org';
 $modversion['credits'] = "XOOPS";
-$modversion['help'] = "help.html";
-$modversion['license'] = "GPL see LICENSE";
+$modversion['help'] = 'page=help';
+$modversion['license'] = 'GPL see LICENSE';
+$modversion['license_url'] = 'http://www.gnu.org/licenses/gpl.html';
 $modversion['official'] = 0;
 $modversion['image'] = "images/xaddresses_slogo.png";
-$modversion['dirname'] = "xaddresses";
+$modversion['release_info'] = 'RC';
+$modversion['release_file'] = 'RC';
+$modversion['manual'] = 'Help';
+$modversion['manual_file'] = 'help.html';
+$modversion['dirname'] = $dirname;
 //extra informations
-$modversion["release"] = "16-02-2011";
+$modversion["release"] = "14-02-2011";
 $modversion["module_status"] = "Stable";
 $modversion['support_site_url']	= "http://www.xoops.org";
 $modversion['support_site_name'] = "www.xoops.org";
+
+//about
+$modversion['status_version'] = 'RC';
+$modversion['release_date'] = '2011/07/26';
+$modversion['release'] = strtotime('2011/07/26'); // 'YYYY/MM/DD' format
+$modversion['demo_site_url'] = 'IN PROGRESS';
+$modversion['demo_site_name'] = 'IN PROGRESS';
+$modversion['forum_site_url'] = 'IN PROGRESS';
+$modversion['forum_site_name'] = 'IN PROGRESS';
+$modversion['module_website_url'] = 'IN PROGRESS';
+$modversion['module_website_name'] = 'IN PROGRESS';
+$modversion['module_status'] = 'In progress';
+$modversion["author_website_url"] = 'http://luciorota.altervista.org/xoops/';
+$modversion["author_website_name"] = 'luciorota.altervista.org/xoops';
+$modversion['min_php']=5.2;
+$modversion['min_xoops']= 'XOOPS 2.4.5';
 
 // Admin things
 $modversion['hasAdmin'] = 1;
 $modversion['adminindex'] = "admin/index.php";
 $modversion['adminmenu'] = "admin/menu.php";
+$modversion['system_menu'] = 0;
 
 // Scripts to run upon installation or update
 $modversion['onInstall'] = 'include/install_function.php';
 //$modversion['onUpdate'] = 'include/update_function.php';
 $modversion['onUninstall'] = 'include/uninstall_function.php';
 
+
+
 // Mysql file
 $modversion['sqlfile']['mysql'] = "sql/mysql.sql";
 
 // Tables created by sql file (without prefix!)
-$modversion['tables'][] = "xaddresses_locationcategory";
-$modversion['tables'][] = "xaddresses_location";
+$modversion['tables'][0] = "xaddresses_locationcategory";
+$modversion['tables'][1] = "xaddresses_location";
 
-$modversion['tables'][] = "xaddresses_fieldcategory";
-$modversion['tables'][] = "xaddresses_field";
-$modversion['tables'][] = "xaddresses_visibility";
+$modversion['tables'][2] = "xaddresses_fieldcategory";
+$modversion['tables'][3] = "xaddresses_field";
+$modversion['tables'][4] = "xaddresses_visibility";
 
 // IN PROGRESS
-$modversion['tables'][] = "xaddresses_broken";
+$modversion['tables'][5] = "xaddresses_broken";
 
 // TO DO
-$modversion['tables'][] = "xaddresses_votedata";
-$modversion['tables'][] = "xaddresses_marker";
+$modversion['tables'][6] = "xaddresses_mod";
+$modversion['tables'][7] = "xaddresses_votedata";
+$modversion['tables'][8] = "xaddresses_modfielddata";
+$modversion['tables'][9] = "xaddresses_marker";
 
 
 
