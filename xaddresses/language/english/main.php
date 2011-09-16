@@ -1,4 +1,24 @@
 <?php
+// locationbroken.php
+define("_MD_XADDRESSES_LOC_BROKEN_ALREADYREPORTED","You have already submitted an error report for this location.");
+define("_MD_XADDRESSES_LOC_BROKEN_FORSECURITY","For security reasons your user name and IP address will also be temporarily recorded.");
+define("_MD_XADDRESSES_LOC_BROKEN_REPORTBROKEN","Broken Location Report");
+define("_MD_XADDRESSES_LOC_BROKEN_THANKSFORHELP","Thank you for helping to maintain this database's integrity.");
+define("_MD_XADDRESSES_LOC_BROKEN_THANKSFORINFO","Thanks for the information. We'll look into your request shortly.");
+
+
+// -------------------------------- IN PROGRESS
+
+
+
+
+
+
+
+
+
+
+
 // index.php
 define("_MD_XADDRESSES_INDEX_BLDATE","Recent Addresses :");
 define("_MD_XADDRESSES_INDEX_BLNAME","Summary");
@@ -61,12 +81,6 @@ define("_MD_XADDRESSES_RATEFILE_VOTE","Vote");
 define("_MD_XADDRESSES_RATEFILE_VOTEOK","Your vote is appreciated.<br />Thank you for taking the time to vote here");
 define("_MD_XADDRESSES_RATEFILE_VOTEONCE","Please do not vote for the same resource more than once.");
 
-// brokenfile.php
-define("_MD_XADDRESSES_BROKENFILE_ALREADYREPORTED","You have already submitted a report broken file to this download.");
-define("_MD_XADDRESSES_BROKENFILE_FORSECURITY","For security reasons your user name and IP address will also be temporarily recorded.");
-define("_MD_XADDRESSES_BROKENFILE_REPORTBROKEN","Broken File Reports");
-define("_MD_XADDRESSES_BROKENFILE_THANKSFORHELP","Thank you for helping to maintain this directory's integrity.");
-define("_MD_XADDRESSES_BROKENFILE_THANKSFORINFO","Thanks for the information. We'll look into your request shortly.");
 
 // modfile.php
 define("_MD_XADDRESSES_MODFILE_THANKSFORINFO","Thanks for the information. We'll look into your request shortly.");

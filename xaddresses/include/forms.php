@@ -19,13 +19,13 @@ function xaddresses_getFieldForm(&$field, $action = false)
     $title = $field->isNew() ? _XADDRESSES_AM_ADD_FIELD : _XADDRESSES_AM_EDIT_FIELD;
     $form = new XoopsThemeForm($title, 'form', $action, 'post', true);
     // field_title
-        $fieldtitletext = new XoopsFormText(_XADDRESSES_AM_FIELD_TITLE, 'field_title', 35, 255, $field->getVar('field_title', 'e'));
-        $fieldtitletext->setDescription(_XADDRESSES_AM_FIELD_TITLE_DESC);
-    $form->addElement($fieldtitletext);
+        $fieldTitleText = new XoopsFormText(_XADDRESSES_AM_FIELD_TITLE, 'field_title', 35, 255, $field->getVar('field_title', 'e'));
+        $fieldTitleText->setDescription(_XADDRESSES_AM_FIELD_TITLE_DESC);
+    $form->addElement($fieldTitleText);
     // field_description
-        $fielddescriptiontextarea = new XoopsFormTextArea(_XADDRESSES_AM_FIELD_DESCRIPTION, 'field_description', $field->getVar('field_description', 'e'));
-        $fielddescriptiontextarea->setDescription(_XADDRESSES_AM_FIELD_DESCRIPTION_DESC);
-    $form->addElement($fielddescriptiontextarea);
+        $fieldDescriptionTextarea = new XoopsFormTextArea(_XADDRESSES_AM_FIELD_DESCRIPTION, 'field_description', $field->getVar('field_description', 'e'));
+        $fieldDescriptionTextarea->setDescription(_XADDRESSES_AM_FIELD_DESCRIPTION_DESC);
+    $form->addElement($fieldDescriptionTextarea);
     // field_category
     if (!$field->isNew()) {
         $fieldcat_id = $field->getVar('cat_id');
@@ -33,31 +33,31 @@ function xaddresses_getFieldForm(&$field, $action = false)
         $fieldcat_id = 0;
     }
     $fieldCategoryHandler =& xoops_getmodulehandler('fieldcategory');
-        $fieldcategoryselect = new XoopsFormSelect(_XADDRESSES_AM_FIELD_CATEGORY, 'field_category', $fieldcat_id);
-        $fieldcategoryselect->setDescription(_XADDRESSES_AM_FIELD_CATEGORY_DESC);
-        $fieldcategoryselect->addOption(0, _XADDRESSES_AM_FIELD_CATEGORY_DEFAULT);
-        $fieldcategoryselect->addOptionArray($fieldCategoryHandler->getList());
-    $form->addElement($fieldcategoryselect);
+        $fieldCategorySelect = new XoopsFormSelect(_XADDRESSES_AM_FIELD_CATEGORY, 'field_category', $fieldcat_id);
+        $fieldCategorySelect->setDescription(_XADDRESSES_AM_FIELD_CATEGORY_DESC);
+        $fieldCategorySelect->addOption(0, _XADDRESSES_AM_FIELD_CATEGORY_DEFAULT);
+        $fieldCategorySelect->addOptionArray($fieldCategoryHandler->getList());
+    $form->addElement($fieldCategorySelect);
     // field weight
-        $fieldweighttext = new XoopsFormText(_XADDRESSES_AM_FIELD_WEIGHT, 'field_weight', 10, 10, $field->getVar('field_weight', 'e'));
-        $fieldweighttext->setDescription(_XADDRESSES_AM_FIELD_WEIGHT_DESC);
-    $form->addElement($fieldweighttext);
+        $fieldWeightText = new XoopsFormText(_XADDRESSES_AM_FIELD_WEIGHT, 'field_weight', 10, 10, $field->getVar('field_weight', 'e'));
+        $fieldWeightText->setDescription(_XADDRESSES_AM_FIELD_WEIGHT_DESC);
+    $form->addElement($fieldWeightText);
 
     if ($field->getVar('field_config') || $field->isNew()) {
     //field name
         if (!$field->isNew()) {
-                $fieldnametext = new XoopsFormLabel(_XADDRESSES_AM_FIELD_NAME, $field->getVar('field_name'));
-                $fieldnametext->setDescription(_XADDRESSES_AM_FIELD_NAME_DESC);
-            $form->addElement($fieldnametext);
+                $fieldNameText = new XoopsFormLabel(_XADDRESSES_AM_FIELD_NAME, $field->getVar('field_name'));
+                $fieldNameText->setDescription(_XADDRESSES_AM_FIELD_NAME_DESC);
+            $form->addElement($fieldNameText);
             $form->addElement(new XoopsFormHidden('field_id', $field->getVar('field_id')));
         } else {
-                $fieldnametext = new XoopsFormText(_XADDRESSES_AM_FIELD_NAME, 'field_name', 35, 255, $field->getVar('field_name', 'e'));
-                $fieldnametext->setDescription(_XADDRESSES_AM_FIELD_NAME_DESC);
-            $form->addElement($fieldnametext);
+                $fieldNameText = new XoopsFormText(_XADDRESSES_AM_FIELD_NAME, 'field_name', 35, 255, $field->getVar('field_name', 'e'));
+                $fieldNameText->setDescription(_XADDRESSES_AM_FIELD_NAME_DESC);
+            $form->addElement($fieldNameText);
         }
         //field_type
         //autotext and theme left out of this one as fields of that type should never be changed (valid assumption, I think)
-        $fieldtypes = array(
+        $fieldTypes = array(
             'checkbox'      => _XADDRESSES_AM_FIELD_CHECKBOX,
             'date'          => _XADDRESSES_AM_FIELD_DATE,
             'datetime'      => _XADDRESSES_AM_FIELD_DATETIME,
@@ -78,14 +78,14 @@ function xaddresses_getFieldForm(&$field, $action = false)
             'multiplefile'  => _XADDRESSES_AM_FIELD_MULTIPLEFILE,
             'kmlmap'        => _XADDRESSES_AM_FIELD_KMLMAP,
             'yesno'         => _XADDRESSES_AM_FIELD_YESNO);
-            $fieldtypeselect = new XoopsFormSelect(_XADDRESSES_AM_FIELD_TYPE, 'field_type', $field->getVar('field_type', 'e'));
-            $fieldtypeselect->setDescription(_XADDRESSES_AM_FIELD_TYPE_DESC);
-            $fieldtypeselect->addOptionArray($fieldtypes);
-        $form->addElement($fieldtypeselect);
+            $fieldTypeSelect = new XoopsFormSelect(_XADDRESSES_AM_FIELD_TYPE, 'field_type', $field->getVar('field_type', 'e'));
+            $fieldTypeSelect->setDescription(_XADDRESSES_AM_FIELD_TYPE_DESC);
+            $fieldTypeSelect->addOptionArray($fieldTypes);
+        $form->addElement($fieldTypeSelect);
         //field_valuetype
         switch ($field->getVar('field_type')) {
         case "textbox":
-            $fieldvaluetypes = array(
+            $fieldValueTypes = array(
                 XOBJ_DTYPE_ARRAY            => _XADDRESSES_AM_FIELD_ARRAY,
                 XOBJ_DTYPE_EMAIL            => _XADDRESSES_AM_FIELD_EMAIL,
                 XOBJ_DTYPE_INT              => _XADDRESSES_AM_FIELD_INT,
@@ -100,14 +100,14 @@ function xaddresses_getFieldForm(&$field, $action = false)
                 XOBJ_DTYPE_UNICODE_TXTAREA  => _XADDRESSES_AM_FIELD_UNICODE_TXTAREA,
                 XOBJ_DTYPE_UNICODE_EMAIL    => _XADDRESSES_AM_FIELD_UNICODE_EMAIL,
                 XOBJ_DTYPE_UNICODE_URL      => _XADDRESSES_AM_FIELD_UNICODE_URL);
-            $fieldvaluetypeselect = new XoopsFormSelect(_XADDRESSES_AM_FIELD_VALUETYPE, 'field_valuetype', $field->getVar('field_valuetype', 'e'));
-            $fieldvaluetypeselect->setDescription(_XADDRESSES_AM_FIELD_VALUETYPE_DESC);
-            $fieldvaluetypeselect->addOptionArray($fieldvaluetypes);
-            $form->addElement($fieldvaluetypeselect);
+            $fieldValueTypeSelect = new XoopsFormSelect(_XADDRESSES_AM_FIELD_VALUETYPE, 'field_valuetype', $field->getVar('field_valuetype', 'e'));
+            $fieldValueTypeSelect->setDescription(_XADDRESSES_AM_FIELD_VALUETYPE_DESC);
+            $fieldValueTypeSelect->addOptionArray($fieldValueTypes);
+            $form->addElement($fieldValueTypeSelect);
             break;
         case "select":
         case "radio":
-            $fieldvaluetypes = array(
+            $fieldValueTypes = array(
                 XOBJ_DTYPE_ARRAY            => _XADDRESSES_AM_FIELD_ARRAY,
                 XOBJ_DTYPE_EMAIL            => _XADDRESSES_AM_FIELD_EMAIL,
                 XOBJ_DTYPE_INT              => _XADDRESSES_AM_FIELD_INT,
@@ -122,10 +122,10 @@ function xaddresses_getFieldForm(&$field, $action = false)
                 XOBJ_DTYPE_UNICODE_TXTAREA  => _XADDRESSES_AM_FIELD_UNICODE_TXTAREA,
                 XOBJ_DTYPE_UNICODE_EMAIL    => _XADDRESSES_AM_FIELD_UNICODE_EMAIL,
                 XOBJ_DTYPE_UNICODE_URL      => _XADDRESSES_AM_FIELD_UNICODE_URL);
-            $fieldvaluetypeselect = new XoopsFormSelect(_XADDRESSES_AM_FIELD_VALUETYPE, 'field_valuetype', $field->getVar('field_valuetype', 'e'));
-            $fieldvaluetypeselect->setDescription(_XADDRESSES_AM_FIELD_VALUETYPE_DESC);
-            $fieldvaluetypeselect->addOptionArray($fieldvaluetypes);
-            $form->addElement($fieldvaluetypeselect);
+            $fieldValueTypeSelect = new XoopsFormSelect(_XADDRESSES_AM_FIELD_VALUETYPE, 'field_valuetype', $field->getVar('field_valuetype', 'e'));
+            $fieldValueTypeSelect->setDescription(_XADDRESSES_AM_FIELD_VALUETYPE_DESC);
+            $fieldValueTypeSelect->addOptionArray($fieldValueTypes);
+            $form->addElement($fieldValueTypeSelect);
             break;
         }
         //field_notnull
@@ -133,8 +133,8 @@ function xaddresses_getFieldForm(&$field, $action = false)
             //$fiedlnotnullradio->setDescription(_XADDRESSES_AM_FIELD_NOTNULL_DESC);
         //$form->addElement($fiedlnotnullradio);
         //field_options
-        $fieldtypeswithoptions = array('select', 'select-multi', 'radio', 'checkbox');
-        if (in_array($field->getVar('field_type'), $fieldtypeswithoptions)) {
+        $fieldTypesWithOptions = array('select', 'select-multi', 'radio', 'checkbox');
+        if (in_array($field->getVar('field_type'), $fieldTypesWithOptions)) {
             $options = $field->getVar('field_options');
             if (count($options) > 0) {
                 $remove_options = new XoopsFormCheckBox(_XADDRESSES_AM_REMOVEOPTIONS, 'removeOptions');
@@ -159,8 +159,8 @@ function xaddresses_getFieldForm(&$field, $action = false)
         }
 /* IN_PROGRESS
         //field_extras
-        $fieldtypeswithextras = array('image');
-        if (in_array($field->getVar('field_type'), $fieldtypeswithextras)) {
+        $fieldTypeswithextras = array('image');
+        if (in_array($field->getVar('field_type'), $fieldTypeswithextras)) {
             $extras = $field->getVar('field_extras');
             if (count($extras) > 0) {
                 $remove_extras = new XoopsFormCheckBox(_XADDRESSES_AM_REMOVEEXTRAS, 'removeExtras');
@@ -196,9 +196,9 @@ function xaddresses_getFieldForm(&$field, $action = false)
         case "file":
         case "multiplefile":
         case "kmlmap":
-                $fieldlengthtext = new XoopsFormText(_XADDRESSES_AM_FIELD_LENGTH, 'field_length', 35, 35, $field->getVar('field_length', 'e'));
-                $fieldlengthtext->setDescription(_XADDRESSES_AM_FIELD_LENGTH_DESC);
-            $form->addElement($fieldlengthtext);
+                $fieldLengthText = new XoopsFormText(_XADDRESSES_AM_FIELD_LENGTH, 'field_length', 35, 35, $field->getVar('field_length', 'e'));
+                $fieldLengthText->setDescription(_XADDRESSES_AM_FIELD_LENGTH_DESC);
+            $form->addElement($fieldLengthText);
                 $fieldmaxlengthtext = new XoopsFormText(_XADDRESSES_AM_FIELD_MAXLENGTH, 'field_maxlength', 35, 35, $field->getVar('field_maxlength', 'e'));
                 $fieldmaxlengthtext->setDescription(_XADDRESSES_AM_FIELD_MAXLENGTH_DESC);
             $form->addElement($fieldmaxlengthtext);
@@ -209,26 +209,26 @@ function xaddresses_getFieldForm(&$field, $action = false)
         case "checkbox":
         case "select_multi":
                 $defValue = $field->getVar('field_default', 'e') != null ? unserialize($field->getVar('field_default', 'n')) : null;
-                $fielddefaultselect = new XoopsFormSelect(_XADDRESSES_AM_FIELD_DEFAULT, 'field_default', $defValue, 8, true);
+                $fieldDefaultSelect = new XoopsFormSelect(_XADDRESSES_AM_FIELD_DEFAULT, 'field_default', $defValue, 8, true);
                 $options = $field->getVar('field_options');
                 asort($options);
                 // If options do not include an empty element, then add a blank option to prevent any default selection
-                if (!in_array('', array_keys($options))) $fielddefaultselect->addOption('', _NONE);
-                $fielddefaultselect->addOptionArray($options);
-                $fielddefaultselect->setDescription(_XADDRESSES_AM_FIELD_DEFAULT_DESC);
-            $form->addElement($fielddefaultselect);
+                if (!in_array('', array_keys($options))) $fieldDefaultSelect->addOption('', _NONE);
+                $fieldDefaultSelect->addOptionArray($options);
+                $fieldDefaultSelect->setDescription(_XADDRESSES_AM_FIELD_DEFAULT_DESC);
+            $form->addElement($fieldDefaultSelect);
             break;
         case "select":
         case "radio":
                 $defValue = $field->getVar('field_default', 'e') != null ? $field->getVar('field_default') : null;
-                $fielddefaultselect = new XoopsFormSelect(_XADDRESSES_AM_FIELD_DEFAULT, 'field_default', $defValue);
+                $fieldDefaultSelect = new XoopsFormSelect(_XADDRESSES_AM_FIELD_DEFAULT, 'field_default', $defValue);
                 $options = $field->getVar('field_options');
                 asort($options);
                 // If options do not include an empty element, then add a blank option to prevent any default selection
-                if (!in_array('', array_keys($options))) $fielddefaultselect->addOption('', _NONE);
-                $fielddefaultselect->addOptionArray($options);
-                $fielddefaultselect->setDescription(_XADDRESSES_AM_FIELD_DEFAULT_DESC);
-            $form->addElement($fielddefaultselect);
+                if (!in_array('', array_keys($options))) $fieldDefaultSelect->addOption('', _NONE);
+                $fieldDefaultSelect->addOptionArray($options);
+                $fieldDefaultSelect->setDescription(_XADDRESSES_AM_FIELD_DEFAULT_DESC);
+            $form->addElement($fieldDefaultSelect);
             break;
         case "date":
             $form->addElement(new XoopsFormTextDateSelect(_XADDRESSES_AM_FIELD_DEFAULT, 'field_default', 15, $field->getVar('field_default', 'e')));
@@ -264,9 +264,9 @@ function xaddresses_getFieldForm(&$field, $action = false)
     }
     // field_required
     if ($field->getVar('field_edit') || $field->isNew()) {
-            $fieldrequiredradio = new XoopsFormRadioYN(_XADDRESSES_AM_FIELD_REQUIRED, 'field_required', $field->getVar('field_required', 'e'));
-            $fieldrequiredradio->setDescription(_XADDRESSES_AM_FIELD_REQUIRED_DESC);
-        $form->addElement($fieldrequiredradio);
+            $fieldRequiredRadio = new XoopsFormRadioYN(_XADDRESSES_AM_FIELD_REQUIRED, 'field_required', $field->getVar('field_required', 'e'));
+            $fieldRequiredRadio->setDescription(_XADDRESSES_AM_FIELD_REQUIRED_DESC);
+        $form->addElement($fieldRequiredRadio);
     }
     // permissions: field_search
     $grouppermHandler =& xoops_gethandler('groupperm');
@@ -281,21 +281,35 @@ function xaddresses_getFieldForm(&$field, $action = false)
         'language');
     if (in_array($field->getVar('field_type'), $searchableTypes)) {
         $searchableGroups = $grouppermHandler->getGroupIds('field_search', $field->getVar('field_id'), $GLOBALS['xoopsModule']->getVar('mid'));
-            $fieldsearchableselectgroup = new XoopsFormSelectGroup(_XADDRESSES_AM_FIELD_SEARCHABLE, 'field_search', true, $searchableGroups, 5, true);
-            $fieldsearchableselectgroup->setDescription(_XADDRESSES_AM_FIELD_SEARCHABLE_DESC);
-        $form->addElement($fieldsearchableselectgroup);
+            $fieldSearchableSelectGroup = new XoopsFormSelectGroup(_XADDRESSES_AM_FIELD_SEARCHABLE, 'field_search', true, $searchableGroups, 5, true);
+            $fieldSearchableSelectGroup->setDescription(_XADDRESSES_AM_FIELD_SEARCHABLE_DESC);
+        $form->addElement($fieldSearchableSelectGroup);
     }
+
     // permissions: field_edit
     if ($field->getVar('field_edit') || $field->isNew()) {
         if (!$field->isNew()) {
             //Load groups
+            $viewableGroups = $grouppermHandler->getGroupIds('field_view', $field->getVar('field_id'), $GLOBALS['xoopsModule']->getVar('mid'));
             $editableGroups = $grouppermHandler->getGroupIds('field_edit', $field->getVar('field_id'), $GLOBALS['xoopsModule']->getVar('mid'));
+            $exportableGroups = $grouppermHandler->getGroupIds('field_export', $field->getVar('field_id'), $GLOBALS['xoopsModule']->getVar('mid'));
         } else {
+            $viewableGroups = array();
             $editableGroups = array();
+            $exportableGroups = array();
         }
-        $fieldeditableselectgroup = new XoopsFormSelectGroup(_XADDRESSES_AM_FIELD_EDITABLE, 'field_edit', false, $editableGroups, 5, true);
-            $fieldeditableselectgroup->setDescription(_XADDRESSES_AM_FIELD_EDITABLE_DESC);
-        $form->addElement($fieldeditableselectgroup);
+        $fieldViewableSelectGroup = new XoopsFormSelectGroup(_XADDRESSES_AM_FIELD_VIEWABLE, 'field_view', false, $viewableGroups, 5, true);
+            $fieldViewableSelectGroup->setDescription(_XADDRESSES_AM_FIELD_VIEWABLE_DESC);
+        $form->addElement($fieldViewableSelectGroup);
+
+        $fieldEditableSelectGroup = new XoopsFormSelectGroup(_XADDRESSES_AM_FIELD_EDITABLE, 'field_edit', false, $editableGroups, 5, true);
+            $fieldEditableSelectGroup->setDescription(_XADDRESSES_AM_FIELD_EDITABLE_DESC);
+        $form->addElement($fieldEditableSelectGroup);
+    
+        $fieldExportableSelectGroup = new XoopsFormSelectGroup(_XADDRESSES_AM_FIELD_EXPORTABLE, 'field_export', false, $editableGroups, 5, true);
+            $fieldExportableSelectGroup->setDescription(_XADDRESSES_AM_FIELD_EXPORTABLE_DESC);
+        $form->addElement($fieldExportableSelectGroup);
+
     }
 
     $form->addElement(new XoopsFormHidden('op', 'save_field') );

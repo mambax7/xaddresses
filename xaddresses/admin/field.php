@@ -1,6 +1,6 @@
 <?php
-include 'admin_header.php';
 $currentFile = basename(__FILE__);
+include 'admin_header.php';
 $op = isset($_REQUEST['op']) ? $_REQUEST['op'] : (isset($_REQUEST['field_id']) ? 'edit_field' : 'list_fields');
 
 // load classes
@@ -340,10 +340,24 @@ case 'save_field':
         $url = $redirectToEdit ? $currentFile . '?op=edit_field&amp;field_id=' . $obj->getVar('field_id') : $currentFile;
         redirect_header($url, 3, sprintf(_XADDRESSES_AM_SAVEDSUCCESS, _XADDRESSES_AM_FIELD) );
     }
+
+    // render start here
+    xoops_cp_header();
+    // main admin menu
+    include (XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->dirname() . '/admin/menu.php');
+    echo moduleAdminTabMenu($adminmenu, $currentFile);
+    // submenu
+    $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
+    $submenuItem[] = ($op == 'new_field' ? _XADDRESSES_AM_FIELD_NEW : '<a href="' . $currentFile . '?op=new_field">' . _XADDRESSES_AM_FIELD_NEW . '</a>');
+    $submenuItem[] = ($op == 'list_fields' ? _XADDRESSES_AM_FIELD_LIST : '<a href="' . $currentFile . '?op=list_fields">' . _XADDRESSES_AM_FIELD_LIST . '</a>');
+    xaddressesAdminSubmenu ($submenuItem);
     include_once('../include/forms.php');
+
     echo $obj->getHtmlErrors();
+
     $form = xaddresses_getFieldForm($obj);
     $form->display();
+    xoops_cp_footer();
     break;
 
 

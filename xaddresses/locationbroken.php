@@ -1,32 +1,50 @@
 <?php
-include_once 'header.php';
-// template d'affichage
-$xoopsOption['template_main'] = 'xaddresses_locationbroken.html';
-include_once XOOPS_ROOT_PATH.'/header.php';
-//On recupere la valeur de l'argument op dans l'URL$
-if (isset($_REQUEST['op'])) {
-	$op = $_REQUEST['op'];
-} else {
-	$op = 'liste';
-}
-//appel des class
-$addressescat_Handler =& xoops_getModuleHandler('xaddresses_cat', 'xaddresses');
-$addresses_Handler =& xoops_getModuleHandler('xaddresses_addresses', 'xaddresses');
-$addressesvotedata_Handler =& xoops_getModuleHandler('xaddresses_votedata', 'xaddresses');
-$addressesbroken_Handler =& xoops_getModuleHandler('xaddresses_broken', 'xaddresses');
+$currentFile = basename(__FILE__);
 
-// redirection si le téléchargement n'existe pas
+include_once 'header.php';
+include_once XOOPS_ROOT_PATH . '/header.php';
+
+$op = isset($_REQUEST['op']) ? $_REQUEST['op'] : 'new_broken';
+
+if (isset($_REQUEST['loc_id'])) {
+	$loc_id = (int)($_REQUEST['loc_id']);
+} else {
+	redirect_header('index.php', 3, _MD_XADDRESSES_SINGLEFILE_NONEXISTENT);
+}
+
+$xoopsOption['template_main'] = 'xaddresses_locationbroken.html';
+
+//load classes
+$categoryHandler =& xoops_getModuleHandler('locationcategory', 'xaddresses');
+$locationHandler =& xoops_getModuleHandler('location', 'xaddresses');
+$fieldCategoryHandler =& xoops_getmodulehandler('fieldcategory', 'xaddresses');
+$fieldHandler =& xoops_getModuleHandler('field', 'xaddresses');
+$memberHandler =& xoops_gethandler('member');
+
+$brokenHandler =& xoops_getModuleHandler('broken', 'xaddresses');
+// IN PROGRESS
+// TO DO
+//$votedataHandler =& xoops_getModuleHandler('votedata', 'xaddresses');
+
+// redirection if location not exists
 $criteria = new CriteriaCompo();
-$criteria->add(new Criteria('loc_id', intval($_REQUEST['loc_id'])));
-if ($addresses_Handler->getCount($criteria) == 0){
+$criteria->add(new Criteria('loc_id', $loc_id));
+if ($locationHandler->getCount($criteria) == 0){
     redirect_header('index.php', 3, _MD_XADDRESSES_SINGLEFILE_NONEXISTENT);
 	exit();
 }
 
-//Les valeurs de op qui vont permettre d'aller dans les differentes parties de la page
-switch ($op) 
-{
-	// Vue liste
+
+
+switch ($op) {
+    default:
+    case "new_broken":
+        $newReport =& $brokenHandler->create();
+        $form = $newReport->getForm($loc_id);
+        $xoopsTpl->assign('themeForm', $form->render()); 
+        echo "è sbagliata" . $loc_id;
+    break;
+/*
     case "liste":
         //navigation
         $view_downloads = $addresses_Handler->get(intval($_REQUEST['loc_id']));
@@ -66,61 +84,62 @@ switch ($op)
         $xoTheme->addMeta( 'meta', 'description', strip_tags(_MD_XADDRESSES_SINGLEFILE_REPORTBROKEN . ' (' . $view_downloads->getVar('title') . ')'));
         
         //Affichage du formulaire de fichier brisé
-    	$obj =& $addressesbroken_Handler->create();
-    	$form = $obj->getForm(intval($_REQUEST['loc_id']));
+        $obj =& $addressesbroken_Handler->create();
+            $form = $obj->getForm(intval($_REQUEST['loc_id']));
         $xoopsTpl->assign('themeForm', $form->render());    
     break;
+*/
     // save
-    case "save":
-        $obj =& $addressesbroken_Handler->create();
+    case "save_broken":
+        $newReport =& $brokenHandler->create();
         if(empty($xoopsUser)){
-			$ratinguser = 0;
-		}else{
-			$ratinguser = $xoopsUser->getVar('uid');
-		}
-		if ($ratinguser != 0) {   
+            $reportingUserId = 0;
+			// si c'est un utilisateur anonyme on vérifie qu'il n'envoie pas 2 fois un rapport
+            $criteria = new CriteriaCompo();
+            $criteria->add(new Criteria('loc_id', $loc_id));
+            $criteria->add(new Criteria('report_sender', 0));
+            $criteria->add(new Criteria('report_ip', getenv("REMOTE_ADDR")));
+			if ($brokenHandler->getCount($criteria) >= 1) {
+                redirect_header('locationview.php?loc_id=' . $loc_id, 2, _MD_XADDRESSES_LOC_BROKEN_ALREADYREPORTED);
+                exit();
+            }
+        } else {
+            $reportingUserId = $xoopsUser->getVar('uid');
             // si c'est un membre on vérifie qu'il n'envoie pas 2 fois un rapport
             $criteria = new CriteriaCompo();
-            $criteria->add(new Criteria('loc_id', intval($_REQUEST['loc_id'])));
-            $downloadsbroken_arr = $addressesbroken_Handler->getall($criteria);
-            foreach (array_keys($downloadsbroken_arr) as $i) {
-				if ($downloadsbroken_arr[$i]->getVar('sender') == $ratinguser) {
-					redirect_header('singlefile.php?loc_id=' . intval($_REQUEST['loc_id']), 2, _MD_XADDRESSES_BROKENFILE_ALREADYREPORTED);
+            $criteria->add(new Criteria('loc_id', $loc_id));
+            $brokenReports = $brokenHandler->getall($criteria);
+            foreach ($brokenReports as $brokenReport) {
+				if ($brokenReport->getVar('report_sender') == $reportingUserId) {
+					redirect_header('locationview.php?loc_id=' . $loc_id, 2, _MD_XADDRESSES_LOC_BROKEN_ALREADYREPORTED);
 					exit();
 				}
             }
-		} else {
-			// si c'est un utilisateur anonyme on vérifie qu'il n'envoie pas 2 fois un rapport
-            $criteria = new CriteriaCompo();
-            $criteria->add(new Criteria('loc_id', intval($_REQUEST['loc_id'])));
-            $criteria->add(new Criteria('sender', 0));
-            $criteria->add(new Criteria('ip', getenv("REMOTE_ADDR")));
-			if ($addressesbroken_Handler->getCount($criteria) >= 1) {
-				redirect_header('singlefile.php?loc_id=' . intval($_REQUEST['loc_id']), 2, _MD_XADDRESSES_BROKENFILE_ALREADYREPORTED);
-				exit();
-			}
-		}
-        $erreur = false;
-        $message_erreur = '';
+        }
+
+        $error = false;
+        $error_message = '';
         // Test avant la validation
         xoops_load("captcha");
         $xoopsCaptcha = XoopsCaptcha::getInstance();
         if ( !$xoopsCaptcha->verify() ) {
-            $message_erreur.=$xoopsCaptcha->getMessage().'<br />';
-            $erreur=true;
+            $error_message.= $xoopsCaptcha->getMessage().'<br />';
+            $error = true;
         }
-        $obj->setVar('loc_id', intval($_REQUEST['loc_id']));
-        $obj->setVar('sender', $ratinguser);
-        $obj->setVar('ip', getenv("REMOTE_ADDR"));
-        if ($erreur==true){
-            $xoopsTpl->assign('message_erreur', $message_erreur);
-        }else{
-            if ($addressesbroken_Handler->insert($obj)) {
+        $newReport->setVar('loc_id', $loc_id);
+        $newReport->setVar('report_sender', $reportingUserId);
+        $newReport->setVar('report_ip', getenv("REMOTE_ADDR"));
+        $newReport->setVar('report_date', time()); // creation date
+        $newReport->setVar('report_description', $_POST['report_description']);
+        if ($error == true) {
+            $xoopsTpl->assign('error_message', $error_message);
+        } else {
+            if ($brokenHandler->insert($newReport)) {
                 $tags = array();
                 $tags['BROKENREPORTS_URL'] = XOOPS_URL . '/modules/' . $xoopsModule->getVar('dirname') . '/admin/broken.php';
                 $notification_handler =& xoops_gethandler('notification');
                 $notification_handler->triggerEvent('global', 0, 'file_broken', $tags);
-                redirect_header('singlefile.php?loc_id=' . intval($_REQUEST['loc_id']), 2, _MD_XADDRESSES_BROKENFILE_THANKSFORINFO);
+                redirect_header('locationview.php?loc_id=' . $loc_id, 2, _MD_XADDRESSES_LOC_BROKEN_THANKSFORINFO);
             }
             echo $obj->getHtmlErrors();
         }
@@ -130,5 +149,6 @@ switch ($op)
         
     break;    
 }
+
 include XOOPS_ROOT_PATH.'/footer.php';
 ?>
