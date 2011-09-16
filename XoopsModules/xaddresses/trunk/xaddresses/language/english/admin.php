@@ -90,11 +90,24 @@ define("_XADDRESSES_AM_LOC_SUBMITTER","Submitter");
 define("_XADDRESSES_AM_LOC_STATUS","Status");
 define("_XADDRESSES_AM_LOC_STATUS_OK","OK");
 define("_XADDRESSES_AM_LOC_STATUS_NOT_OK","NOT OK");
+define("_XADDRESSES_AM_LOC_STATUS_VALIDATED","Validated");
+define("_XADDRESSES_AM_LOC_STATUS_NOT_VALIDATED","Not Validated");
+define("_XADDRESSES_AM_LOC_STATUS_BROKEN","Reported as wrong");
+define("_XADDRESSES_AM_LOC_STATUS_MODIFIED","Proposed correction");
 define("_XADDRESSES_AM_LOC_HITS","Hits");
 define("_XADDRESSES_AM_LOC_RATING","Rating");
 define("_XADDRESSES_AM_DISPLAY","Display");
 define("_XADDRESSES_AM_LOC_UNLOCK","Activate");
 define("_XADDRESSES_AM_LOC_LOCK","Dectivate");
+
+//locationbroken.php
+//class/broken.php
+define("_XADDRESSES_AM_LOC_BROKEN_NEW","Repport Broken Location");
+define("_XADDRESSES_AM_LOC_BROKEN_EDIT","Edit Broken Location");
+define("_XADDRESSES_AM_LOC_BROKEN_DESCRIPTION","Description");
+define("_XADDRESSES_AM_LOC_BROKEN_SENDER","Repport Author");
+define("_XADDRESSES_AM_LOC_BROKEN_SURDEL","Are you sure you want to delete this repport?");
+
 
 //admin/itemcategory.php
 //class/locationcategory.php
@@ -190,10 +203,14 @@ define("_XADDRESSES_AM_FIELD_DEFAULT_DESC", "// IN PROGRESS");
 define("_XADDRESSES_AM_FIELD_REQUIRED", "Required?");
 define("_XADDRESSES_AM_FIELD_REQUIRED_DESC", "// IN PROGRESS");
 
+define("_XADDRESSES_AM_FIELD_VIEWABLE", "Vieawble by");
+define("_XADDRESSES_AM_FIELD_VIEWABLE_DESC", "// IN PROGRESS");
+define("_XADDRESSES_AM_FIELD_EDITABLE", "Editable by");
+define("_XADDRESSES_AM_FIELD_EDITABLE_DESC", "// IN PROGRESS");
 define("_XADDRESSES_AM_FIELD_SEARCHABLE", "Searchable by");
 define("_XADDRESSES_AM_FIELD_SEARCHABLE_DESC", "// IN PROGRESS");
-define("_XADDRESSES_AM_FIELD_EDITABLE", "Editable by?");
-define("_XADDRESSES_AM_FIELD_EDITABLE_DESC", "// IN PROGRESS");
+define("_XADDRESSES_AM_FIELD_EXPORTABLE", "Exportable by");
+define("_XADDRESSES_AM_FIELD_EXPORTABLE_DESC", "// IN PROGRESS");
 
 
 //admin/field.php
@@ -217,6 +234,10 @@ define("_XADDRESSES_AM_FIELDCAT_WEIGHT_DESC","// IN PROGRESS");
 
 
 // admin/permissions.php
+define("_XADDRESSES_AM_PERM_ITEM_PERMISSIONS", "Addresses Permissions");
+define("_XADDRESSES_AM_PERM_FIELD_PERMISSIONS", "Fields Permissions");
+define("_XADDRESSES_AM_PERM_EXTRA_PERMISSIONS", "Extra Permissions");
+
 define("_XADDRESSES_AM_PERM_NOCAT", "Permission cannot be set: There are no Categories created yet! Please create a Category first.");
 define("_XADDRESSES_AM_PERM_NOCAT_DESC", "");
 define("_XADDRESSES_AM_PERM_VIEW", "View Permission");
@@ -234,6 +255,8 @@ define("_XADDRESSES_AM_PERM_EDITFIELD", "Edit Fields Permission");
 define("_XADDRESSES_AM_PERM_EDITFIELD_DSC", "Choose fields than groups can edit");
 define("_XADDRESSES_AM_PERM_SEARCHFIELD", "Search in Fields Permission");
 define("_XADDRESSES_AM_PERM_SEARCHFIELD_DSC", "Choose fields than groups can search");
+define("_XADDRESSES_AM_PERM_EXPORTFIELD", "Export Fields Permission");
+define("_XADDRESSES_AM_PERM_EXPORTFIELD_DSC", "Choose fields than groups can export");
 
 define("_XADDRESSES_AM_PERM_OTHERS", "Other permissions");
 define("_XADDRESSES_AM_PERM_OTHERS_DSC", "Select groups that can:");
@@ -273,9 +296,7 @@ define("_XADDRESSES_AM_ADDRESSES_VOTE_USER","Users");
 define("_XADDRESSES_AM_ADDRESSES_VOTE_IP","IP Address");
 
 
-//broken.php
-define("_XADDRESSES_AM_BROKEN_SENDER","Repport Author");
-define("_XADDRESSES_AM_BROKEN_SURDEL","Are you sure you want to delete this repport?");
+
 
 //modified.php
 define("_XADDRESSES_AM_MODIFIED_MOD","Submited by;");

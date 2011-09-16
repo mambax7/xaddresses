@@ -32,7 +32,7 @@ class XaddressesBroken extends XoopsObject
         if ($action === false) {
             $action = $_SERVER['REQUEST_URI'];
         }
-        $title = $this->isNew() ? _XADDRESSES_AM_BROKEN_NEW : _XADDRESSES_AM_BROKEN_EDIT;
+        $title = $this->isNew() ? _XADDRESSES_AM_LOC_BROKEN_NEW : _XADDRESSES_AM_LOC_BROKEN_EDIT;
 
         include_once $GLOBALS['xoops']->path('class/xoopsformloader.php');
 
@@ -48,12 +48,12 @@ class XaddressesBroken extends XoopsObject
         $editor_configs['width'] = '100%';
         $editor_configs['height'] = '400px';
         $editor_configs['editor'] = $xoopsModuleConfig['editor'];
-        $form->addElement( new XoopsFormEditor(_XADDRESSES_AM_BROKEN_DESCRIPTION, 'report_description', $editor_configs), false);
+        $form->addElement( new XoopsFormEditor(_XADDRESSES_AM_LOC_BROKEN_DESCRIPTION, 'report_description', $editor_configs), false);
 
         $form->addElement(new XoopsFormCaptcha(), true);        
 
         $form->addElement(new XoopsFormHidden('loc_id', $loc_id));
-        $form->addElement(new XoopsFormHidden('op', 'save'));
+        $form->addElement(new XoopsFormHidden('op', 'save_broken'));
 
         // Submit button		
             $button_tray = new XoopsFormElementTray(_XADDRESSES_AM_ACTION, '' ,'');
@@ -79,7 +79,7 @@ class XaddressesBrokenHandler extends XoopsPersistableObjectHandler
 
     function __construct(&$db)
     {
-        parent::__construct($db, "xaddresses_broken", "xaddressesbroken", "report_id", 'cat_id');
+        parent::__construct($db, "xaddresses_broken", "xaddressesbroken", "report_id");
     }
 }
 ?>

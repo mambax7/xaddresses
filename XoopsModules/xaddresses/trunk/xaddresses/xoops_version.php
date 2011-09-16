@@ -20,16 +20,16 @@ $modversion['release_file'] = 'RC';
 $modversion['manual'] = 'Help';
 $modversion['manual_file'] = 'help.html';
 $modversion['dirname'] = $dirname;
-//extra informations
-$modversion["release"] = "14-02-2011";
+// Extra informations
+$modversion["release"] = "16-09-2011";
 $modversion["module_status"] = "Stable";
 $modversion['support_site_url']	= "http://www.xoops.org";
 $modversion['support_site_name'] = "www.xoops.org";
 
-//about
+// About
 $modversion['status_version'] = 'RC';
-$modversion['release_date'] = '2011/07/26';
-$modversion['release'] = strtotime('2011/07/26'); // 'YYYY/MM/DD' format
+$modversion['release_date'] = '2011/09/16';
+$modversion['release'] = strtotime('2011/09/16'); // 'YYYY/MM/DD' format
 $modversion['demo_site_url'] = 'IN PROGRESS';
 $modversion['demo_site_name'] = 'IN PROGRESS';
 $modversion['forum_site_url'] = 'IN PROGRESS';
@@ -39,8 +39,8 @@ $modversion['module_website_name'] = 'IN PROGRESS';
 $modversion['module_status'] = 'In progress';
 $modversion["author_website_url"] = 'http://luciorota.altervista.org/xoops/';
 $modversion["author_website_name"] = 'luciorota.altervista.org/xoops';
-$modversion['min_php']=5.2;
-$modversion['min_xoops']= 'XOOPS 2.4.5';
+$modversion['min_php'] = 5.2;
+$modversion['min_xoops'] = 'XOOPS 2.4.5';
 
 // Admin things
 $modversion['hasAdmin'] = 1;
@@ -53,8 +53,6 @@ $modversion['onInstall'] = 'include/install_function.php';
 //$modversion['onUpdate'] = 'include/update_function.php';
 $modversion['onUninstall'] = 'include/uninstall_function.php';
 
-
-
 // Mysql file
 $modversion['sqlfile']['mysql'] = "sql/mysql.sql";
 
@@ -65,17 +63,33 @@ $modversion['tables'][1] = "xaddresses_location";
 $modversion['tables'][2] = "xaddresses_fieldcategory";
 $modversion['tables'][3] = "xaddresses_field";
 $modversion['tables'][4] = "xaddresses_visibility";
-
 // IN PROGRESS
 $modversion['tables'][5] = "xaddresses_broken";
-
 // TO DO
 $modversion['tables'][6] = "xaddresses_mod";
 $modversion['tables'][7] = "xaddresses_votedata";
 $modversion['tables'][8] = "xaddresses_modfielddata";
 $modversion['tables'][9] = "xaddresses_marker";
 
-
+// Menu
+$modversion['hasMain'] = 1;
+if (is_object($GLOBALS['xoopsModule']) && $GLOBALS['xoopsModule']->getVar('dirname') == $modversion['dirname']) {
+    $isAdmin = false;
+    if (!empty($GLOBALS['xoopsUser'])) {
+        //$modversion['sub'][0]['name'] = _XADDRESSES_MI_TODO;
+        //$modversion['sub'][0]['url'] = "public-useralbum.php?id=".$GLOBALS['xoopsUser']->uid();
+        // Check if xoopsUser is a module administrator
+        $isAdmin = ($GLOBALS['xoopsUser']->isAdmin($GLOBALS['xoopsModule']->getVar('mid')));
+    }
+    // Add the Submit new item button
+    if ($isAdmin || (isset($GLOBALS['xoopsModuleConfig']['allowsubmit']) &&
+        $GLOBALS['xoopsModuleConfig']['allowsubmit'] == 1 &&
+            (is_object($GLOBALS['xoopsUser']) ||
+            (isset($GLOBALS['xoopsModuleConfig']['anonpost']) && $GLOBALS['xoopsModuleConfig']['anonpost'] == 1)))) {
+        $modversion['sub'][1]['name'] = _XADDRESSES_MI_SUBMIT;
+        $modversion['sub'][1]['url'] = "locationedit.php?op=new_location";
+    }
+}
 
 // Pour les blocs
 $modversion['blocks'][1]['file'] = "xaddresses_top.php";
@@ -110,13 +124,6 @@ $modversion['blocks'][4]['edit_func'] = "b_xaddresses_top_edit";
 $modversion['blocks'][4]['options'] = "random|10|19|0";
 $modversion['blocks'][4]['template'] = 'xaddresses_block_random.html';
 
-// Menu
-$modversion['hasMain'] = 1;
-$modversion['sub'][1]['name'] = _XADDRESSES_MI_SMNAME1;
-$modversion['sub'][1]['url'] = "submit.php";
-$modversion['sub'][2]['name'] = _XADDRESSES_MI_SMNAME2;
-$modversion['sub'][2]['url'] = "search.php";
-
 // Search
 $modversion['hasSearch'] = 1;
 $modversion['search']['file'] = "include/search.inc.php";
@@ -136,19 +143,10 @@ $modversion['comments']['callback']['update'] = 'xaddresses_com_update';
 // Templates
 $i = 0;
 $i++;
-$modversion['templates'][$i]['file'] = 'xaddresses_locationbroken.html';
-$modversion['templates'][$i]['description'] = '';
-$i++;
-$modversion['templates'][$i]['file'] = 'xaddresses_location.html';
-$modversion['templates'][$i]['description'] = '';
-$i++;
 $modversion['templates'][$i]['file'] = 'xaddresses_index.html';
 $modversion['templates'][$i]['description'] = '';
 $i++;
-$modversion['templates'][$i]['file'] = 'xaddresses_locationmod.html';
-$modversion['templates'][$i]['description'] = '';
-$i++;
-$modversion['templates'][$i]['file'] = 'xaddresses_locationrate.html';
+$modversion['templates'][$i]['file'] = 'xaddresses_locationcategoryview.html';
 $modversion['templates'][$i]['description'] = '';
 $i++;
 $modversion['templates'][$i]['file'] = 'xaddresses_locationview.html';
@@ -157,7 +155,16 @@ $i++;
 $modversion['templates'][$i]['file'] = 'xaddresses_locationsubmit.html';
 $modversion['templates'][$i]['description'] = '';
 $i++;
-$modversion['templates'][$i]['file'] = 'xaddresses_categoryview.html';
+$modversion['templates'][$i]['file'] = 'xaddresses_locationbroken.html';
+$modversion['templates'][$i]['description'] = '';
+$i++;
+$modversion['templates'][$i]['file'] = 'xaddresses_location.html';
+$modversion['templates'][$i]['description'] = '';
+$i++;
+$modversion['templates'][$i]['file'] = 'xaddresses_locationmod.html';
+$modversion['templates'][$i]['description'] = '';
+$i++;
+$modversion['templates'][$i]['file'] = 'xaddresses_locationrate.html';
 $modversion['templates'][$i]['description'] = '';
 $i++;
 $modversion['templates'][$i]['file'] = 'xaddresses_list.html';

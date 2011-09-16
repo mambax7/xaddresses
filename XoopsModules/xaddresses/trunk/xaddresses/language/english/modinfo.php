@@ -16,8 +16,8 @@ define("_XADDRESSES_MI_BNAME4","Random Addresses");
 define("_XADDRESSES_MI_BNAMEDSC4","Display viwed addresses randomly");
 
 // Sub menu
-define("_XADDRESSES_MI_SMNAME1","Suggest");
-define("_XADDRESSES_MI_SMNAME2","Files List");
+define("_XADDRESSES_MI_SUBMIT", "Submit Location");
+define("_XADDRESSES_MI_SMNAME2", "Files List");
 
 // Menu administration
 define("_XADDRESSES_MI_ADMENU_INDEX", "Index");

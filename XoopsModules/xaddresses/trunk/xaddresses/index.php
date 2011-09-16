@@ -1,14 +1,60 @@
 <?php
+$currentFile = basename(__FILE__);
+// include module header
 include_once 'header.php';
-// template d'affichage
-$xoopsOption['template_main'] = 'xaddresses_index.html';
-include_once XOOPS_ROOT_PATH.'/header.php';
 
-//load classes
+// load classes
 $categoryHandler =& xoops_getModuleHandler('locationcategory', 'xaddresses');
 $locationHandler =& xoops_getModuleHandler('location', 'xaddresses');
-//$downloadsvotedata_Handler =& xoops_getModuleHandler('Xaddresses_votedata', 'xaddresses');
+//$locations_votedata_handler =& xoops_getModuleHandler('votedata', 'xaddresses');
+//$locations_field_handler =& xoops_getModuleHandler('field', 'xaddresses');
+//$locations_fielddata_handler =& xoops_getModuleHandler('fielddata', 'xaddresses');
+//$locations_broken_handler =& xoops_getModuleHandler('broken', 'xaddresses');
+//load classes
+//$memberHandler =& xoops_gethandler('member');
+// IN PROGRESS
+//$brokenHandler =& xoops_getModuleHandler('broken', 'xaddresses');
+// TO DO
+//$votedataHandler =& xoops_getModuleHandler('votedata', 'xaddresses');
 
+
+
+
+
+$criteria = new CriteriaCompo();
+$criteria->add(new Criteria('cat_pid', 0));
+$criteria->setSort('cat_weight ASC, cat_title');
+$criteria->setOrder('ASC');
+$mainCategories = $categoryHandler->getAll($criteria);
+
+$prefix = '';
+$sufix = '';
+$order = 'cat_weight ASC, cat_title';
+
+// get all categories sorted by tree structure
+$categoriesList = array();
+foreach ($mainCategories as $mainCategory) {
+    $categoriesList[] = array('prefix' => $prefix, 'sufix' => $sufix, 'category' => $mainCategory);
+    $criteria = new CriteriaCompo();
+    $criteria->add(new Criteria('cat_pid', $mainCategory->getVar('cat_id')));
+    $criteria->setSort('cat_weight ASC, cat_title');
+    $criteria->setOrder('ASC');
+    $subCategories = $categoryHandler->getall($criteria);
+    if (count($subCategories) != 0) {
+        $categoriesList = array_merge ($categoriesList, getChildrenTree($mainCategory->getVar('cat_id'), $subCategories, $prefix, $sufix, $order));
+    }
+}
+
+// render start here
+// Load template
+$xoopsOption['template_main'] = 'xaddresses_index.html';
+include_once XOOPS_ROOT_PATH . '/header.php';
+
+$GLOBALS['xoopsTpl']->assign('categoriesList', $categoriesList);
+
+
+
+/*
 // pour les permissions
 $categories = xaddresses_MygetItemIds();
 //affichage des catégories:
@@ -32,15 +78,15 @@ foreach (array_keys($downloadscat_arr) as $i) {
     $totaldownloads = nombreEntree($downloadscat_arr[$i]->getVar('cid'), '1');
     $subcategories_arr = $mytree->getFirstChild($downloadscat_arr[$i]->getVar('cid'));
     $chcount = 0;
-    $subcategories = '';
+    $subcategories = '';    
     //pour les mots clef
     $keywords .= $downloadscat_arr[$i]->getVar('title') . ',';
     foreach (array_keys($subcategories_arr) as $j) {
             if ($chcount>=$xoopsModuleConfig['nbsouscat']){				
-                $subcategories .= '<li>[<a href="' . XOOPS_URL . '/modules/xaddresses/viewcat.php?cid=' . $downloadscat_arr[$i]->getVar('cid') . '">+</a>]</li>';
+                $subcategories .= '<li>[<a href='' . XOOPS_URL . '/modules/xaddresses/viewcat.php?cid=' . $downloadscat_arr[$i]->getVar('cid') . ''>+</a>]</li>';
                 break;
             }
-            $subcategories .= '<li><a href="' . XOOPS_URL . '/modules/xaddresses/viewcat.php?cid=' . $subcategories_arr[$j]->getVar('cid') . '">' . $subcategories_arr[$j]->getVar('title') . '</a></li>';
+            $subcategories .= '<li><a href='' . XOOPS_URL . '/modules/xaddresses/viewcat.php?cid=' . $subcategories_arr[$j]->getVar('cid') . ''>' . $subcategories_arr[$j]->getVar('title') . '</a></li>';
             $keywords .= $downloadscat_arr[$i]->getVar('title') . ',';
             $chcount++;
     }
@@ -61,9 +107,9 @@ if($xoopsModuleConfig['bldate']==1){
     foreach (array_keys($downloads_arr) as $i) {
         $title = $downloads_arr[$i]->getVar('title');
         if (strlen($title) >= $xoopsModuleConfig['longbl']) {
-            $title = substr($title,0,($xoopsModuleConfig['longbl']))."...";
+            $title = substr($title,0,($xoopsModuleConfig['longbl'])).'...';
         }
-        $date = formatTimestamp($downloads_arr[$i]->getVar('date'),"s");
+        $date = formatTimestamp($downloads_arr[$i]->getVar('date'),'s');
         $xoopsTpl->append('bl_date', array('id' => $downloads_arr[$i]->getVar('loc_id'),'cid' => $downloads_arr[$i]->getVar('cid'),'date' => $date,'title' => $title));
     }
 }
@@ -79,7 +125,7 @@ if($xoopsModuleConfig['blpop']==1){
     foreach (array_keys($downloads_arr) as $i) {
         $title = $downloads_arr[$i]->getVar('title');
         if (strlen($title) >= $xoopsModuleConfig['longbl']) {
-            $title = substr($title,0,($xoopsModuleConfig['longbl']))."...";
+            $title = substr($title,0,($xoopsModuleConfig['longbl'])).'...';
         }
         $xoopsTpl->append('bl_pop', array('id' => $downloads_arr[$i]->getVar('loc_id'),'cid' => $downloads_arr[$i]->getVar('cid'),'hits' => $downloads_arr[$i]->getVar('hits'),'title' => $title));
     }
@@ -96,7 +142,7 @@ if($xoopsModuleConfig['blrating']==1){
     foreach (array_keys($downloads_arr) as $i) {
         $title = $downloads_arr[$i]->getVar('title');
         if (strlen($title) >= $xoopsModuleConfig['longbl']) {
-            $title = substr($title,0,($xoopsModuleConfig['longbl']))."...";
+            $title = substr($title,0,($xoopsModuleConfig['longbl'])).'...';
         }
         $rating = number_format($downloads_arr[$i]->getVar('rating'),1);
         $xoopsTpl->append('bl_rating', array('id' => $downloads_arr[$i]->getVar('loc_id'),'cid' => $downloads_arr[$i]->getVar('cid'),'rating' => $rating,'title' => $title));
@@ -169,13 +215,13 @@ foreach (array_keys($downloads_arr) as $i) {
     } else {
         $description_short = substr($description,0,strpos($description,'[pagebreak]'));
     }
-    // pour les vignettes "new" et "mis à jour"
+    // pour les vignettes 'new' et 'mis à jour'
     $new = nouveau_image($downloads_arr[$i]->getVar('date'), $downloads_arr[$i]->getVar('status'));
     $pop = populaire_image($downloads_arr[$i]->getVar('hits'));
     
     // Défini si la personne est un admin
     if (is_object($xoopsUser) && $xoopsUser->isAdmin($xoopsModule->mid())) {
-        $adminlink = '<a href="' . XOOPS_URL . '/modules/TDMDownloads/admin/addresses.php?op=view_downloads&amp;downloads_loc_id=' . $loc_id . '" title="' . _MD_XADDRESSES_EDITTHISDL . '"><img src="' . XOOPS_URL . '/modules/TDMDownloads/images/editicon.png" width="16px" height="16px" border="0" alt="' . _MD_XADDRESSES_EDITTHISDL . '" /></a>';
+        $adminlink = '<a href='' . XOOPS_URL . '/modules/TDMDownloads/admin/addresses.php?op=view_downloads&amp;downloads_loc_id=' . $loc_id . '' title='' . _MD_XADDRESSES_EDITTHISDL . ''><img src='' . XOOPS_URL . '/modules/TDMDownloads/images/editicon.png' width='16px' height='16px' border='0' alt='' . _MD_XADDRESSES_EDITTHISDL . '' /></a>';
     } else {
         $adminlink = '';
     }    
@@ -190,6 +236,6 @@ $xoTheme->addMeta('meta', 'description', strip_tags($xoopsModule->name()));
 //keywords
 $keywords = substr($keywords,0,-1);
 $xoTheme->addMeta('meta', 'keywords', $keywords);
-
+*/
 include XOOPS_ROOT_PATH.'/footer.php';
 ?>

@@ -1,6 +1,6 @@
 <?php
-include 'admin_header.php';
 $currentFile = basename(__FILE__);
+include 'admin_header.php';
 $versionInfo =& $module_handler->get($xoopsModule->getVar('mid'));
 
 // load classes

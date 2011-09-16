@@ -1,6 +1,6 @@
 <?php
-include_once 'admin_header.php';
 $currentFile = basename(__FILE__);
+include_once 'admin_header.php';
 
 xoops_cp_header();
 

@@ -1,10 +1,10 @@
 <?php
-include_once 'admin_header.php';
 $currentFile = basename(__FILE__);
+include_once 'admin_header.php';
 
 $op = isset($_REQUEST['op']) ? $_REQUEST['op'] : 'list_locations';
 
-//load classes
+// load classes
 $categoryHandler =& xoops_getModuleHandler('locationcategory', 'xaddresses');
 $locationHandler =& xoops_getModuleHandler('location', 'xaddresses');
 $fieldHandler =& xoops_getModuleHandler('field', 'xaddresses');
@@ -27,26 +27,28 @@ $countLocations = $locationHandler->getCount($criteria);
 // count waiting/not valid locations
 $criteria = new CriteriaCompo();
 $criteria->add(new Criteria('loc_status', 0));
-$waitingLocations = $locationHandler->getCount($criteria);
+$countWaitingLocations = $locationHandler->getCount($criteria);
 
-// count broken locations
-// IN PROGRESS
-$criteria = new CriteriaCompo();
-$criteria->add(new Criteria('loc_status', 0));
-$brokenLocations = 1;
+// count wrong locations reports
+$brokenReports = $brokenHandler->getall();
+$countBrokenReports = $brokenHandler->getCount();
+$countBrokenReportsByLoc = array();
+foreach($brokenReports as $brokenReport) {
+    $countBrokenReportsByLoc[$brokenReport->getVar('loc_id')]++;
+}
+$countBrokenLocations = count($countBrokenReportsByLoc);
 
 // count modified locations
 // IN PROGRESS
 $criteria = new CriteriaCompo();
 $criteria->add(new Criteria('loc_status', 0));
-$modifiedLocations = 1;
+$countModifiedLocations = 1;
 
 
 
 switch ($op) {
 default:
 case 'list_locations':
-
     // render start here
     xoops_cp_header();
     // render main admin menu
@@ -55,10 +57,10 @@ case 'list_locations':
     // render submenu
     $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
     $submenuItem[] = ($op == 'new_location' ? _XADDRESSES_AM_LOC_NEW : '<a href="' . $currentFile . '?op=new_location">' . _XADDRESSES_AM_LOC_NEW . '</a>');
-    $submenuItem[] = ($op == 'list_locations' && $status_display == 1 ? _XADDRESSES_AM_LOC_LIST . ' (' . $countLocations . ')' : '<a href="' . $currentFile . '?op=list_locations">' . _XADDRESSES_AM_LOC_LIST . ' (' . $countLocations . ')' . '</a>');
-    $submenuItem[] = ($op == 'list_locations' && $status_display == 0 ? _XADDRESSES_AM_LOC_WAITING . ($waitingLocations == 0 ? ' (0)' : ' (<span style="color : Red">' . $waitingLocations . '</span>)') : '<a href="' . $currentFile . '?op=list_locations&status_display=0">' . _XADDRESSES_AM_LOC_WAITING . ($waitingLocations == 0 ? ' (0)' : ' (<span style="color : Red">' . $waitingLocations . '</span>)').'</a>');
-    $submenuItem[] = ($op == 'list_locations_broken' ? _XADDRESSES_AM_LOC_BROKEN . ($brokenLocations == 0 ? '(0)' : ' (<span style="color : Red">' . $brokenLocations . '</span>)') : '<a href="' . $currentFile . '?op=list_locations_broken">' . _XADDRESSES_AM_LOC_BROKEN . ($brokenLocations == 0 ? '' : ' (<span style="color : Red">' . $brokenLocations . '</span>)').'</a>');
-    $submenuItem[] = ($op == 'list_locations_modified' ? _XADDRESSES_AM_LOC_MODIFIED . ($modifiedLocations == 0 ? '(0)' : ' (<span style="color : Red">' . $modifiedLocations . '</span>)') : '<a href="' . $currentFile . '?op=list_locations_modified">' . _XADDRESSES_AM_LOC_MODIFIED . ($modifiedLocations == 0 ? '' : ' (<span style="color : Red">' . $modifiedLocations . '</span>)').'</a>');
+    $submenuItem[] = ($op == 'list_locations' && $status_display == 1 ? _XADDRESSES_AM_LOC_LIST . ' (' . $countWaitingLocations . ')' : '<a href="' . $currentFile . '?op=list_locations">' . _XADDRESSES_AM_LOC_LIST . ' (' . $countWaitingLocations . ')' . '</a>');
+    $submenuItem[] = ($op == 'list_locations' && $status_display == 0 ? _XADDRESSES_AM_LOC_WAITING . ($waitingLocations == 0 ? ' (0)' : ' (<span style="color : Red">' . $countWaitingLocations . '</span>)') : '<a href="' . $currentFile . '?op=list_locations&status_display=0">' . _XADDRESSES_AM_LOC_WAITING . ($countWaitingLocations == 0 ? ' (0)' : ' (<span style="color : Red">' . $countWaitingLocations . '</span>)').'</a>');
+    $submenuItem[] = ($op == 'list_locations_broken' ? _XADDRESSES_AM_LOC_BROKEN . ($countBrokenLocations == 0 ? '(0)' : ' (<span style="color : Red">' . $countBrokenLocations . '</span>)') : '<a href="' . $currentFile . '?op=list_locations_broken">' . _XADDRESSES_AM_LOC_BROKEN . ($countBrokenLocations == 0 ? '' : ' (<span style="color : Red">' . $countBrokenLocations . '</span>)').'</a>');
+    $submenuItem[] = ($op == 'list_locations_modified' ? _XADDRESSES_AM_LOC_MODIFIED . ($countModifiedLocations == 0 ? '(0)' : ' (<span style="color : Red">' . $countModifiedLocations . '</span>)') : '<a href="' . $currentFile . '?op=list_locations_modified">' . _XADDRESSES_AM_LOC_MODIFIED . ($countModifiedLocations == 0 ? '' : ' (<span style="color : Red">' . $countModifiedLocations . '</span>)').'</a>');
     //$submenuItem[] = ($op == 'search' ? _XADDRESSES_AM_LOC_SEARCH : '<a href="' . $currentFile . '?op=search">' . _XADDRESSES_AM_LOC_SEARCH . '</a>');
     xaddressesAdminSubmenu ($submenuItem);
     

@@ -1,6 +1,6 @@
 <?php
-include 'admin_header.php';
 $currentFile = basename(__FILE__);
+include 'admin_header.php';
 $op = isset($_REQUEST['op']) ? $_REQUEST['op'] : (isset($_REQUEST['id']) ? "edit_fieldcategory" : 'list_fieldcategories');
 
 // load classes
