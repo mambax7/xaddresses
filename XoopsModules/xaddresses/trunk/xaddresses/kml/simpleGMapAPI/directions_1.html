@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="UTF-8">
+    <title>Google Maps JavaScript API v3 Example: Directions Complex</title>
+    <link href="/apis/maps/documentation/javascript/examples/default.css"
+        rel="stylesheet" type="text/css">
+    <style type="text/css">
+        #photo-panel {
+            background: #fff;
+            padding: 5px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            width: 300px;
+            max-height: 300px;
+            font-size: 14px;
+            font-family: Arial;
+            border: 1px solid #ccc;
+            box-shadow: -2px 2px 2px rgba(33, 33, 33, 0.4);
+            display: none;
+        }
+        #directions-panel {
+            height: 100%;
+            float: right;
+            width: 390px;
+            overflow: auto;
+        }
+        #map-canvas {
+            margin-right: 410px;
+        }
+        #control {
+            background: #fff;
+            padding: 5px;
+            font-size: 14px;
+            font-family: Arial;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 2px rgba(33, 33, 33, 0.4);
+            display: none;
+        }
+        @media print {
+            #map-canvas {
+                height: 500px;
+                margin: 0;
+            }
+            #directions-panel {
+                float: none;
+                width: auto;
+            }
+        }
+    </style>
+
+    <script type="text/javascript"
+        src="http://maps.googleapis.com/maps/api/js?sensor=false&libraries=geometries,panoramio"></script>
+
+    <script type="text/javascript">
+        var directionDisplay;
+        var directionsService = new google.maps.DirectionsService();
+        var poly;
+
+        function initialize() {
+            directionsDisplay = new google.maps.DirectionsRenderer();
+            var myOptions = {
+                zoom: 7,
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+            center: new google.maps.LatLng(41.850033, -87.6500523)
+            };
+            var map = new google.maps.Map(document.getElementById('map_canvas'),
+                myOptions);
+            directionsDisplay.setMap(map);
+            directionsDisplay.setPanel(document.getElementById('directions-panel'));
+
+            var control = document.getElementById('control');
+            control.style.display = 'block';
+            map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(control);
+
+            var polyOptions = {
+                strokeColor: '#000000',
+                strokeOpacity: 1.0,
+                strokeWeight: 3,
+                map: map
+            };
+            poly = new google.maps.Polyline(polyOptions);
+
+            // Add a listener for the click event
+            google.maps.event.addListener(map, 'click', addLatLng);
+
+            // Add panoramio layer
+            var panoramioLayer = new google.maps.panoramio.PanoramioLayer();
+            panoramioLayer.setMap(map);
+
+            var photoPanel = document.getElementById('photo-panel');
+            map.controls[google.maps.ControlPosition.RIGHT_TOP].push(photoPanel);
+
+            google.maps.event.addListener(panoramioLayer, 'click', function(photo) {
+                var li = document.createElement('li');
+                var link = document.createElement('a');
+                link.innerHTML = photo.featureDetails.title + ': ' +
+                    photo.featureDetails.author;
+                link.setAttribute('href', photo.featureDetails.url);
+                li.appendChild(link);
+                photoPanel.appendChild(li);
+                photoPanel.style.display = 'block';
+            });
+        }
+
+        /**
+        * Handles click events on a map, and adds a new point to the Polyline.
+        * Updates the encoding text area with the path's encoded values.
+        */
+        function addLatLng(event) {
+            var path = poly.getPath();
+            // Because path is an MVCArray, we can simply append a new coordinate
+            // and it will automatically appear
+            path.push(event.latLng);
+
+            // Update the text field to display the polyline encodings
+            var encodeString = google.maps.geometry.encoding.encodePath(path);
+            if (encodeString) {
+                document.getElementById('encoded-polyline').value = encodeString;
+            }
+        }
+
+        function calcRoute(start, end) {
+            var selectedTravelMode = document.getElementById("travel_mode").value;
+            var selectedUnitSystem = document.getElementById("unit_system").value;
+
+            //var start = document.getElementById('start').value;
+            //var end = document.getElementById('end').value;
+/*
+{
+    origin: LatLng | String,
+    destination: LatLng | String,
+    travelMode: TravelMode.DRIVING | TravelMode.WALKING | TravelMode.BICYCLING,
+    unitSystem: UnitSystem.METRIC,
+    waypoints[]: DirectionsWaypoint,
+    optimizeWaypoints: Boolean,
+    provideRouteAlternatives: Boolean,
+    avoidHighways: Boolean,
+    avoidTolls: Boolean
+    region: String
+}
+*/            var request = {
+                origin: start,
+                destination: end,
+                travelMode: google.maps.DirectionsTravelMode[selectedTravelMode],
+                unitSystem: google.maps.DirectionsUnitSystem[selectedUnitSystem]
+            };
+            directionsService.route(request, function(response, status) {
+                if (status == google.maps.DirectionsStatus.OK) {
+                    directionsDisplay.setDirections(response);
+                }
+            });
+        }
+        google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+</head>
+<body>
+    <div id="control">
+        <b>Mode of Travel: </b>
+        <select id="travel_mode" onchange="calcRoute();">
+            <option value="DRIVING">Driving</option>
+            <option value="WALKING">Walking</option>
+            <option value="BICYCLING">Bicycling</option>
+        </select>
+
+        <b>Unit System: </b>
+        <select id="unit_system" onchange="calcRoute();">
+            <option value="METRIC">Metric system</option>
+            <option value="IMPERIAL">Imperial (English) system</option>
+        </select>
+        <br />
+        <form action="#" onsubmit="calcRoute(this.from.value, this.to.value); return false">
+            <b>From:</b> <input type="text" size="20" id="fromAddress" name="from" value="Roma, via emanuele filiberto, 100" />
+            <b>To:</b> <input type="text" size="20" id="toAddress" name="to" value="Roma, via australia, 26" />
+            <input name="submit" type="submit" value="Calcola Percorso" />
+        </form>
+        <strong>Start:</strong>
+        <select id="start" onchange="calcRoute();">
+            <option value="chicago, il">Chicago</option>
+
+            <option value="st louis, mo">St Louis</option>
+            <option value="joplin, mo">Joplin, MO</option>
+            <option value="oklahoma city, ok">Oklahoma City</option>
+            <option value="amarillo, tx">Amarillo</option>
+            <option value="gallup, nm">Gallup, NM</option>
+            <option value="flagstaff, az">Flagstaff, AZ</option>
+
+            <option value="winona, az">Winona</option>
+            <option value="kingman, az">Kingman</option>
+            <option value="barstow, ca">Barstow</option>
+            <option value="san bernardino, ca">San Bernardino</option>
+            <option value="los angeles, ca">Los Angeles</option>
+        </select>
+
+        <strong>End:</strong>
+        <select id="end" onchange="calcRoute();">
+            <option value="chicago, il">Chicago</option>
+            <option value="st louis, mo">St Louis</option>
+            <option value="joplin, mo">Joplin, MO</option>
+            <option value="oklahoma city, ok">Oklahoma City</option>
+
+            <option value="amarillo, tx">Amarillo</option>
+            <option value="gallup, nm">Gallup, NM</option>
+            <option value="flagstaff, az">Flagstaff, AZ</option>
+            <option value="winona, az">Winona</option>
+            <option value="kingman, az">Kingman</option>
+            <option value="barstow, ca">Barstow</option>
+
+            <option value="san bernardino, ca">San Bernardino</option>
+            <option value="los angeles, ca">Los Angeles</option>
+        </select>
+    </div>
+    <ul id="photo-panel">
+      <li><strong>Photos clicked</strong></li>
+    </ul>
+    <div id="map_canvas" style="float:left; width:600px; height:400px;"></div>
+    <div id="directions-panel"></div>
+</body>
+</html>
+

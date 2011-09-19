@@ -21,15 +21,15 @@ $modversion['manual'] = 'Help';
 $modversion['manual_file'] = 'help.html';
 $modversion['dirname'] = $dirname;
 // Extra informations
-$modversion["release"] = "16-09-2011";
+$modversion["release"] = "19-09-2011";
 $modversion["module_status"] = "Stable";
 $modversion['support_site_url']	= "http://www.xoops.org";
 $modversion['support_site_name'] = "www.xoops.org";
 
 // About
 $modversion['status_version'] = 'RC';
-$modversion['release_date'] = '2011/09/16';
-$modversion['release'] = strtotime('2011/09/16'); // 'YYYY/MM/DD' format
+$modversion['release_date'] = '2011/09/19';
+$modversion['release'] = strtotime('2011/09/19'); // 'YYYY/MM/DD' format
 $modversion['demo_site_url'] = 'IN PROGRESS';
 $modversion['demo_site_name'] = 'IN PROGRESS';
 $modversion['forum_site_url'] = 'IN PROGRESS';
@@ -129,11 +129,14 @@ $modversion['hasSearch'] = 1;
 $modversion['search']['file'] = "include/search.inc.php";
 $modversion['search']['func'] = "xaddresses_search";
 
+
+
 // Comments
 $modversion['hasComments'] = 1;
 $modversion['comments']['itemName'] = 'loc_id';
-$modversion['comments']['pageName'] = 'singlefile.php';
-$modversion['comments']['extraParams'] = array('cid');
+$modversion['comments']['pageName'] = 'locationview.php';
+$modversion['comments']['extraParams'] = array('loc_cat_id');
+// Comment callback functions
 $modversion['comments']['callbackFile'] = 'include/comment_functions.php';
 $modversion['comments']['callback']['approve'] = 'xaddresses_com_approve';
 $modversion['comments']['callback']['update'] = 'xaddresses_com_update';
@@ -384,97 +387,102 @@ $modversion['config'][$i]['valuetype'] = 'int';
 $modversion['config'][$i]['default'] = 1;
 
 
+
 // Notifications
 $modversion['hasNotification'] = 1;
-$modversion['notification']['lookup_file'] = 'include/notification.inc.php';
+$modversion['notification']['lookup_file'] = 'include/notification_functions.php';
 $modversion['notification']['lookup_func'] = 'xaddresses_notify_iteminfo';
 
-$modversion['notification']['category'][1]['name'] = 'global';
-$modversion['notification']['category'][1]['title'] = _XADDRESSES_MI_GLOBAL_NOTIFY;
-$modversion['notification']['category'][1]['description'] = _XADDRESSES_MI_GLOBAL_NOTIFYDSC;
-$modversion['notification']['category'][1]['subscribe_from'] = array('index.php','viewcat.php','singlefile.php');
+$i = 0;
+$i++;
+$modversion['notification']['category'][$i]['name'] = 'global';
+$modversion['notification']['category'][$i]['title'] = _XADDRESSES_MI_GLOBAL_NOTIFY;
+$modversion['notification']['category'][$i]['description'] = _XADDRESSES_MI_GLOBAL_NOTIFYDESC;
+$modversion['notification']['category'][$i]['subscribe_from'] = array('index.php','locationcategoryview.php','locationview.php');
+$i++;
+$modversion['notification']['category'][$i]['name'] = 'category';
+$modversion['notification']['category'][$i]['title'] = _XADDRESSES_MI_CATEGORY_NOTIFY;
+$modversion['notification']['category'][$i]['description'] = _XADDRESSES_MI_CATEGORY_NOTIFYDESC;
+$modversion['notification']['category'][$i]['subscribe_from'] = array('locationcategoryview.php', 'locationview.php');
+$modversion['notification']['category'][$i]['item_name'] = 'cat_id';
+$modversion['notification']['category'][$i]['allow_bookmark'] = 1;
+$i++;
+$modversion['notification']['category'][$i]['name'] = 'location';
+$modversion['notification']['category'][$i]['title'] = _XADDRESSES_MI_LOCATION_NOTIFY;
+$modversion['notification']['category'][$i]['description'] = _XADDRESSES_MI_LOCATION_NOTIFYDESC;
+$modversion['notification']['category'][$i]['subscribe_from'] = 'locationview.php';
+$modversion['notification']['category'][$i]['item_name'] = 'loc_id';
+$modversion['notification']['category'][$i]['allow_bookmark'] = 1;
 
-$modversion['notification']['category'][2]['name'] = 'category';
-$modversion['notification']['category'][2]['title'] = _XADDRESSES_MI_CATEGORY_NOTIFY;
-$modversion['notification']['category'][2]['description'] = _XADDRESSES_MI_CATEGORY_NOTIFYDSC;
-$modversion['notification']['category'][2]['subscribe_from'] = array('viewcat.php', 'singlefile.php');
-$modversion['notification']['category'][2]['item_name'] = 'cid';
-$modversion['notification']['category'][2]['allow_bookmark'] = 1;
-
-$modversion['notification']['category'][3]['name'] = 'address';
-$modversion['notification']['category'][3]['title'] = _XADDRESSES_MI_FILE_NOTIFY;
-$modversion['notification']['category'][3]['description'] = _XADDRESSES_MI_FILE_NOTIFYDSC;
-$modversion['notification']['category'][3]['subscribe_from'] = 'singlefile.php';
-$modversion['notification']['category'][3]['item_name'] = 'loc_id';
-$modversion['notification']['category'][3]['allow_bookmark'] = 1;
-
-$modversion['notification']['event'][1]['name'] = 'new_category';
-$modversion['notification']['event'][1]['category'] = 'global';
-$modversion['notification']['event'][1]['title'] = _XADDRESSES_MI_GLOBAL_NEWCATEGORY_NOTIFY;
-$modversion['notification']['event'][1]['caption'] = _XADDRESSES_MI_GLOBAL_NEWCATEGORY_NOTIFYCAP;
-$modversion['notification']['event'][1]['description'] = _XADDRESSES_MI_GLOBAL_NEWCATEGORY_NOTIFYDSC;
-$modversion['notification']['event'][1]['mail_template'] = 'global_newcategory_notify';
-$modversion['notification']['event'][1]['mail_subject'] = _XADDRESSES_MI_GLOBAL_NEWCATEGORY_NOTIFYSBJ;
-
-$modversion['notification']['event'][2]['name'] = 'address_modify';
-$modversion['notification']['event'][2]['category'] = 'global';
-$modversion['notification']['event'][2]['admin_only'] = 1;
-$modversion['notification']['event'][2]['title'] = _XADDRESSES_MI_GLOBAL_FILEMODIFY_NOTIFY;
-$modversion['notification']['event'][2]['caption'] = _XADDRESSES_MI_GLOBAL_FILEMODIFY_NOTIFYCAP;
-$modversion['notification']['event'][2]['description'] = _XADDRESSES_MI_GLOBAL_FILEMODIFY_NOTIFYDSC;
-$modversion['notification']['event'][2]['mail_template'] = 'global_addressmodify_notify';
-$modversion['notification']['event'][2]['mail_subject'] = _XADDRESSES_MI_GLOBAL_FILEMODIFY_NOTIFYSBJ;
-
-$modversion['notification']['event'][3]['name'] = 'address_broken';
-$modversion['notification']['event'][3]['category'] = 'global';
-$modversion['notification']['event'][3]['admin_only'] = 1;
-$modversion['notification']['event'][3]['title'] = _XADDRESSES_MI_GLOBAL_FILEBROKEN_NOTIFY;
-$modversion['notification']['event'][3]['caption'] = _XADDRESSES_MI_GLOBAL_FILEBROKEN_NOTIFYCAP;
-$modversion['notification']['event'][3]['description'] = _XADDRESSES_MI_GLOBAL_FILEBROKEN_NOTIFYDSC;
-$modversion['notification']['event'][3]['mail_template'] = 'global_addressbroken_notify';
-$modversion['notification']['event'][3]['mail_subject'] = _XADDRESSES_MI_GLOBAL_FILEBROKEN_NOTIFYSBJ;
-
-$modversion['notification']['event'][4]['name'] = 'address_submit';
-$modversion['notification']['event'][4]['category'] = 'global';
-$modversion['notification']['event'][4]['admin_only'] = 1;
-$modversion['notification']['event'][4]['title'] = _XADDRESSES_MI_GLOBAL_FILESUBMIT_NOTIFY;
-$modversion['notification']['event'][4]['caption'] = _XADDRESSES_MI_GLOBAL_FILESUBMIT_NOTIFYCAP;
-$modversion['notification']['event'][4]['description'] = _XADDRESSES_MI_GLOBAL_FILESUBMIT_NOTIFYDSC;
-$modversion['notification']['event'][4]['mail_template'] = 'global_addresssubmit_notify';
-$modversion['notification']['event'][4]['mail_subject'] = _XADDRESSES_MI_GLOBAL_FILESUBMIT_NOTIFYSBJ;
-
-$modversion['notification']['event'][5]['name'] = 'new_address';
-$modversion['notification']['event'][5]['category'] = 'global';
-$modversion['notification']['event'][5]['title'] = _XADDRESSES_MI_GLOBAL_NEWFILE_NOTIFY;
-$modversion['notification']['event'][5]['caption'] = _XADDRESSES_MI_GLOBAL_NEWFILE_NOTIFYCAP;
-$modversion['notification']['event'][5]['description'] = _XADDRESSES_MI_GLOBAL_NEWFILE_NOTIFYDSC;
-$modversion['notification']['event'][5]['mail_template'] = 'global_newadress_notify';
-$modversion['notification']['event'][5]['mail_subject'] = _XADDRESSES_MI_GLOBAL_NEWFILE_NOTIFYSBJ;
-
-$modversion['notification']['event'][6]['name'] = 'address_submit';
-$modversion['notification']['event'][6]['category'] = 'category';
-$modversion['notification']['event'][6]['admin_only'] = 1;
-$modversion['notification']['event'][6]['title'] = _XADDRESSES_MI_CATEGORY_FILESUBMIT_NOTIFY;
-$modversion['notification']['event'][6]['caption'] = _XADDRESSES_MI_CATEGORY_FILESUBMIT_NOTIFYCAP;
-$modversion['notification']['event'][6]['description'] = _XADDRESSES_MI_CATEGORY_FILESUBMIT_NOTIFYDSC;
-$modversion['notification']['event'][6]['mail_template'] = 'category_addresssubmit_notify';
-$modversion['notification']['event'][6]['mail_subject'] = _XADDRESSES_MI_CATEGORY_FILESUBMIT_NOTIFYSBJ;
-
-$modversion['notification']['event'][7]['name'] = 'new_address';
-$modversion['notification']['event'][7]['category'] = 'category';
-$modversion['notification']['event'][7]['title'] = _XADDRESSES_MI_CATEGORY_NEWFILE_NOTIFY;
-$modversion['notification']['event'][7]['caption'] = _XADDRESSES_MI_CATEGORY_NEWFILE_NOTIFYCAP;
-$modversion['notification']['event'][7]['description'] = _XADDRESSES_MI_CATEGORY_NEWFILE_NOTIFYDSC;
-$modversion['notification']['event'][7]['mail_template'] = 'category_newaddress_notify';
-$modversion['notification']['event'][7]['mail_subject'] = _XADDRESSES_MI_CATEGORY_NEWFILE_NOTIFYSBJ;
-
-$modversion['notification']['event'][8]['name'] = 'approve';
-$modversion['notification']['event'][8]['category'] = 'address';
-$modversion['notification']['event'][8]['invisible'] = 1;
-$modversion['notification']['event'][8]['title'] = _XADDRESSES_MI_FILE_APPROVE_NOTIFY;
-$modversion['notification']['event'][8]['caption'] = _XADDRESSES_MI_FILE_APPROVE_NOTIFYCAP;
-$modversion['notification']['event'][8]['description'] = _XADDRESSES_MI_FILE_APPROVE_NOTIFYDSC;
-$modversion['notification']['event'][8]['mail_template'] = 'address_approve_notify';
-$modversion['notification']['event'][8]['mail_subject'] = _XADDRESSES_MI_FILE_APPROVE_NOTIFYSBJ;
+$i = 0;
+$i++;
+$modversion['notification']['event'][$i]['name'] = 'new_category';
+$modversion['notification']['event'][$i]['category'] = 'global';
+$modversion['notification']['event'][$i]['title'] = _XADDRESSES_MI_GLOBAL_NEWCATEGORY_NOTIFY;
+$modversion['notification']['event'][$i]['caption'] = _XADDRESSES_MI_GLOBAL_NEWCATEGORY_NOTIFYCAP;
+$modversion['notification']['event'][$i]['description'] = _XADDRESSES_MI_GLOBAL_NEWCATEGORY_NOTIFYDESC;
+$modversion['notification']['event'][$i]['mail_template'] = 'global_newcategory_notify';
+$modversion['notification']['event'][$i]['mail_subject'] = _XADDRESSES_MI_GLOBAL_NEWCATEGORY_NOTIFYSBJ;
+$i++;
+$modversion['notification']['event'][$i]['name'] = 'address_modify';
+$modversion['notification']['event'][$i]['category'] = 'global';
+$modversion['notification']['event'][$i]['admin_only'] = 1;
+$modversion['notification']['event'][$i]['title'] = _XADDRESSES_MI_GLOBAL_LOCATIONMODIFY_NOTIFY;
+$modversion['notification']['event'][$i]['caption'] = _XADDRESSES_MI_GLOBAL_LOCATIONMODIFY_NOTIFYCAP;
+$modversion['notification']['event'][$i]['description'] = _XADDRESSES_MI_GLOBAL_LOCATIONMODIFY_NOTIFYDESC;
+$modversion['notification']['event'][$i]['mail_template'] = 'global_locationmodify_notify';
+$modversion['notification']['event'][$i]['mail_subject'] = _XADDRESSES_MI_GLOBAL_LOCATIONMODIFY_NOTIFYSBJ;
+$i++;
+$modversion['notification']['event'][$i]['name'] = 'address_broken';
+$modversion['notification']['event'][$i]['category'] = 'global';
+$modversion['notification']['event'][$i]['admin_only'] = 1;
+$modversion['notification']['event'][$i]['title'] = _XADDRESSES_MI_GLOBAL_LOCATIONBROKEN_NOTIFY;
+$modversion['notification']['event'][$i]['caption'] = _XADDRESSES_MI_GLOBAL_LOCATIONBROKEN_NOTIFYCAP;
+$modversion['notification']['event'][$i]['description'] = _XADDRESSES_MI_GLOBAL_LOCATIONBROKEN_NOTIFYDESC;
+$modversion['notification']['event'][$i]['mail_template'] = 'global_locationbroken_notify';
+$modversion['notification']['event'][$i]['mail_subject'] = _XADDRESSES_MI_GLOBAL_LOCATIONBROKEN_NOTIFYSBJ;
+$i++;
+$modversion['notification']['event'][$i]['name'] = 'address_submit';
+$modversion['notification']['event'][$i]['category'] = 'global';
+$modversion['notification']['event'][$i]['admin_only'] = 1;
+$modversion['notification']['event'][$i]['title'] = _XADDRESSES_MI_GLOBAL_LOCATIONSUBMIT_NOTIFY;
+$modversion['notification']['event'][$i]['caption'] = _XADDRESSES_MI_GLOBAL_LOCATIONSUBMIT_NOTIFYCAP;
+$modversion['notification']['event'][$i]['description'] = _XADDRESSES_MI_GLOBAL_LOCATIONSUBMIT_NOTIFYDESC;
+$modversion['notification']['event'][$i]['mail_template'] = 'global_locationsubmit_notify';
+$modversion['notification']['event'][$i]['mail_subject'] = _XADDRESSES_MI_GLOBAL_LOCATIONSUBMIT_NOTIFYSBJ;
+$i++;
+$modversion['notification']['event'][$i]['name'] = 'new_address';
+$modversion['notification']['event'][$i]['category'] = 'global';
+$modversion['notification']['event'][$i]['title'] = _XADDRESSES_MI_GLOBAL_NEWLOCATION_NOTIFY;
+$modversion['notification']['event'][$i]['caption'] = _XADDRESSES_MI_GLOBAL_NEWLOCATION_NOTIFYCAP;
+$modversion['notification']['event'][$i]['description'] = _XADDRESSES_MI_GLOBAL_NEWLOCATION_NOTIFYDESC;
+$modversion['notification']['event'][$i]['mail_template'] = 'global_newlocation_notify';
+$modversion['notification']['event'][$i]['mail_subject'] = _XADDRESSES_MI_GLOBAL_NEWLOCATION_NOTIFYSBJ;
+$i++;
+$modversion['notification']['event'][$i]['name'] = 'address_submit';
+$modversion['notification']['event'][$i]['category'] = 'category';
+$modversion['notification']['event'][$i]['admin_only'] = 1;
+$modversion['notification']['event'][$i]['title'] = _XADDRESSES_MI_CATEGORY_LOCATIONSUBMIT_NOTIFY;
+$modversion['notification']['event'][$i]['caption'] = _XADDRESSES_MI_CATEGORY_LOCATIONSUBMIT_NOTIFYCAP;
+$modversion['notification']['event'][$i]['description'] = _XADDRESSES_MI_CATEGORY_LOCATIONSUBMIT_NOTIFYDESC;
+$modversion['notification']['event'][$i]['mail_template'] = 'category_locationsubmit_notify';
+$modversion['notification']['event'][$i]['mail_subject'] = _XADDRESSES_MI_CATEGORY_LOCATIONSUBMIT_NOTIFYSBJ;
+$i++;
+$modversion['notification']['event'][$i]['name'] = 'new_address';
+$modversion['notification']['event'][$i]['category'] = 'category';
+$modversion['notification']['event'][$i]['title'] = _XADDRESSES_MI_CATEGORY_NEWLOCATION_NOTIFY;
+$modversion['notification']['event'][$i]['caption'] = _XADDRESSES_MI_CATEGORY_NEWLOCATION_NOTIFYCAP;
+$modversion['notification']['event'][$i]['description'] = _XADDRESSES_MI_CATEGORY_NEWLOCATION_NOTIFYDESC;
+$modversion['notification']['event'][$i]['mail_template'] = 'category_newlocation_notify';
+$modversion['notification']['event'][$i]['mail_subject'] = _XADDRESSES_MI_CATEGORY_NEWLOCATION_NOTIFYSBJ;
+$i++;
+$modversion['notification']['event'][$i]['name'] = 'approve';
+$modversion['notification']['event'][$i]['category'] = 'location';
+$modversion['notification']['event'][$i]['invisible'] = 1;
+$modversion['notification']['event'][$i]['title'] = _XADDRESSES_MI_LOCATION_APPROVE_NOTIFY;
+$modversion['notification']['event'][$i]['caption'] = _XADDRESSES_MI_LOCATION_APPROVE_NOTIFYCAP;
+$modversion['notification']['event'][$i]['description'] = _XADDRESSES_MI_LOCATION_APPROVE_NOTIFYDESC;
+$modversion['notification']['event'][$i]['mail_template'] = 'location_approve_notify';
+$modversion['notification']['event'][$i]['mail_subject'] = _XADDRESSES_MI_LOCATION_APPROVE_NOTIFYSBJ;
 
 ?>
