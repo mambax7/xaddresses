@@ -15,6 +15,7 @@ class XaddressesLocation extends XoopsObject
         $this->initVar('loc_submitter', XOBJ_DTYPE_INT, null, true);
         $this->initVar('loc_status', XOBJ_DTYPE_INT, 0); //0 = no, 1 = yes
         $this->initVar('loc_date', XOBJ_DTYPE_INT, 0);
+        $this->initVar("loc_comments",XOBJ_DTYPE_INT,null,false,11);
         //extra fields
         $this->init($fields);
     }

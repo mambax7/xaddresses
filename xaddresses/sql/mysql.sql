@@ -29,6 +29,7 @@ CREATE TABLE `xaddresses_location` (
   `loc_submitter`       int(11)                 NOT NULL default '0',
   `loc_status`          tinyint(2)              NOT NULL default '0',
   `loc_date`            int(12)                 NOT NULL default '0',
+  `comments`            int(11) unsigned        NOT NULL default '0',
   PRIMARY KEY  (`loc_id`),
   KEY `loc_cat_id` (`loc_cat_id`),
   KEY `loc_status` (`loc_status`),

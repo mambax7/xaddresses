@@ -6,25 +6,18 @@
  *
  * @param string	$permtype	The type of permission
  * @return array Permitted categories Ids
- *
- * @package News
- * @author Hervé Thouzard of Instant Zero (http://xoops.instant-zero.com)
- * @copyright (c) Instant Zero
  */
 
-function xaddresses_MygetItemIds($permtype = 'xaddresses_view') {
-    global $xoopsUser;
+function xaddresses_MygetItemIds($permtype = 'in_category_view') {
     static $permissions = array();
+    $gpermHandler =& xoops_gethandler('groupperm');
+
     if(is_array($permissions) && array_key_exists($permtype, $permissions)) {
         return $permissions[$permtype];
     }
-
-    $module_handler =& xoops_gethandler('module');
-    $xaddressesModule =& $module_handler->getByDirname('xaddresses');
-    $groups = is_object($xoopsUser) ? $xoopsUser->getGroups() : XOOPS_GROUP_ANONYMOUS;
-    $gperm_handler =& xoops_gethandler('groupperm');
-    $categories = $gperm_handler->getItemIds($permtype, $groups, $xaddressesModule->getVar('mid'));
-    $permissions[$permtype] = $categories;
+    $groups = is_object($GLOBALS['xoopsUser']) ? $GLOBALS['xoopsUser']->getGroups() : XOOPS_GROUP_ANONYMOUS;
+    $categories = $gpermHandler->getItemIds($permtype, $groups, $GLOBALS['xoopsModule']->getVar('mid'));
+    $permissions[$permtype] = $categories; // static
     return $categories;
 }
  /*
