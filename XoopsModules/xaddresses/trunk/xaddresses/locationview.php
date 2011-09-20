@@ -24,8 +24,9 @@ if ($locationHandler->getCount($criteria) == 0) {
 
 
 
-include_once XOOPS_ROOT_PATH . '/header.php';
 $xoopsOption['template_main'] = 'xaddresses_locationview.html';
+include_once XOOPS_ROOT_PATH . '/header.php';
+
 
 
 
@@ -60,7 +61,7 @@ unset($breadcrumb, $crumb);
 */
 $breadcrumb = array();
 $crumb['title'] = $location->getVar('loc_title');
-$crumb['url'] = $currentFile . '?loc_id=' . $location->getVar('loc_id');
+$crumb['url'] = 'locationview.php?loc_id=' . $location->getVar('loc_id');
 $breadcrumb[] = $crumb;
 $crumb['title'] = $category->getVar('cat_title');
 $crumb['url'] = 'locationcategoryview.php?cat_id=' . $category->getVar('cat_id');
@@ -177,15 +178,15 @@ $htmlMap = $map->showMap(false, false); // no autozoom
 $xoopsTpl->assign('htmlMap', $htmlMap);
 
 
-
-/*
-// permission
-$xoopsTpl->assign('perm_vote', $perm_vote);
-$xoopsTpl->assign('perm_modif', $perm_modif);
-// link for tellafriend
+// Set permission for template
+$xoopsTpl->assign('perm_vote', $permVote);
+$xoopsTpl->assign('perm_tell_a_friend', $permTellAFriend);
+// Set link for tellafriend
 if (($xoopsModuleConfig['usetellafriend'] == 1) and (is_dir('../tellafriend'))) {
-    $string = sprintf(_MD_XADDRESSES_SINGLEITEM_INTFILEFOUND, $xoopsConfig['sitename'] . ':'.XOOPS_URL.'/modules/TDMDownloads/singlefile.php?loc_id=' . $_REQUEST['loc_id']);
-    $subject = sprintf(_MD_XADDRESSES_SINGLEITEM_INTFILEFOUND, $xoopsConfig['sitename']);
+    // Tell a Friend Module for template
+    // http://xoops.peak.ne.jp/md/mydownloads/singlefile.php?lid=48&easiestml_lang=xlang%3Aen
+    $string = sprintf(_XADDRESSES_MD_LOC_INTLOCATIONFOUND, $xoopsConfig['sitename'] . ':' . XOOPS_URL . '/modules/xaddresses/locationview.php?loc_id=' . $_REQUEST['loc_id']);
+    $subject = sprintf(_XADDRESSES_MD_LOC_INTLOCATIONFOUND, $xoopsConfig['sitename']);
     if( stristr( $subject , '%' ) ) $subject = rawurldecode( $subject ) ;
     if( stristr( $string , '%3F' ) ) $string = rawurldecode( $string ) ;
     if( preg_match( '/('.preg_quote(XOOPS_URL,'/').'.*)$/i' , $string , $matches ) ) {
@@ -193,12 +194,15 @@ if (($xoopsModuleConfig['usetellafriend'] == 1) and (is_dir('../tellafriend'))) 
     } else {
         $target_uri = XOOPS_URL . $_SERVER['REQUEST_URI'] ;
     }
-    $tellafriend_href = XOOPS_URL . '/modules/tellafriend/index.php?target_uri=' . rawurlencode( $target_uri ) . '&amp;subject='.rawurlencode( $subject );
+    $tellAFriendHref = XOOPS_URL . '/modules/tellafriend/index.php?target_uri=' . rawurlencode( $target_uri ) . '&amp;subject='.rawurlencode( $subject );
 } else {
-    $tellafriend_href = 'mailto:?subject=' . rawurlencode(sprintf(_MD_XADDRESSES_SINGLEITEM_INTFILEFOUND,$xoopsConfig['sitename'])) . '&amp;body=' . rawurlencode(sprintf(_MD_XADDRESSES_SINGLEITEM_INTFILEFOUND,$xoopsConfig['sitename']) . ':  ' . XOOPS_URL . '/modules/xaddresses/locationview.php?loc_id=' . $_REQUEST['loc_id']);
+    $tellAFriendHref = 'mailto:?subject=' . rawurlencode(sprintf(_XADDRESSES_MD_LOC_INTLOCATIONFOUND, $xoopsConfig['sitename'])) . '&amp;body=' . rawurlencode(sprintf(_XADDRESSES_MD_LOC_INTLOCATIONFOUND, $xoopsConfig['sitename']) . ':  ' . XOOPS_URL . '/modules/xaddresses/locationview.php?loc_id=' . $_REQUEST['loc_id']);
 }
-$xoopsTpl->assign('tellafriend_href', $tellafriend_href);
+$xoopsTpl->assign('tell_a_friend_href', $tellAFriendHref);
+
+/*
 // référencement
+
 // tags
 if (($xoopsModuleConfig['usetag'] == 1) and (is_dir('../tag'))) {
     require_once XOOPS_ROOT_PATH . '/modules/tag/include/tagbar.php';

@@ -147,10 +147,10 @@ case 'extra': // IN_PROGRESS
     $globalPermsArray = array(
         //'1'     => _XADDRESSES_AM_PERMISSIONS_1 ,
         //'2'     => _XADDRESSES_AM_PERMISSIONS_2 ,
-        '4'     => _XADDRESSES_AM_PERMISSIONS_4 ,   // Submit a location
-        '8'     => _XADDRESSES_AM_PERMISSIONS_8 ,   // Submit a modification
-        '16'    => _XADDRESSES_AM_PERMISSIONS_16 ,  // Note a location
-        '32'    => _XADDRESSES_AM_PERMISSIONS_32,   // IN_PROGRESS
+        //'4'     => _XADDRESSES_AM_PERMISSIONS_4 ,   // Submit a location
+        //'8'     => _XADDRESSES_AM_PERMISSIONS_8 ,   // Submit a modification
+        '16'    => _XADDRESSES_AM_PERMISSIONS_16 ,  // Tell a fiend
+        '32'    => _XADDRESSES_AM_PERMISSIONS_32,   // Vote a location
         //'64'    => _XADDRESSES_AM_PERMISSIONS_64,
         //'128'   => _XADDRESSES_AM_PERMISSIONS_128,
         //'256'   => _XADDRESSES_AM_PERMISSIONS_256,

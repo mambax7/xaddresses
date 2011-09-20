@@ -14,6 +14,10 @@
 <br />
 <{$location.loc_submitter_uname}>
 <br />
+<{$smarty.const._XADDRESSES_MD_LOC_RATING}>: <{$location.loc_rating}>
+<{$smarty.const._XADDRESSES_MD_LOC_VOTES|replace:'%s':$location.loc_votes}>
+<br />
+
 
 <{* extra fields grouped by category *}>
 <{foreach item=fieldscategory from=$fieldscategoriesarray}>
@@ -28,16 +32,25 @@
 <{/foreach}>
 
 <{* operations *}>
-<a href='locationedit.php?loc_id=<{$location.loc_id}>'>Modifica</a>
+<a href='locationedit.php?loc_id=<{$location.loc_id}>'><{$smarty.const._XADDRESSES_MD_LOC_MODIFY}></a>
 &nbsp;|&nbsp;
-<a href='locationbroken.php?loc_id=<{$location.loc_id}>'>Segnala errore</a>
+<a href='locationbroken.php?loc_id=<{$location.loc_id}>'><{$smarty.const._XADDRESSES_MD_LOC_REPORTBROKEN}></a>
+<{if $perm_vote}>
+&nbsp;|&nbsp;
+<a href='locationrate.php?loc_id=<{$location.loc_id}>'><{$smarty.const._XADDRESSES_MD_LOC_RATELOCATION}></a>
+<{/if}>
+<{if $perm_tell_a_friend}>
+&nbsp;|&nbsp;
+<a href='<{$tell_a_friend_href}>'><{$smarty.const._XADDRESSES_MD_LOC_TELLAFRIEND}></a>
+<{/if}>
 <br />
 
 
 <{* IN_PROGRESS *}>
 <{*
 <{if $tags}>
-    <br /><{include file="db:tag_bar.html"}>
+<br />
+<{include file="db:tag_bar.html"}>
 <{/if}>
 *}>
 

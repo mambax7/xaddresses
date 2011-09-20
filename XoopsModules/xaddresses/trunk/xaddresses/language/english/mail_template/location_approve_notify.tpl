@@ -1,13 +1,13 @@
 Hello {X_UNAME},
 
-A broken file report has been submitted and is awaiting approval.
+The submitted location "{LOCATION_NAME}" has been approved at {X_SITENAME}.
 
-You can view this request here:
-{BROKENREPORTS_URL}
+You can view this location here:
+{LOCATION_URL}
 
 -----------
 
-You are receiving this message because you selected to be notified when broken file reports are submitted.
+You are receiving this message because you selected to be notified when this location was approved.
 
 If this is an error or you wish not to receive further such notifications, please update your subscriptions by visiting the link below:
 {X_UNSUBSCRIBE_URL}

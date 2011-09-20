@@ -323,6 +323,28 @@ case 'save_location':
 
     if (count($errors) == 0) {
         if ($locationHandler->insert($location)) {
+        // TO DO NOTIFICATION SYSTEM
+        // TO DO NOTIFICATION SYSTEM
+        // TO DO NOTIFICATION SYSTEM
+            $notificationHandler =& xoops_gethandler('notification');
+            $tags = array();
+            $tags['LOCATION_NAME'] = $location->getVar('loc_title');
+            $tags['LOCATION_URL'] = XOOPS_URL . '/modules/' . $xoopsModule->getVar('dirname') . '/locationview.php?loc_id=' . $location->getVar('loc_id') . '&cat_id=' . $location->getVar('loc_cat_id');
+            $category = $categoryHandler->get($location->getVar('loc_cat_id'));                
+            $tags['CATEGORY_NAME'] = $category->getVar('cat_title');
+            $tags['CATEGORY_URL'] = XOOPS_URL . '/modules/' . $xoopsModule->getVar('dirname') . '/locationcategoryview.php?cat_id=' . $category->getVar('cat_id');
+            if ($location->isNew()) {
+                $notificationHandler->triggerEvent('global', 0, 'new_location', $tags);
+                $notificationHandler->triggerEvent('category', $location->getVar('loc_cat_id'), 'new_location', $tags);  
+            } else {
+            $tags['WAITINGLOCATIONS_URL'] = XOOPS_URL . '/modules/' . $xoopsModule->getVar('dirname') . '/admin/location.php?op=listlocations';
+            $notificationHandler->triggerEvent('global', 0, 'location_submit', $tags);
+            $notificationHandler->triggerEvent('category', $location->getVar('loc_cat_id'), 'file_submit', $tags);
+            }
+        // TO DO NOTIFICATION SYSTEM
+        // TO DO NOTIFICATION SYSTEM
+        // TO DO NOTIFICATION SYSTEM
+
             if ($location->isNew()) {
                 redirect_header($currentFile, 2, _XADDRESSES_AM_ADDRESSCREATED, false);
             } else {
@@ -360,8 +382,6 @@ case 'delete_location':
         }
         $loc_id = $_REQUEST['loc_id'];
         if ($locationHandler->delete($obj)) {
-// TO DO
-// TO DO
 // TO DO
 // TO DO
 // TO DO
@@ -425,8 +445,6 @@ case 'view_location':
 // TO DO
 // TO DO
 // TO DO
-// TO DO
-// TO DO
     $viewLocation = $locationHandler->get($_REQUEST['loc_id']);
     $criteria = new CriteriaCompo();
     echo '<h1>' . $viewLocation->getVar('loc_title') . ' ' . 'IN_PROGRESS</h1>';
@@ -440,8 +458,6 @@ case 'view_location':
     break;
 /*
 case 'view_location':
-// TO DO
-// TO DO
 // TO DO
 // TO DO
 // TO DO
@@ -482,44 +498,6 @@ case 'view_location':
     $criteria->add(new Criteria('status', 1));
     $addresses_field = $addressesfield_handler->getall($criteria);
     $class = 'odd';
-    foreach (array_keys($addresses_field) as $i) {
-        $class = ($class == 'even') ? 'odd' : 'even';
-        echo '<tr class="' . $class . '">';
-        if ($addresses_field[$i]->getVar('status_def') == 1){
-            if ($addresses_field[$i]->getVar('fid') == 1){
-                //page d'accueil
-                echo '<td width="30%">' . _XADDRESSES_AM_FORMHOMEPAGE . ' </td>';
-                echo '<td><a href="' . $view_addresses->getVar('homepage') . '">' . $view_addresses->getVar('homepage') . '</a></td>';
-            }
-            if ($addresses_field[$i]->getVar('fid') == 2){
-                //version
-                echo '<td width="30%">' . _XADDRESSES_AM_FORMVERSION . ' </td>';
-                echo '<td>' . $view_addresses->getVar('version') . '</td>';
-            }
-            if ($addresses_field[$i]->getVar('fid') == 3){
-                //taille du fichier
-                echo '<td width="30%">' . _XADDRESSES_AM_FORMSIZE . ' </td>';
-                echo '<td>' . trans_size($view_addresses->getVar('size')) . '</td>';
-            }
-            if ($addresses_field[$i]->getVar('fid') == 4){
-                //plateforme
-                echo '<td width="30%">' . _XADDRESSES_AM_FORMPLATFORM . ' </td>';
-                echo '<td>' . $view_addresses->getVar('platform') . '</td>';
-            }
-        }else{
-            $contenu = '';
-            echo '<td width="30%">' . $addresses_field[$i]->getVar('title') . ' </td>';
-            $criteria = new CriteriaCompo();
-            $criteria->add(new Criteria('loc_id', $_REQUEST['addresses_loc_id']));
-            $criteria->add(new Criteria('fid', $addresses_field[$i]->getVar('fid')));
-            $addressesfielddata = $addressesfielddata_handler->getall($criteria);
-            foreach (array_keys($addressesfielddata) as $j) {
-                $contenu = $addressesfielddata[$j]->getVar('data');
-            }                    
-            echo '<td>' . $contenu . '</td>';
-        }
-        echo '</tr>';
-    }
     $class = ($class == 'even') ? 'odd' : 'even';
 	echo '<tr class="' . $class . '">';
 	echo '<td width="30%">' . _XADDRESSES_AM_FORMTEXT . ' </td>';
@@ -527,7 +505,7 @@ case 'view_location':
 	echo '</tr>';
     // tags
     if (($xoopsModuleConfig['usetag'] == 1) and (is_dir('../../tag'))){
-        require_once XOOPS_ROOT_PATH.'/modules/tag/include/tagbar.php';
+        require_once XOOPS_ROOT_PATH . '/modules/tag/include/tagbar.php';
         $tags_array = tagBar($_REQUEST['downloads_loc_id'], 0);
         if (!empty($tags_array)){
             $tags = '';
@@ -542,13 +520,7 @@ case 'view_location':
             echo '</tr>';
         }
     }        
-    if ( $xoopsModuleConfig['useshots']){
-        $class = ($class == 'even') ? 'odd' : 'even';
-        echo '<tr class="' . $class . '">';
-        echo '<td width="30%">' . _XADDRESSES_AM_FORMIMG . ' </td>';
-        echo '<td><img src="' . $uploadurl . $view_location->getVar('logourl') . '" alt="" title=""></td>';
-        echo '</tr>';
-    }      
+
 	$class = ($class == 'even') ? 'odd' : 'even';
 	echo '<tr class="' . $class . '">';
 	echo '<td width="30%">' . _XADDRESSES_AM_FORMDATE . ' </td>';
@@ -600,17 +572,6 @@ case 'view_location':
     echo '</b><br /><br /></td></tr>';
     echo '<tr><td><b>' . _XADDRESSES_AM_ADDRESSES_VOTE_USER . '</b></td>' . '<td><b>' . _XADDRESSES_AM_ADDRESSES_VOTE_IP . '</b></td>' . '<td align="center"><b>' . _XADDRESSES_AM_FORMRATING . '</b></td>'
     . '<td><b>' . _XADDRESSES_AM_FORMDATE . '</b></td>' . '<td align="center"><b>' . _XADDRESSES_AM_FORMDEL . '</b></td></tr>';
-    foreach (array_keys($addressesvotedata_arr) as $i) {
-        echo '<tr>';
-        echo '<td>' . XoopsUser::getUnameFromId($addressesvotedata_arr[$i]->getVar('ratinguser')) . '</td>';
-        echo '<td>' . $addressesvotedata_arr[$i]->getVar('ratinghostname') . '</td>';
-        echo '<td align="center">' . $addressesvotedata_arr[$i]->getVar('rating') . '</td>';
-        echo '<td>' . formatTimestamp($addressesvotedata_arr[$i]->getVar('ratingtimestamp')) . '</td>';
-        echo '<td align="center">';
-        echo myTextForm('location.php?op=del_vote&loc_id=' . $addressesvotedata_arr[$i]->getVar('loc_id') . '&rid=' . $addressesvotedata_arr[$i]->getVar('ratingid') , 'X');
-        echo '</td>';
-        echo '</tr>';
-    }        
     // Utilisateur anonyme
     $criteria = new CriteriaCompo();
     $criteria->add(new Criteria('loc_id', $_REQUEST['addresses_loc_id']));
@@ -622,15 +583,6 @@ case 'view_location':
     echo '</b><br /><br /></td></tr>';   
     echo '<tr><td colspan="2"><b>' . _XADDRESSES_AM_ADDRESSES_VOTE_IP . '</b></td>' . '<td align="center"><b>' . _XADDRESSES_AM_FORMRATING . '</b></td>'
     . '<td><b>' . _XADDRESSES_AM_FORMDATE . '</b></td>' . '<td align="center"><b>' . _XADDRESSES_AM_FORMDEL . '</b></td></tr>';
-    foreach (array_keys($addressesvotedata_arr) as $i) {
-        echo '<tr>';
-        echo '<td colspan="2">' . $addressesvotedata_arr[$i]->getVar('ratinghostname') . '</td>';
-        echo '<td align="center">' . $addressesvotedata_arr[$i]->getVar('rating') . '</td>';
-        echo '<td>' . formatTimestamp($addressesvotedata_arr[$i]->getVar('ratingtimestamp')) . '</td>';
-        echo '<td align="center">';
-        echo myTextForm('location.php?op=del_vote&loc_id=' . $addressesvotedata_arr[$i]->getVar('loc_id') . '&rid=' . $addressesvotedata_arr[$i]->getVar('ratingid') , 'X');
-        echo '</tr>';
-    }
     echo'</table>';
 break;
 */

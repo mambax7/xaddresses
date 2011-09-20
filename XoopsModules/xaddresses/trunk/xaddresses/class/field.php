@@ -683,7 +683,7 @@ class XaddressesFieldHandler extends XoopsPersistableObjectHandler
      */
     function getLocationVars()
     {
-        return array('loc_id', 'loc_cat_id', 'loc_title', 'loc_lat', 'loc_lng', 'loc_zoom', 'loc_submitter', 'loc_status', 'loc_date', 'loc_comments');
+        return array('loc_id', 'loc_cat_id', 'loc_title', 'loc_lat', 'loc_lng', 'loc_zoom', 'loc_submitter', 'loc_status', 'loc_date', 'loc_comments', 'loc_rating', 'loc_votes');
     }
 }
 ?>

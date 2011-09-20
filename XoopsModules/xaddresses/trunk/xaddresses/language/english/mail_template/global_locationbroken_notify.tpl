@@ -1,13 +1,13 @@
 Hello {X_UNAME},
 
-A new file "{FILE_NAME}" has been submitted at {X_SITENAME} and is awaiting approval.
+A broken location report has been submitted and is awaiting approval.
 
-You can view this link submission here:
-{WAITINGFILES_URL}
+You can view this request here:
+{BROKENREPORTS_URL}
 
 -----------
 
-You are receiving this message because you selected to be notified when new files are submitted to our site.
+You are receiving this message because you selected to be notified when broken location reports are submitted.
 
 If this is an error or you wish not to receive further such notifications, please update your subscriptions by visiting the link below:
 {X_UNSUBSCRIBE_URL}

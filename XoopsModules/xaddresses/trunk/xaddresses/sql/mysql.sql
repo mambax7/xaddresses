@@ -12,7 +12,7 @@ CREATE TABLE `xaddresses_locationcategory` (
   `cat_weight`          int(11)                 NOT NULL default '0',
   PRIMARY KEY  (`cat_id`),
   KEY `cat_pid` (`cat_pid`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 # --------------------------------------------------------
 
 #
@@ -29,12 +29,14 @@ CREATE TABLE `xaddresses_location` (
   `loc_submitter`       int(11)                 NOT NULL default '0',
   `loc_status`          tinyint(2)              NOT NULL default '0',
   `loc_date`            int(12)                 NOT NULL default '0',
-  `comments`            int(11) unsigned        NOT NULL default '0',
+  `loc_comments`        int(11) unsigned        NOT NULL default '0',
+  `loc_rating`          double(6,4)             NOT NULL default '0.0000',
+  `loc_votes`           int(11) unsigned        NOT NULL default '0',
   PRIMARY KEY  (`loc_id`),
   KEY `loc_cat_id` (`loc_cat_id`),
   KEY `loc_status` (`loc_status`),
   KEY `loc_title` (`loc_title`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 # --------------------------------------------------------
 
 #
@@ -62,7 +64,7 @@ CREATE TABLE `xaddresses_field` (
   `field_extras`       text,
   PRIMARY KEY  (`field_id`),
   UNIQUE KEY `field_name` (`field_name`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 #
 # Table structure for table `xaddresses_fieldcategory` and `xaddresses_visibility`
@@ -75,7 +77,7 @@ CREATE TABLE `xaddresses_fieldcategory` (
   `cat_weight`      smallint(5) unsigned    NOT NULL default '0',
   
   PRIMARY KEY  (`cat_id`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 CREATE TABLE `xaddresses_visibility` (
   `field_id`            int(12) unsigned        NOT NULL default '0',
@@ -83,7 +85,7 @@ CREATE TABLE `xaddresses_visibility` (
   `profile_group`       smallint(5) unsigned    NOT NULL default '0',
   PRIMARY KEY (`field_id`, `user_group`, `profile_group`),
   KEY `visible` (`user_group`, `profile_group`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 # --------------------------------------------------------
 
 #
@@ -102,11 +104,8 @@ CREATE TABLE `xaddresses_broken` (
   KEY `loc_id` (`loc_id`),
   KEY `report_sender` (`report_sender`),
   KEY `report_ip` (`report_ip`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 # --------------------------------------------------------
-
-
-# ------------------- IN PROGRESS FROM HERE
 
 #
 # Table structure for table `xaddresses_votedata`
@@ -123,9 +122,16 @@ CREATE TABLE `xaddresses_votedata` (
   KEY `rating_user` (`rating_user`),
   KEY `rating_hostname` (`rating_hostname`),
   KEY `loc_id` (`loc_id`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 # --------------------------------------------------------
 
+
+
+
+
+
+
+# ------------------- IN PROGRESS FROM HERE
 
 #
 # Table structure for table `xaddresses_marker`
@@ -138,7 +144,7 @@ CREATE TABLE `xaddresses_marker` (
   `marker_image`           varchar(255)            NOT NULL default '',
   `marker_shadow`          varchar(255)            NOT NULL default '',
   PRIMARY KEY  (`marker_id`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 # ------------------- NOT USED FROM HERE
 
@@ -162,7 +168,7 @@ CREATE TABLE `xaddresses_mod` (
   `description`         text                    NOT NULL,
   `modifysubmitter`     int(11)                 NOT NULL default '0',
   PRIMARY KEY  (`request_id`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 # --------------------------------------------------------
 
 
@@ -177,4 +183,4 @@ CREATE TABLE `xaddresses_modfielddata` (
   `loc_id`              int(12) unsigned        NOT NULL default '0',
   `moddata`             varchar(255)            NOT NULL default '',
   PRIMARY KEY  (`modiddata`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
