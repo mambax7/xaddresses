@@ -260,11 +260,15 @@ define("_XADDRESSES_AM_PERM_EXPORTFIELD_DSC", "Choose fields than groups can exp
 
 define("_XADDRESSES_AM_PERM_OTHERS", "Other permissions");
 define("_XADDRESSES_AM_PERM_OTHERS_DSC", "Select groups that can:");
-define("_XADDRESSES_AM_PERMISSIONS_4","Submit a location");
-define("_XADDRESSES_AM_PERMISSIONS_8","Submit a modification");
-define("_XADDRESSES_AM_PERMISSIONS_16","Note a location");
-define("_XADDRESSES_AM_PERMISSIONS_32","IN_PROGRESS");
-
+//define("_XADDRESSES_AM_PERMISSIONS_1","// IN PROGRESS");
+//define("_XADDRESSES_AM_PERMISSIONS_2","// IN PROGRESS");
+//define("_XADDRESSES_AM_PERMISSIONS_4","Submit a location");
+//define("_XADDRESSES_AM_PERMISSIONS_8","Submit a modification");
+define("_XADDRESSES_AM_PERMISSIONS_16","Tell a friend");
+define("_XADDRESSES_AM_PERMISSIONS_32","Vote a location");
+//define("_XADDRESSES_AM_PERMISSIONS_64","// IN PROGRESS");
+//define("_XADDRESSES_AM_PERMISSIONS_128","// IN PROGRESS");
+//define("_XADDRESSES_AM_PERMISSIONS_256","// IN PROGRESS");
 
 // IN PROGRESS FROM HERE --------------------------------------------------------------------------
 

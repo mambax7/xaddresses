@@ -1,8 +1,8 @@
 Hello {X_UNAME},
 
-A new file category "{CATEGORY_NAME}" has been created at {X_SITENAME}.
+A new location category "{CATEGORY_NAME}" has been created at {X_SITENAME}.
 
-Follow this link to view this file category:
+Follow this link to view this location category:
 {CATEGORY_URL}
 
 Follow this link to view the category index:
@@ -10,7 +10,7 @@ Follow this link to view the category index:
 
 -----------
 
-You are receiving this message because you selected to be notified when new file categories are added to our site.
+You are receiving this message because you selected to be notified when new location categories are added to our site.
 
 If this is an error or you wish not to receive further such notifications, please update your subscriptions by visiting the link below:
 {X_UNSUBSCRIBE_URL}

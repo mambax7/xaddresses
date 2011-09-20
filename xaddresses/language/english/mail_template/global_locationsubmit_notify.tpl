@@ -1,13 +1,13 @@
 Hello {X_UNAME},
 
-A file modification request has been submitted and is awaiting approval.
+A new location "{LOCATION_NAME}" has been submitted at {X_SITENAME} and is awaiting approval.
 
-You can view this request here:
-{MODIFYREPORTS_URL}
+You can view this link submission here:
+{WAITINGFILES_URL}
 
 -----------
 
-You are receiving this message because you selected to be notified when new file modification requests are submitted.
+You are receiving this message because you selected to be notified when new locations are submitted to our site.
 
 If this is an error or you wish not to receive further such notifications, please update your subscriptions by visiting the link below:
 {X_UNSUBSCRIBE_URL}

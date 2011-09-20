@@ -5,17 +5,17 @@ defined('XOOPS_ROOT_PATH') or die("XOOPS root path not defined");
 class XaddressesVotedata extends XoopsObject
 {
 // constructor
-	function __construct()
-	{
-		$this->XoopsObject();
-		$this->initVar("rating_id",XOBJ_DTYPE_INT,null,false,11);
+    function __construct()
+    {
+        $this->XoopsObject();
+        $this->initVar("rating_id",XOBJ_DTYPE_INT,null,false,11);
         $this->initVar("loc_id",XOBJ_DTYPE_INT,null,false,11);
         $this->initVar("rating_user",XOBJ_DTYPE_INT,null,false,11);
         $this->initVar("rating",XOBJ_DTYPE_OTHER,null,false,3);
         $this->initVar("rating_hostname",XOBJ_DTYPE_TXTBOX, null, false);
         $this->initVar("rating_timestamp",XOBJ_DTYPE_INT,null,false,10);
-	}
-	function XaddressesVotedata()
+    }
+    function XaddressesVotedata()
     {
         $this->__construct();
     }
@@ -30,10 +30,10 @@ class XaddressesVotedata extends XoopsObject
     */
     function getForm($loc_id, $action = false)
     {
-		if ($action === false) {
-			$action = $_SERVER['REQUEST_URI'];
-		}
-        $title = $this->isNew() ? _XADDRESSES_AM_VOTE_NEW : _XADDRESSES_AM_VOTE_EDIT;
+        if ($action === false) {
+            $action = $_SERVER['REQUEST_URI'];
+        }
+        $title = $this->isNew() ? _AM_XADDRESSES_VOTE_NEW : _AM_XADDRESSES_VOTE_EDIT;
 
         include_once $GLOBALS['xoops']->path('class/xoopsformloader.php');
 
@@ -54,7 +54,7 @@ class XaddressesVotedata extends XoopsObject
                 '2'  => '2', 
                 '1'  => '1', 
                 '0'  => '0');
-            $rating_select = new XoopsFormSelect(_MD_XADDRESSES_VOTE_VOTE, 'rating');
+            $rating_select = new XoopsFormSelect(_XADDRESSES_MD_LOC_RATE_VOTE, 'rating');
             $rating_select->addOptionArray($options);
         $form->addElement($rating_select, true);
 
@@ -63,7 +63,7 @@ class XaddressesVotedata extends XoopsObject
         $form->addElement(new XoopsFormHidden('loc_id', $loc_id));
         $form->addElement(new XoopsFormHidden('op', 'save_vote'));
 
-        // Submit button		
+        // Submit button        
             $button_tray = new XoopsFormElementTray(_XADDRESSES_AM_ACTION, '' ,'');
             $button_tray->addElement(new XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
             $button_tray->addElement(new XoopsFormButton('', 'reset', _RESET, 'reset'));
@@ -72,15 +72,15 @@ class XaddressesVotedata extends XoopsObject
             $button_tray->addElement($cancel_button);
         $form->addElement($button_tray);
 
-    	return $form;
+        return $form;
     }
 }
 
 class XaddressesVotedataHandler extends XoopsPersistableObjectHandler
 {
-	function __construct(&$db) 
-	{
-		parent::__construct($db, "xaddresses_votedata", 'xaddressesvotedata', 'rating_id', 'loc_id');
+    function __construct(&$db) 
+    {
+        parent::__construct($db, "xaddresses_votedata", 'xaddressesvotedata', 'rating_id', 'loc_id');
     }
 }
 ?>

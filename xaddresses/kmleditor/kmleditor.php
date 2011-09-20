@@ -109,28 +109,28 @@
         new google.maps.Point(5,1)
     );
     var imageNormal = new google.maps.MarkerImage(
-    	"images/square.png",
-    	new google.maps.Size(11, 11),
-    	new google.maps.Point(0, 0),
-    	new google.maps.Point(6, 6)
+        "images/square.png",
+        new google.maps.Size(11, 11),
+        new google.maps.Point(0, 0),
+        new google.maps.Point(6, 6)
     );
     var imageHover = new google.maps.MarkerImage(
-    	"images/square_over.png",
-    	new google.maps.Size(11, 11),
-    	new google.maps.Point(0, 0),
-    	new google.maps.Point(6, 6)
+        "images/square_over.png",
+        new google.maps.Size(11, 11),
+        new google.maps.Point(0, 0),
+        new google.maps.Point(6, 6)
     );
     var imageNormalMidpoint = new google.maps.MarkerImage(
-    	"images/square_transparent.png",
-    	new google.maps.Size(11, 11),
-    	new google.maps.Point(0, 0),
-    	new google.maps.Point(6, 6)
+        "images/square_transparent.png",
+        new google.maps.Size(11, 11),
+        new google.maps.Point(0, 0),
+        new google.maps.Point(6, 6)
     );
     /*var imageHoverMidpoint = new google.maps.MarkerImage(
-    	"square_transparent_over.png",
-    	new google.maps.Size(11, 11),
-    	new google.maps.Point(0, 0),
-    	new google.maps.Point(6, 6)
+        "square_transparent_over.png",
+        new google.maps.Size(11, 11),
+        new google.maps.Point(0, 0),
+        new google.maps.Point(6, 6)
     );*/
     function polystyle() {
         this.name = "Lump";
@@ -240,9 +240,9 @@
         polyShape = new google.maps.Polyline(polyOptions);
         polyShape.setMap(map);
         /*var tmpPolyOptions = {
-        	strokeColor: polylinestyles[lcur].color,
-        	strokeOpacity: polylinestyles[lcur].lineopac,
-        	strokeWeight: polylinestyles[lcur].width
+            strokeColor: polylinestyles[lcur].color,
+            strokeOpacity: polylinestyles[lcur].lineopac,
+            strokeWeight: polylinestyles[lcur].width
         };
         tmpPolyLine = new google.maps.Polyline(tmpPolyOptions);
         tmpPolyLine.setMap(map);*/
@@ -1406,16 +1406,16 @@
     }
     function setmarkers(point) {
         var marker = new google.maps.Marker({
-        	position: point,
-        	map: map,
-        	icon: imageNormal,
-        	draggable: true
+            position: point,
+            map: map,
+            icon: imageNormal,
+            draggable: true
         });
         google.maps.event.addListener(marker, "mouseover", function() {
-        	marker.setIcon(imageHover);
+            marker.setIcon(imageHover);
         });
         google.maps.event.addListener(marker, "mouseout", function() {
-        	marker.setIcon(imageNormal);
+            marker.setIcon(imageNormal);
         });
         google.maps.event.addListener(marker, "drag", function() {
             for (var i = 0; i < markers.length; i++) {
@@ -1454,73 +1454,73 @@
     function setmidmarkers(point) {
         var prevpoint = markers[markers.length-2].getPosition();
         var marker = new google.maps.Marker({
-        	position: new google.maps.LatLng(
-        		point.lat() - (0.5 * (point.lat() - prevpoint.lat())),
-        		point.lng() - (0.5 * (point.lng() - prevpoint.lng()))
-        	),
-        	map: map,
-        	icon: imageNormalMidpoint,
-        	draggable: true
+            position: new google.maps.LatLng(
+                point.lat() - (0.5 * (point.lat() - prevpoint.lat())),
+                point.lng() - (0.5 * (point.lng() - prevpoint.lng()))
+            ),
+            map: map,
+            icon: imageNormalMidpoint,
+            draggable: true
         });
         google.maps.event.addListener(marker, "mouseover", function() {
-        	marker.setIcon(imageNormal);
+            marker.setIcon(imageNormal);
         });
         google.maps.event.addListener(marker, "mouseout", function() {
-        	marker.setIcon(imageNormalMidpoint);
+            marker.setIcon(imageNormalMidpoint);
         });
         /*google.maps.event.addListener(marker, "dragstart", function() {
-        	for (var i = 0; i < midmarkers.length; i++) {
-        		if (midmarkers[i] == marker) {
-        			var tmpPath = tmpPolyLine.getPath();
-        			tmpPath.push(markers[i].getPosition());
-        			tmpPath.push(midmarkers[i].getPosition());
-        			tmpPath.push(markers[i+1].getPosition());
-        			break;
-        		}
-        	}
+            for (var i = 0; i < midmarkers.length; i++) {
+                if (midmarkers[i] == marker) {
+                    var tmpPath = tmpPolyLine.getPath();
+                    tmpPath.push(markers[i].getPosition());
+                    tmpPath.push(midmarkers[i].getPosition());
+                    tmpPath.push(markers[i+1].getPosition());
+                    break;
+                }
+            }
         });
         google.maps.event.addListener(marker, "drag", function() {
-        	for (var i = 0; i < midmarkers.length; i++) {
-        		if (midmarkers[i] == marker) {
-        			tmpPolyLine.getPath().setAt(1, marker.getPosition());
-        			break;
-        		}
-        	}
+            for (var i = 0; i < midmarkers.length; i++) {
+                if (midmarkers[i] == marker) {
+                    tmpPolyLine.getPath().setAt(1, marker.getPosition());
+                    break;
+                }
+            }
         });*/
         google.maps.event.addListener(marker, "dragend", function() {
-        	for (var i = 0; i < midmarkers.length; i++) {
-        		if (midmarkers[i] == marker) {
-        			var newpos = marker.getPosition();
-        			var startMarkerPos = markers[i].getPosition();
-        			var firstVPos = new google.maps.LatLng(
-        				newpos.lat() - (0.5 * (newpos.lat() - startMarkerPos.lat())),
-        				newpos.lng() - (0.5 * (newpos.lng() - startMarkerPos.lng()))
-        			);
-        			var endMarkerPos = markers[i+1].getPosition();
-        			var secondVPos = new google.maps.LatLng(
-        				newpos.lat() - (0.5 * (newpos.lat() - endMarkerPos.lat())),
-        				newpos.lng() - (0.5 * (newpos.lng() - endMarkerPos.lng()))
-        			);
-        			var newVMarker = setmidmarkers(secondVPos);
-        			newVMarker.setPosition(secondVPos);//apply the correct position to the midmarker
-        			var newMarker = setmarkers(newpos);
-        			markers.splice(i+1, 0, newMarker);
-        			polyShape.getPath().insertAt(i+1, newpos);
-        			marker.setPosition(firstVPos);
-        			midmarkers.splice(i+1, 0, newVMarker);
-        			/*tmpPolyLine.getPath().removeAt(2);
-        			tmpPolyLine.getPath().removeAt(1);
-        			tmpPolyLine.getPath().removeAt(0);
-        			newpos = null;
-        			startMarkerPos = null;
-        			firstVPos = null;
-        			endMarkerPos = null;
-        			secondVPos = null;
-        			newVMarker = null;
-        			newMarker = null;*/
-        			break;
-        		}
-        	}
+            for (var i = 0; i < midmarkers.length; i++) {
+                if (midmarkers[i] == marker) {
+                    var newpos = marker.getPosition();
+                    var startMarkerPos = markers[i].getPosition();
+                    var firstVPos = new google.maps.LatLng(
+                        newpos.lat() - (0.5 * (newpos.lat() - startMarkerPos.lat())),
+                        newpos.lng() - (0.5 * (newpos.lng() - startMarkerPos.lng()))
+                    );
+                    var endMarkerPos = markers[i+1].getPosition();
+                    var secondVPos = new google.maps.LatLng(
+                        newpos.lat() - (0.5 * (newpos.lat() - endMarkerPos.lat())),
+                        newpos.lng() - (0.5 * (newpos.lng() - endMarkerPos.lng()))
+                    );
+                    var newVMarker = setmidmarkers(secondVPos);
+                    newVMarker.setPosition(secondVPos);//apply the correct position to the midmarker
+                    var newMarker = setmarkers(newpos);
+                    markers.splice(i+1, 0, newMarker);
+                    polyShape.getPath().insertAt(i+1, newpos);
+                    marker.setPosition(firstVPos);
+                    midmarkers.splice(i+1, 0, newVMarker);
+                    /*tmpPolyLine.getPath().removeAt(2);
+                    tmpPolyLine.getPath().removeAt(1);
+                    tmpPolyLine.getPath().removeAt(0);
+                    newpos = null;
+                    startMarkerPos = null;
+                    firstVPos = null;
+                    endMarkerPos = null;
+                    secondVPos = null;
+                    newVMarker = null;
+                    newMarker = null;*/
+                    break;
+                }
+            }
             polyPoints = polyShape.getPath();
             var stringtobesaved = newpos.lat().toFixed(6) + ',' + newpos.lng().toFixed(6);
             var kmlstringtobesaved = newpos.lng().toFixed(6) + ',' + newpos.lat().toFixed(6);
@@ -1533,43 +1533,43 @@
     function movemidmarker(index) {
         var newpos = markers[index].getPosition();
         if (index != 0) {
-        	var prevpos = markers[index-1].getPosition();
-        	midmarkers[index-1].setPosition(new google.maps.LatLng(
-        		newpos.lat() - (0.5 * (newpos.lat() - prevpos.lat())),
-        		newpos.lng() - (0.5 * (newpos.lng() - prevpos.lng()))
-        	));
-        	//prevpos = null;
+            var prevpos = markers[index-1].getPosition();
+            midmarkers[index-1].setPosition(new google.maps.LatLng(
+                newpos.lat() - (0.5 * (newpos.lat() - prevpos.lat())),
+                newpos.lng() - (0.5 * (newpos.lng() - prevpos.lng()))
+            ));
+            //prevpos = null;
         }
         if (index != markers.length - 1) {
-        	var nextpos = markers[index+1].getPosition();
-        	midmarkers[index].setPosition(new google.maps.LatLng(
-        		newpos.lat() - (0.5 * (newpos.lat() - nextpos.lat())),
-        		newpos.lng() - (0.5 * (newpos.lng() - nextpos.lng()))
-        	));
-        	//nextpos = null;
+            var nextpos = markers[index+1].getPosition();
+            midmarkers[index].setPosition(new google.maps.LatLng(
+                newpos.lat() - (0.5 * (newpos.lat() - nextpos.lat())),
+                newpos.lng() - (0.5 * (newpos.lng() - nextpos.lng()))
+            ));
+            //nextpos = null;
         }
         //newpos = null;
         //index = null;
     }
     function removemidmarker(index) {
         if (markers.length > 0) {//clicked marker has already been deleted
-        	if (index != markers.length) {
-        		midmarkers[index].setMap(null);
-        		midmarkers.splice(index, 1);
-        	} else {
-        		midmarkers[index-1].setMap(null);
-        		midmarkers.splice(index-1, 1);
-        	}
+            if (index != markers.length) {
+                midmarkers[index].setMap(null);
+                midmarkers.splice(index, 1);
+            } else {
+                midmarkers[index-1].setMap(null);
+                midmarkers.splice(index-1, 1);
+            }
         }
         if (index != 0 && index != markers.length) {
-        	var prevpos = markers[index-1].getPosition();
-        	var newpos = markers[index].getPosition();
-        	midmarkers[index-1].setPosition(new google.maps.LatLng(
-        		newpos.lat() - (0.5 * (newpos.lat() - prevpos.lat())),
-        		newpos.lng() - (0.5 * (newpos.lng() - prevpos.lng()))
-        	));
-        	//prevpos = null;
-        	//newpos = null;
+            var prevpos = markers[index-1].getPosition();
+            var newpos = markers[index].getPosition();
+            midmarkers[index-1].setPosition(new google.maps.LatLng(
+                newpos.lat() - (0.5 * (newpos.lat() - prevpos.lat())),
+                newpos.lng() - (0.5 * (newpos.lng() - prevpos.lng()))
+            ));
+            //prevpos = null;
+            //newpos = null;
         }
         //index = null;
     }
@@ -2025,10 +2025,10 @@ body {
     font-size: 10pt;
 }
 a  {
-	text-decoration : none;
+    text-decoration : none;
 }
 a:hover  {
-	text-decoration: underline;
+    text-decoration: underline;
 }
 p {
     padding-bottom: 8px;
@@ -2118,7 +2118,7 @@ h1 {
     padding-top: 5px;
 }
 .clear {
-	clear:both;
+    clear:both;
 }
 #content {
     margin: 10px
@@ -2228,25 +2228,25 @@ h1 {
     background-color: #337EB7;
 }
 .label {
-	float: left;
-	text-align: right;
-	margin-right: 5px;
-	width: 80px;
-	padding-top: 5px;
+    float: left;
+    text-align: right;
+    margin-right: 5px;
+    width: 80px;
+    padding-top: 5px;
 }
 .input {
     float: left;
-	padding-left: 3px;
-	width: 55px;
-	margin: 3px 0px 0px 3px;
-	border: 2px solid #ccc;
+    padding-left: 3px;
+    width: 55px;
+    margin: 3px 0px 0px 3px;
+    border: 2px solid #ccc;
 }
 .inputlong {
     float: left;
-	padding-left: 3px;
-	width: 75px;
-	margin: 3px 0px 0px 3px;
-	border: 2px solid #ccc;
+    padding-left: 3px;
+    width: 75px;
+    margin: 3px 0px 0px 3px;
+    border: 2px solid #ccc;
 }
 .oklink {
     margin-left: 25px;
