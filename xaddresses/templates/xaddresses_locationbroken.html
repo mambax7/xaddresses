@@ -1,5 +1,20 @@
-<b><{$navigation}></b>
-<{$smarty.const._XADDRESSES_MD_LOC_BROKEN_THANKSFORHELP}><br />
-<{$smarty.const._XADDRESSES_MD_LOC_BROKEN_FORSECURITY}>
-</div>
+<{* breadcrumb *}>
+<{foreach item=bread from=$breadcrumb}>
+    <a href="<{$bread.url}>"><{$bread.title}></a>
+    &gt;
+<{/foreach}>
+<{$smarty.const._XADDRESSES_MD_LOC_BROKEN_REPORTBROKEN}>
+
+<br />
+
+<ul>
+    <li><{$smarty.const._XADDRESSES_MD_LOC_BROKEN_THANKSFORHELP}></li>
+    <li><{$smarty.const._XADDRESSES_MD_LOC_BROKEN_FORSECURITY}></li>
+</ul>
+
+<br />
+
+<{if $errorMessage!= ''}>
+	<div class="errorMsg"><{$errorMessage}></div>   
+<{/if}>
 <{$themeForm}>

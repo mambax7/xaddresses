@@ -15,7 +15,24 @@ define("_XADDRESSES_MD_LOC_RATE_RATINGSCALE","The scale is 1 - 10, with 1 being 
 define("_XADDRESSES_MD_LOC_RATE_VOTE","Vote");
 define("_XADDRESSES_MD_LOC_RATE_VOTEOK","Your vote is appreciated.<br />Thank you for taking the time to vote here");
 define("_XADDRESSES_MD_LOC_RATE_VOTEONCE","Please do not vote for the same resource more than once.");
+
+//submit.php
+define("_XADDRESSES_MD_SUBMIT_NEW","IN_PROGRESS");
+define("_XADDRESSES_MD_SUBMIT_EDIT","Edit");
+
+define("_XADDRESSES_MD_SUBMIT_ALLPENDING","?All location information are posted pending verification.");
+define("_XADDRESSES_MD_SUBMIT_DONTABUSE","?Username and IP are recorded, so please don't abuse the system.");
+define("_XADDRESSES_MD_SUBMIT_ISAPPROVED","Your LOcatione has beeen approved");
+define("_XADDRESSES_MD_SUBMIT_PROPOSER","Submit a location");
+define("_XADDRESSES_MD_SUBMIT_RECEIVED","We have recieved your location info. Thank you !");
+define("_XADDRESSES_MD_SUBMIT_SUBMITONCE","Submit your location only once.");
+define("_XADDRESSES_MD_SUBMIT_TAKEDAYS","This will take many days to see your location addedd successfully in our database.");
+
+
+
 // -------------------------------- IN PROGRESS
+
+
 
 
 
@@ -82,14 +99,6 @@ define("_XADDRESSES_MD_LOC_VOTES","(%s votes)");
 // modfile.php
 define("_XADDRESSES_MD_MODFILE_THANKSFORINFO","Thanks for the information. We'll look into your request shortly.");
 
-//submit.php
-define("_XADDRESSES_MD_SUBMIT_ALLPENDING","?All file/script information are posted pending verification.");
-define("_XADDRESSES_MD_SUBMIT_DONTABUSE","?Username and IP are recorded, so please don't abuse the system.");
-define("_XADDRESSES_MD_SUBMIT_ISAPPROVED","Your file has beeen approved");
-define("_XADDRESSES_MD_SUBMIT_PROPOSER","Submit a file");
-define("_XADDRESSES_MD_SUBMIT_RECEIVED","We have recieved your file info. Thank you !");
-define("_XADDRESSES_MD_SUBMIT_SUBMITONCE","Submit your file/script only once.");
-define("_XADDRESSES_MD_SUBMIT_TAKEDAYS","This will take many days to see your file/script addedd successfully in our database.");
 
 //search.php
 define("_XADDRESSES_MD_SEARCH","Filter in the modules list");

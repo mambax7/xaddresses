@@ -29,6 +29,7 @@ class XaddressesBroken extends XoopsObject
     */
     function getForm($loc_id, $action = false)
     {
+        global $xoopsModuleConfig;
         if ($action === false) {
             $action = $_SERVER['REQUEST_URI'];
         }

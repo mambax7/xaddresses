@@ -12,8 +12,9 @@ $votedataHandler =& xoops_getModuleHandler('votedata', 'xaddresses');
 $xoopsOption['template_main'] = 'xaddresses_locationrate.html';
 include_once XOOPS_ROOT_PATH . '/header.php';
 
-$op = isset($_REQUEST['op']) ? $_REQUEST['op'] : 'list_vote';
 
+
+$op = isset($_REQUEST['op']) ? $_REQUEST['op'] : 'new_vote';
 
 $loc_id = (int)($_REQUEST['loc_id']);
 // Redirect if id location not exist
@@ -24,51 +25,58 @@ if ($locationHandler->getCount($criteria) == 0) {
     exit();
 }
 
+/*
 // Check permissions
 if ($permVote == false) {
     redirect_header('index.php', 2, _NOPERM);
     exit();
 }
+*/
+
+
+
+// Get location and category object
+$location = $locationHandler->get($loc_id);
+$category = $categoryHandler->get($location->getVar('loc_cat_id'));
+$categories = xaddresses_MygetItemIds();
+// IN PROGRESS
+// IN PROGRESS
+// IN PROGRESS
+// Check rights
+if(!in_array($location->getVar('loc_cat_id'), $categories)) {
+    redirect_header('index.php', 2, _NOPERM);
+    exit();
+}
+
+// Breadcrumb
+$breadcrumb = array();
+$crumb['title'] = $location->getVar('loc_title');
+$crumb['url'] = 'locationview.php?loc_id=' . $location->getVar('loc_id');
+$breadcrumb[] = $crumb;
+$crumb['title'] = $category->getVar('cat_title');
+$crumb['url'] = 'locationcategoryview.php?cat_id=' . $category->getVar('cat_id');
+$breadcrumb[] = $crumb;
+while ($category->getVar('cat_pid') != 0) {
+    $category = $categoryHandler->get($category->getVar('cat_pid'));
+    $crumb['title'] = $category->getVar('cat_title');
+    $crumb['url'] = 'locationcategoryview.php?cat_id=' . $category->getVar('cat_id');
+    $breadcrumb[] = $crumb;
+}
+// Set breadcrumb array for tamplate
+$breadcrumb = array_reverse($breadcrumb);
+$xoopsTpl->assign('breadcrumb', $breadcrumb);
+unset($breadcrumb, $crumb);
 
 
 
 switch ($op) {
 default:
-case "list_vote":
-    // Get location and category object
-    $location = $locationHandler->get($loc_id);
-    $category = $categoryHandler->get($location->getVar('loc_cat_id'));
-    $categories = xaddresses_MygetItemIds();
-    if(!in_array($location->getVar('loc_cat_id'), $categories)) {
-        redirect_header('index.php', 2, _NOPERM);
-        exit();
-    }
-
-    // Breadcrumb
-    $breadcrumb = array();
-    $crumb['title'] = $location->getVar('loc_title');
-    $crumb['url'] = 'locationview.php?loc_id=' . $location->getVar('loc_id');
-    $breadcrumb[] = $crumb;
-    $crumb['title'] = $category->getVar('cat_title');
-    $crumb['url'] = 'locationcategoryview.php?cat_id=' . $category->getVar('cat_id');
-    $breadcrumb[] = $crumb;
-    while ($category->getVar('cat_pid') != 0) {
-        $category = $categoryHandler->get($category->getVar('cat_pid'));
-        $crumb['title'] = $category->getVar('cat_title');
-        $crumb['url'] = 'locationcategoryview.php?cat_id=' . $category->getVar('cat_id');
-        $breadcrumb[] = $crumb;
-    }
-    // Set breadcrumb array for tamplate
-    $breadcrumb = array_reverse($breadcrumb);
-    $xoopsTpl->assign('breadcrumb', $breadcrumb);
-    unset($breadcrumb, $crumb);
-
+case "new_vote":
     // Set title for template    
-    $title = _XADDRESSES_MD_LOC_RATELOCATION . '&nbsp;-&nbsp;' . $location->getVar('loc_title') . '&nbsp;-&nbsp;' . $category->getVar('cat_title') . '&nbsp;-&nbsp;';
-    foreach (array_keys($title_page) as $i) {
-        $title .= $title_page[$i]->getVar('title') . '&nbsp;-&nbsp;';
-    }
-    $title .= $xoopsModule->name();
+    $title = _XADDRESSES_MD_LOC_RATELOCATION . '&nbsp;-&nbsp;';
+    $title.= $location->getVar('loc_title') . '&nbsp;-&nbsp;';
+    $title.= $category->getVar('cat_title') . '&nbsp;-&nbsp;';
+    $title.= $xoopsModule->name();
     $xoopsTpl->assign('xoops_pagetitle', $title);
     // Set description for template
     $xoTheme->addMeta( 'meta', 'description', strip_tags(_XADDRESSES_MD_LOC_RATELOCATION . ' (' . $location->getVar('loc_title') . ')'));
@@ -77,6 +85,12 @@ case "list_vote":
     $vote =& $votedataHandler->create();
     $form = $vote->getForm($loc_id, $currentFile);
     $xoopsTpl->assign('themeForm', $form->render());    
+    break;
+
+
+
+case "list_vote":
+    // NOP
     break;
 
 

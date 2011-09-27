@@ -1,21 +1,23 @@
 <?php
 $currentFile = basename(__FILE__);
 
+// include module header
 include_once 'header.php';
-include_once XOOPS_ROOT_PATH . '/header.php';
 
-//load classes
+// load classes
 $categoryHandler =& xoops_getModuleHandler('locationcategory', 'xaddresses');
 $locationHandler =& xoops_getModuleHandler('location', 'xaddresses');
 $fieldCategoryHandler =& xoops_getmodulehandler('fieldcategory', 'xaddresses');
 $fieldHandler =& xoops_getModuleHandler('field', 'xaddresses');
 $memberHandler =& xoops_gethandler('member');
 
+$xoopsOption['template_main'] = 'xaddresses_locationedit.html';
+include_once XOOPS_ROOT_PATH . '/header.php';
+
+
+
 $op = isset($_REQUEST['op']) ? $_REQUEST['op'] : 'edit_location';
 $loc_id = (int)($_REQUEST['loc_id']);
-
-$xoopsOption['template_main'] = 'xaddresses_locationview.html';
-
 
 // redirect if id location not exist
 if ($op == 'edit_location' && isset($loc_id)) {
@@ -27,21 +29,68 @@ if ($op == 'edit_location' && isset($loc_id)) {
     }
 }
 
+/*
+// Check permissions
+if ($permVote == false) {
+    redirect_header('index.php', 2, _NOPERM);
+    exit();
+}
+*/
+
 
 
 switch ($op) {
-default:
+    default:
     case 'edit_location':
-        $location =& $locationHandler->get($_REQUEST['loc_id']);
+        $location = $locationHandler->get($loc_id);
+		$category = $categoryHandler->get($location->getVar('loc_cat_id'));
+		// Breadcrumb
+		$breadcrumb = array();
+		$crumb['title'] = $location->getVar('loc_title');
+		$crumb['url'] = 'locationview.php?loc_id=' . $location->getVar('loc_id');
+		$breadcrumb[] = $crumb;
+		$crumb['title'] = $category->getVar('cat_title');
+		$crumb['url'] = 'locationcategoryview.php?cat_id=' . $category->getVar('cat_id');
+		$breadcrumb[] = $crumb;
+		while ($category->getVar('cat_pid') != 0) {
+			$category = $categoryHandler->get($category->getVar('cat_pid'));
+			$crumb['title'] = $category->getVar('cat_title');
+			$crumb['url'] = 'locationcategoryview.php?cat_id=' . $category->getVar('cat_id');
+			$breadcrumb[] = $crumb;
+		}
+		// Set breadcrumb array for tamplate
+		$breadcrumb = array_reverse($breadcrumb);
+		$xoopsTpl->assign('breadcrumb', $breadcrumb);
+		unset($breadcrumb, $crumb);
+
+		// Set title for template    
+		$title = _XADDRESSES_MD_LOC_RATELOCATION . '&nbsp;-&nbsp;';
+		$title.= $location->getVar('loc_title') . '&nbsp;-&nbsp;';
+		$title.= $category->getVar('cat_title') . '&nbsp;-&nbsp;';
+		$title.= $xoopsModule->name();
+		$xoopsTpl->assign('xoops_pagetitle', $title);
+		// Set description for template
+		$xoTheme->addMeta( 'meta', 'description', strip_tags(_XADDRESSES_MD_LOC_RATELOCATION . ' (' . $location->getVar('loc_title') . ')'));
+
+		// Set themeForm for template
         $form = xaddresses_getLocationForm($location, $currentFile);
-        $form->display();
+        $xoopsTpl->assign('themeForm', $form->render());  
         break;
+
 
 
     case 'new_location':
         $location =& $locationHandler->create();
+		// Breadcrumb
+		// NOP
+		// Set breadcrumb array for tamplate
+		$breadcrumb = array();
+		$xoopsTpl->assign('breadcrumb', $breadcrumb);
+		unset($breadcrumb, $crumb);
+
+		// Set themeForm for template
         $form = xaddresses_getLocationForm($location);
-        $form->display();
+        $xoopsTpl->assign('themeForm', $form->render());
         break;
 
 
@@ -61,7 +110,7 @@ default:
         
         $locationfields = $locationHandler->getLocationVars();
 
-        $loc_id = empty($_POST['loc_id']) ? 0 : intval($_POST['loc_id']);
+        $loc_id = empty($_POST['loc_id']) ? 0 : (int)$_POST['loc_id'];
         if (!empty($loc_id)) {
             $location = $locationHandler->get($loc_id);
             if (!is_object($location)) {

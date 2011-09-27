@@ -35,30 +35,6 @@ $location = $locationHandler->get($loc_id);
 $category = $categoryHandler->get($location->getVar('loc_cat_id'));
 
 // Breadcrumb
-/*
-$categories = $categoryHandler->getObjects(null, true, false);
-$criteria = new CriteriaCompo();
-$criteria->setSort('cat_weight ASC, cat_title');
-$criteria->setOrder('ASC');
-$categoriesArray = $categoryHandler->getall($criteria);
-$mytree = new XoopsObjectTree($categoriesArray, 'cat_id', 'cat_pid');
-$nav_parent_id = $mytree->getAllParent($category->getVar('cat_id'));
-$nav_parent_id = array_reverse($nav_parent_id);
-$crumb['title'] = $xoopsModule->name();
-$crumb['url'] = 'index.php';
-$breadcrumb[] = $crumb;
-foreach (array_keys($nav_parent_id) as $i) {
-    $crumb['title'] = $nav_parent_id[$i]->getVar('cat_title');
-    $crumb['url'] = 'locationcategoryview.php?cat_id=' . $nav_parent_id[$i]->getVar('cat_id');
-    $breadcrumb[] = $crumb;
-}
-$crumb['title'] = $location->getVar('loc_title');
-$crumb['url'] = $currentFile . '?loc_id=' . $location->getVar('loc_id');
-$breadcrumb[] = $crumb;
-// Set breadcrumb array for tamplate
-$xoopsTpl->assign('breadcrumb', $breadcrumb);
-unset($breadcrumb, $crumb);
-*/
 $breadcrumb = array();
 $crumb['title'] = $location->getVar('loc_title');
 $crumb['url'] = 'locationview.php?loc_id=' . $location->getVar('loc_id');
