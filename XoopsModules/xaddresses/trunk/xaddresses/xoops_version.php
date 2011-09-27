@@ -21,15 +21,15 @@ $modversion['manual'] = 'Help';
 $modversion['manual_file'] = 'help.html';
 $modversion['dirname'] = $dirname;
 // Extra informations
-$modversion["release"] = "20-09-2011";
+$modversion["release"] = "21-09-2011";
 $modversion["module_status"] = "Stable";
 $modversion['support_site_url']	= "http://www.xoops.org";
 $modversion['support_site_name'] = "www.xoops.org";
 
 // About
 $modversion['status_version'] = 'RC';
-$modversion['release_date'] = '2011/09/20';
-$modversion['release'] = strtotime('2011/09/20'); // 'YYYY/MM/DD' format
+$modversion['release_date'] = '2011/09/21';
+$modversion['release'] = strtotime('2011/09/21'); // 'YYYY/MM/DD' format
 $modversion['demo_site_url'] = 'IN PROGRESS';
 $modversion['demo_site_name'] = 'IN PROGRESS';
 $modversion['forum_site_url'] = 'IN PROGRESS';
@@ -155,7 +155,7 @@ $i++;
 $modversion['templates'][$i]['file'] = 'xaddresses_locationview.html';
 $modversion['templates'][$i]['description'] = '';
 $i++;
-$modversion['templates'][$i]['file'] = 'xaddresses_locationsubmit.html';
+$modversion['templates'][$i]['file'] = 'xaddresses_locationedit.html';
 $modversion['templates'][$i]['description'] = '';
 $i++;
 $modversion['templates'][$i]['file'] = 'xaddresses_locationbroken.html';
