@@ -10,12 +10,14 @@
 <{$htmlMap}>
 
 <{* standard fields *}>
-<{$location.loc_date}>
+<{$smarty.const._XADDRESSES_AM_LOC_DATE}>: <{$location.loc_date}>
 <br />
-<{$location.loc_submitter_uname}>
+<{$smarty.const._XADDRESSES_AM_LOC_SUBMITTER}>: <{$location.loc_submitter_linkeduname}>
 <br />
 <{$smarty.const._XADDRESSES_MD_LOC_RATING}>: <{$location.loc_rating}>
 <{$smarty.const._XADDRESSES_MD_LOC_VOTES|replace:'%s':$location.loc_votes}>
+<br />
+<{$smarty.const._XADDRESSES_MD_LOC_COMMENTS|replace:'%s':$location.loc_comments}>
 <br />
 
 
@@ -33,9 +35,11 @@
 
 <{* operations *}>
 <a href='locationedit.php?loc_id=<{$location.loc_id}>'><{$smarty.const._XADDRESSES_MD_LOC_MODIFY}></a>
+<{if $perm_report_broken}>
 &nbsp;|&nbsp;
 <a href='locationbroken.php?loc_id=<{$location.loc_id}>'><{$smarty.const._XADDRESSES_MD_LOC_REPORTBROKEN}></a>
-<{if $perm_vote}>
+<{/if}>
+<{if $perm_rate}>
 &nbsp;|&nbsp;
 <a href='locationrate.php?loc_id=<{$location.loc_id}>'><{$smarty.const._XADDRESSES_MD_LOC_RATELOCATION}></a>
 <{/if}>

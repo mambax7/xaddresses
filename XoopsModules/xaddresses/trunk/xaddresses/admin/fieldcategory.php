@@ -173,17 +173,7 @@ case 'delete_fieldcategory':
     } else {
         // render start here
         xoops_cp_header();
-        // render main admin menu
-        include (XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->dirname() . '/admin/menu.php');
-        echo moduleAdminTabMenu($adminmenu, $currentFile);
-        // render submenu
-        $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
-        $submenuItem[] = ($op == 'new_fieldcategory' ? _XADDRESSES_AM_FIELDCAT_NEW : '<a href="' . $currentFile . '?op=new_fieldcategory">' . _XADDRESSES_AM_FIELDCAT_NEW . '</a>');
-        $submenuItem[] = ($op == 'list_fieldcategories' ? _XADDRESSES_AM_FIELDCAT_LIST : '<a href="' . $currentFile . '?op=list_fieldcategories">' . _XADDRESSES_AM_FIELDCAT_LIST . '</a>');
-        xaddressesAdminSubmenu ($submenuItem);
-        
-        xoops_confirm(array('ok' => 1, 'id' => $_REQUEST['id'], 'op' => 'delete_fieldcategory'), $_SERVER['REQUEST_URI'], sprintf(_XADDRESSES_AM_RUSUREDEL, $obj->getVar('cat_title') ));
-        
+        xoops_confirm(array('ok' => 1, 'id' => $_REQUEST['id'], 'op' => 'delete_fieldcategory'), $_SERVER['REQUEST_URI'], sprintf(_XADDRESSES_AM_RU_SURE_DEL, $obj->getVar('cat_title') ));
         xoops_cp_footer();
     }
     break;

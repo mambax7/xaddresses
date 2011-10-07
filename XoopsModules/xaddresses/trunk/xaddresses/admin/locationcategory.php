@@ -135,7 +135,7 @@ case "new_locationcategory":
     $obj =& $categoryHandler->create();
     $form = $obj->getForm($currentFile);
     $form->display();
-    
+
     xoops_cp_footer();
     break;
 
@@ -315,7 +315,7 @@ case 'delete_locationcategory':
         $mytree = new XoopsObjectTree($categories, 'cat_id', 'cat_pid');
         $subcategories =$mytree->getAllChild($_REQUEST['cat_id']);
         if (count($subcategories) > 0) {
-            $message .= _XADDRESSES_AM_DELSOUSCAT . ' <br /><br />';
+            $message .= _XADDRESSES_AM_DEL_SUB_CATS . ' <br /><br />';
             foreach (array_keys($subcategories) as $i) {
                 $message .= '<b><span style="color : Red">' . $subcategories[$i]->getVar('cat_title') . '</span></b><br />';
                 $criteria = new CriteriaCompo();
@@ -331,7 +331,10 @@ case 'delete_locationcategory':
         } else {
             $message.='';
         }
-        xoops_confirm(array('ok' => 1, 'cat_id' => $_REQUEST['cat_id'], 'op' => 'delete_locationcategory'), $_SERVER['REQUEST_URI'], sprintf(_XADDRESSES_AM_FORMSUREDEL, $obj->getVar('cat_title')) . '<br /><br />' . $message);
+        // render start here
+        xoops_cp_header();
+        xoops_confirm(array('ok' => 1, 'cat_id' => $_REQUEST['cat_id'], 'op' => 'delete_locationcategory'), $_SERVER['REQUEST_URI'], sprintf(_XADDRESSES_AM_FORM_SURE_DEL, $obj->getVar('cat_title')) . '<br /><br />' . $message);
+        xoops_cp_footer();
     }
     break;
 

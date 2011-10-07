@@ -155,19 +155,17 @@ case 'list_locations':
 
     // sort by form
     $sortbyform = '<form id="form_sort_by" name="form_sort_by" method="get" action="' . $currentFile . '">';
-    $sortbyform.= _XADDRESSES_AM_TRIPAR . "<select name=\"sort_by\" id=\"sort_by\" onchange=\"location='" . XOOPS_URL . "/modules/" . $xoopsModule->dirname() . "/admin/location.php?status_display=$status_display&sort_order=$sort_order&sort_by='+this.options[this.selectedIndex].value\">";
-    $sortbyform.= '<option value="loc_date"' . ($sort_by == 'loc_date' ? ' selected="selected"' : '') . '>' . _XADDRESSES_AM_FORMDATE . '</option>';
-    $sortbyform.= '<option value="loc_title"' . ($sort_by == 'loc_title' ? ' selected="selected"' : '') . '>' . _XADDRESSES_AM_FORMTITLE . '</option>';
-    $sortbyform.= '<option value="loc_cat_id"' . ($sort_by == 'loc_cat_id' ? ' selected="selected"' : '') . '>' . _XADDRESSES_AM_FORMCAT . '</option>';
+    $sortbyform.= _XADDRESSES_AM_SORT_BY . "<select name=\"sort_by\" id=\"sort_by\" onchange=\"location='" . XOOPS_URL . "/modules/" . $xoopsModule->dirname() . "/admin/location.php?status_display=$status_display&sort_order=$sort_order&sort_by='+this.options[this.selectedIndex].value\">";
+    $sortbyform.= '<option value="loc_date"' . ($sort_by == 'loc_date' ? ' selected="selected"' : '') . '>' . _XADDRESSES_AM_SORT_BY_DATE . '</option>';
+    $sortbyform.= '<option value="loc_title"' . ($sort_by == 'loc_title' ? ' selected="selected"' : '') . '>' . _XADDRESSES_AM_SORT_BY_TITLE . '</option>';
+    $sortbyform.= '<option value="loc_cat_id"' . ($sort_by == 'loc_cat_id' ? ' selected="selected"' : '') . '>' . _XADDRESSES_AM_SORT_BY_CAT . '</option>';
     $sortbyform.= '</select> ';
     $sortbyform.= _XADDRESSES_AM_ORDER . "<select name=\"order_tri\" id=\"order_tri\" onchange=\"location='" . XOOPS_URL . "/modules/" . $xoopsModule->dirname() . "/admin/location.php?status_display=$status_display&sort_by=$sort_by&sort_order='+this.options[this.selectedIndex].value\">";
-    $sortbyform.= '<option value="DESC"' . ($sort_order == 'DESC' ? ' selected="selected"' : '') . '>DESC</option>';
-    $sortbyform.= '<option value="ASC"' . ($sort_order == 'ASC' ? ' selected="selected"' : '') . '>ASC</option>';
+    $sortbyform.= '<option value="DESC"' . ($sort_order == 'DESC' ? ' selected="selected"' : '') . '>' . _XADDRESSES_AM_ORDER_DESC . '</option>';
+    $sortbyform.= '<option value="ASC"' . ($sort_order == 'ASC' ? ' selected="selected"' : '') . '>' . _XADDRESSES_AM_ORDER_ASC . '</option>';
     $sortbyform.= '</select> ';
     $sortbyform.= '</form>';
     $GLOBALS['xoopsTpl']->assign('sortbyform', $sortbyform);
-
-
 
     if ($numRows > 0) {
         $locations = $locationHandler->getObjects($criteria, true, false); // get an array of arrays
@@ -202,7 +200,7 @@ case 'list_locations':
         $GLOBALS['xoopsTpl']->assign('token', $GLOBALS['xoopsSecurity']->getTokenHTML() );
         $GLOBALS['xoopsTpl']->display("db:xaddresses_admin_locationlist.html");
     } else {
-        echo '<div class="errorMsg">' . _XADDRESSES_AM_ERROR_NOADDRESSES . '</div>';
+        echo '<div class="errorMsg">' . _XADDRESSES_AM_ERROR_NO_LOCS . '</div>';
     }
     
     xoops_cp_footer();
@@ -243,9 +241,9 @@ case 'edit_location':
     $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
     $submenuItem[] = ($op == 'new_location' ? _XADDRESSES_AM_LOC_NEW : '<a href="' . $currentFile . '?op=new_location">' . _XADDRESSES_AM_LOC_NEW . '</a>');
     $submenuItem[] = ($op == 'list_locations' && $status_display == 1 ? _XADDRESSES_AM_LOC_LIST . ' (' . $countLocations . ')' : '<a href="' . $currentFile . '?op=list_locations">' . _XADDRESSES_AM_LOC_LIST . ' (' . $countLocations . ')' . '</a>');
-    $submenuItem[] = ($op == 'list_locations' && $status_display == 0 ? _XADDRESSES_AM_LOC_WAITING . ($waitingLocations == 0 ? ' (0)' : ' (<span style="color : Red">' . $waitingLocations . '</span>)') : '<a href="' . $currentFile . '?op=list_locations&status_display=0">' . _XADDRESSES_AM_LOC_WAITING . ($waitingLocations == 0 ? ' (0)' : ' (<span style="color : Red">' . $waitingLocations . '</span>)').'</a>');
-    $submenuItem[] = ($op == 'list_locations_broken' ? _XADDRESSES_AM_LOC_BROKEN . ($brokenLocations == 0 ? '(0)' : ' (<span style="color : Red">' . $brokenLocations . '</span>)') : '<a href="' . $currentFile . '?op=list_locations_broken">' . _XADDRESSES_AM_LOC_BROKEN . ($brokenLocations == 0 ? '' : ' (<span style="color : Red">' . $brokenLocations . '</span>)').'</a>');
-    $submenuItem[] = ($op == 'list_locations_modified' ? _XADDRESSES_AM_LOC_MODIFIED . ($modifiedLocations == 0 ? '(0)' : ' (<span style="color : Red">' . $modifiedLocations . '</span>)') : '<a href="' . $currentFile . '?op=list_locations_modified">' . _XADDRESSES_AM_LOC_MODIFIED . ($modifiedLocations == 0 ? '' : ' (<span style="color : Red">' . $modifiedLocations . '</span>)').'</a>');
+    $submenuItem[] = ($op == 'list_locations' && $status_display == 0 ? _XADDRESSES_AM_LOC_WAITING . ($countWaitingLocations == 0 ? ' (0)' : ' (<span style="color : Red">' . $countWaitingLocations . '</span>)') : '<a href="' . $currentFile . '?op=list_locations&status_display=0">' . _XADDRESSES_AM_LOC_WAITING . ($countWaitingLocations == 0 ? ' (0)' : ' (<span style="color : Red">' . $countWaitingLocations . '</span>)').'</a>');
+    $submenuItem[] = ($op == 'list_locations_broken' ? _XADDRESSES_AM_LOC_BROKEN . ($countBrokenLocations == 0 ? '(0)' : ' (<span style="color : Red">' . $countBrokenLocations . '</span>)') : '<a href="' . $currentFile . '?op=list_locations_broken">' . _XADDRESSES_AM_LOC_BROKEN . ($countBrokenLocations == 0 ? '' : ' (<span style="color : Red">' . $countBrokenLocations . '</span>)').'</a>');
+    $submenuItem[] = ($op == 'list_locations_modified' ? _XADDRESSES_AM_LOC_MODIFIED . ($countModifiedLocations == 0 ? '(0)' : ' (<span style="color : Red">' . $countModifiedLocations . '</span>)') : '<a href="' . $currentFile . '?op=list_locations_modified">' . _XADDRESSES_AM_LOC_MODIFIED . ($countModifiedLocations == 0 ? '' : ' (<span style="color : Red">' . $countModifiedLocations . '</span>)').'</a>');
     //$submenuItem[] = ($op == 'search' ? _XADDRESSES_AM_LOC_SEARCH : '<a href="' . $currentFile . '?op=search">' . _XADDRESSES_AM_LOC_SEARCH . '</a>');
     xaddressesAdminSubmenu ($submenuItem);
 
@@ -268,14 +266,15 @@ case 'save_location':
     // Get fields
     $fields = $fieldHandler->loadFields();
 
-    // Get ids of fields that can be edited
-    $gperm_handler =& xoops_gethandler('groupperm');
-    //$editable_fields = $gperm_handler->getItemIds('profile_edit', $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid') );
-    
-    $locationfields = $locationHandler->getLocationVars();
+    // Get ids of fields that can be viewed/edited
+    $groupPermHandler =& xoops_gethandler('groupperm');
+    $viewableFields = $groupPermHandler->getItemIds('field_view', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
+    $editableFields = $groupPermHandler->getItemIds('field_edit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );    
 
-    $loc_id = empty($_POST['loc_id']) ? 0 : intval($_POST['loc_id']);
-    if (!empty($loc_id)) {
+    $locationFields = $locationHandler->getLocationVars();
+
+    if (!empty($_POST['loc_id'])) {
+        $loc_id = (int)$_POST['loc_id'];
         $location = $locationHandler->get($loc_id);
         if (!is_object($location)) {
             $location = $locationHandler->create();
@@ -283,13 +282,10 @@ case 'save_location':
         }
     } else {
         $location = $locationHandler->create();
-        
-        $location->setVar('loc_submitter', $xoopsUser->uid());
-        $location->setVar('loc_date', time()); // creation date
         if (count($fields) > 0) {
             foreach ($fields as $field) {
                 $fieldname = $field->getVar('field_name');
-                if (in_array($fieldname, $locationfields)) {
+                if (in_array($fieldname, $locationFields)) {
                     $default = $field->getVar('field_default');
                     if ($default === '' || $default === null) continue;
                     $location->setVar($fieldname, $default);
@@ -304,7 +300,17 @@ case 'save_location':
     $location->setVar('loc_lat', $_POST['loc_googlemap']['lat']);
     $location->setVar('loc_lng', $_POST['loc_googlemap']['lng']);
     $location->setVar('loc_zoom', $_POST['loc_googlemap']['zoom']);
-    $location->setVar('loc_date', time()); // creation, last modification date
+    // Set submitter and time
+    if (isset($_POST['loc_submitter'])) {
+        $location->setVar('loc_submitter', $_POST['loc_submitter']);
+    } else {
+        $location->setVar('loc_submitter', $xoopsUser->uid());
+    }
+    if (isset($_POST['loc_date'])) {
+        $location->setVar('loc_date', strtotime($_POST['loc_date']['date']) + $_POST['loc_date']['time']); // creation date
+    } else {
+        $location->setVar('loc_date', time()); // creation date
+    }
 
     $errors = array();
     if ($stop != "") {
@@ -346,7 +352,7 @@ case 'save_location':
         // TO DO NOTIFICATION SYSTEM
 
             if ($location->isNew()) {
-                redirect_header($currentFile, 2, _XADDRESSES_AM_ADDRESSCREATED, false);
+                redirect_header($currentFile, 2, _XADDRESSES_AM_LOC_CREATED, false);
             } else {
                 redirect_header($currentFile, 2, _US_PROFUPDATED, false);
             }
@@ -430,12 +436,15 @@ case 'delete_location':
                 }
             }
 */
-			redirect_header($currentFile, 1, _XADDRESSES_AM_REDIRECT_DELOK);
+			redirect_header($currentFile, 1, _XADDRESSES_AM_REDIRECT_DEL_OK);
 		} else {
 			echo $obj->getHtmlErrors();
 		}
 	} else {
-		xoops_confirm(array('ok' => 1, 'loc_id' => $_REQUEST['loc_id'], 'op' => 'delete_location'), $_SERVER['REQUEST_URI'], sprintf(_XADDRESSES_AM_FORMSUREDEL, $obj->getVar('loc_title')) . '<br />');
+        // render start here
+        xoops_cp_header();
+		xoops_confirm(array('ok' => 1, 'loc_id' => $_REQUEST['loc_id'], 'op' => 'delete_location'), $_SERVER['REQUEST_URI'], sprintf(_XADDRESSES_AM_FORM_SURE_DEL, $obj->getVar('loc_title')) . '<br />');
+        xoops_cp_footer();
 	}
     break;
 
