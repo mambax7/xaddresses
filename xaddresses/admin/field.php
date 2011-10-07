@@ -75,25 +75,28 @@ case 'list_fields':
         );
 
     // get fields
-    $fields = $fieldHandler->getObjects(null, true, false);  // get an array of arrays
-    foreach (array_keys($fields) as $i ) {
-        $fields[$i]['canEdit'] = $fields[$i]['field_config'] || $fields[$i]['field_show'] || $fields[$i]['field_edit'];
-        $fields[$i]['canDelete'] = $fields[$i]['field_config'];
-        $fields[$i]['fieldtype'] = $fieldtypes[$fields[$i]['field_type']];
-        $fields[$i]['valuetype'] = $valuetypes[$fields[$i]['field_valuetype']];
-        $fieldcategories[$fields[$i]['cat_id']][] = $fields[$i];
-        $weights[$fields[$i]['cat_id']][] = $fields[$i]['field_weight'];
-    }
-    //sort fields order in categories
-    foreach (array_keys($fieldcategories) as $i ) {
-        array_multisort($weights[$i], SORT_ASC, array_keys($fieldcategories[$i]), SORT_ASC, $fieldcategories[$i]);
-    }
-    ksort($fields);
-    $GLOBALS['xoopsTpl']->assign('fieldcategories', $fieldcategories);
-
-    $GLOBALS['xoopsTpl']->assign('token', $GLOBALS['xoopsSecurity']->getTokenHTML() );
-    $GLOBALS['xoopsTpl']->display("db:xaddresses_admin_fieldlist.html");
+    $numRows = $fieldHandler->getCount();
     
+    if ($numRows > 0) {
+        $fields = $fieldHandler->getObjects(null, true, false);  // get an array of arrays
+        foreach (array_keys($fields) as $i ) {
+            $fields[$i]['fieldtype'] = $fieldtypes[$fields[$i]['field_type']];
+            $fields[$i]['valuetype'] = $valuetypes[$fields[$i]['field_valuetype']];
+            $fieldcategories[$fields[$i]['cat_id']][] = $fields[$i];
+            $weights[$fields[$i]['cat_id']][] = $fields[$i]['field_weight'];
+        }
+        //sort fields order in categories
+        foreach (array_keys($fieldcategories) as $i ) {
+            array_multisort($weights[$i], SORT_ASC, array_keys($fieldcategories[$i]), SORT_ASC, $fieldcategories[$i]);
+        }
+        ksort($fields);
+        $GLOBALS['xoopsTpl']->assign('fieldcategories', $fieldcategories);
+
+        $GLOBALS['xoopsTpl']->assign('token', $GLOBALS['xoopsSecurity']->getTokenHTML() );
+        $GLOBALS['xoopsTpl']->display("db:xaddresses_admin_fieldlist.html");
+    } else {
+        echo '<div class="errorMsg">' . _XADDRESSES_AM_ERROR_NO_FIELDS . '</div>';
+    }
     xoops_cp_footer();
     break;
 
@@ -189,122 +192,142 @@ case 'save_field':
     if (!$GLOBALS['xoopsSecurity']->check()) {
         redirect_header($currentFile, 3, implode(',', $GLOBALS['xoopsSecurity']->getErrors()));
     }
-    // check if field editing is not complete
-    $redirectToEdit = false;
+
+    $redirectToEdit = false; // true if field editing is not complete
     if (isset($_REQUEST['field_id'])) {
-        $obj =& $fieldHandler->get($_REQUEST['field_id']);
+        $field =& $fieldHandler->get($_REQUEST['field_id']);
         // if no configs exist
-        if (!$obj->getVar('field_config') && !$obj->getVar('field_show') && !$obj->getVar('field_edit')) { 
+        if (!$field->getVar('field_config') && !$field->getVar('field_show') && !$field->getVar('field_edit')) { 
             redirect_header('admin.php', 2, _XADDRESSES_AM_FIELDNOTCONFIGURABLE);
         }
     } else {
         // if is a new field
-        $obj =& $fieldHandler->create();
-        $obj->setVar('field_name', $_REQUEST['field_name']);
-        $obj->setVar('field_show', true);
-        $obj->setVar('field_edit', true);
-        $obj->setVar('field_config', true);
+        $field =& $fieldHandler->create();
+        $field->setVar('field_name', $_REQUEST['field_name']);
+        $field->setVar('field_show', true);
+        $field->setVar('field_edit', true);
+        $field->setVar('field_config', true);
         $redirectToEdit = true;
     }
-
+    if ($_REQUEST['field_type'] != $field->getVar('field_type')) {
+    $field->setVar('field_options', array());
+        $field->setVar('field_default', '');
+        $redirectToEdit = true;
+    }
     
-    $obj->setVar('field_title', $_REQUEST['field_title']);
-    $obj->setVar('field_description', $_REQUEST['field_description']);
-    if ($obj->getVar('field_config')) {
-        $obj->setVar('field_type', $_REQUEST['field_type']);
+    $field->setVar('field_title', $_REQUEST['field_title']);
+    $field->setVar('field_description', $_REQUEST['field_description']);
+
+    if ($field->getVar('field_config')) {
+        $field->setVar('field_type', $_REQUEST['field_type']);
         if (isset($_REQUEST['field_valuetype'])) {
-            $obj->setVar('field_valuetype', $_REQUEST['field_valuetype']);
+            $field->setVar('field_valuetype', $_REQUEST['field_valuetype']);
         }
 
         // field_options
-        $options = $obj->getVar('field_options');
-        // if options are removed
-        if (isset($_REQUEST['removeOptions']) && is_array($_REQUEST['removeOptions'])) {
-            foreach ($_REQUEST['removeOptions'] as $optionKey) {
-                unset($options[$optionKey]);
-            }
-            $redirectToEdit = true;
-        }
-        // if options are added
-        if (!empty($_REQUEST['addOption'])) {
-            foreach ($_REQUEST['addOption'] as $option) {
-                if ( empty($option['value'])) continue;
-                $options[$option['key']] = $option['value'];
+        $fieldTypesWithOptions = array('select', 'select-multi', 'radio', 'checkbox');
+        if (in_array($field->getVar('field_type'), $fieldTypesWithOptions)) {
+            $options = $field->getVar('field_options');
+            // if options are removed
+            if (isset($_REQUEST['removeOptions']) && is_array($_REQUEST['removeOptions'])) {
+                foreach ($_REQUEST['removeOptions'] as $optionKey) {
+                    unset($options[$optionKey]);
+                }
                 $redirectToEdit = true;
             }
+            // if options are added
+            if (!empty($_REQUEST['addOption'])) {
+                foreach ($_REQUEST['addOption'] as $option) {
+                    if ( empty($option['value'])) continue;
+                    $options[$option['key']] = $option['value'];
+                    $redirectToEdit = true;
+                }
+            }
+            $field->setVar('field_options', $options);
+            if (count($options) < 1) {
+                $redirectToEdit = true;
+                // SHOW WARNING: PLEASE ENTHER 1 OPTION AT LEAST
+            }
+        } else {
+            $field->setVar('field_options', array());
         }
-        $obj->setVar('field_options', $options);
 
         // field_extras
-        $extras = $obj->getVar('field_extras');
-        if (!empty($_REQUEST['addExtra'])) {
-            foreach ($_REQUEST['addExtra'] as $extra) {
-                if ( empty($extra['value'])) continue;
-                $extras[$extra['key']] = $extra['value'];
-                $redirectToEdit = true;
+        $fieldTypesWithExtras = array(); // IN PROGRESS
+        if (in_array($field->getVar('field_type'), $fieldTypesWithExtras)) {
+            $extras = $field->getVar('field_extras');
+            if (!empty($_REQUEST['addExtra'])) {
+                foreach ($_REQUEST['addExtra'] as $extra) {
+                    if ( empty($extra['value'])) continue;
+                    $extras[$extra['key']] = $extra['value'];
+                    $redirectToEdit = true;
+                }
             }
+            $field->setVar('field_extras', $extras);
+        } else {
+            $field->setVar('field_extras', array());
         }
-        $obj->setVar('field_extras', $extras);
     }
-    if ($obj->getVar('field_edit')) {
+    
+    if ($field->getVar('field_edit')) {
         // field_notnull
         //$notnull = isset($_REQUEST['field_notnull']) ? $_REQUEST['field_notnull'] : false;
-        //$obj->setVar('field_notnull', $notnull); //0 = no, 1 = yes
+        //$field->setVar('field_notnull', $notnull); //0 = no, 1 = yes
         // field_required
         $required = isset($_REQUEST['field_required']) ? $_REQUEST['field_required'] : false;
-        $obj->setVar('field_required', $required); //0 = no, 1 = yes
+        $field->setVar('field_required', $required); //0 = no, 1 = yes
         
         // field_maxlength
         if (isset($_REQUEST['field_maxlength'])) {
-            $obj->setVar('field_maxlength', $_REQUEST['field_maxlength']);
+            $field->setVar('field_maxlength', $_REQUEST['field_maxlength']);
         }
         
         // field_default
         if (isset($_REQUEST['field_default'])) {
-            $field_default = $obj->getValueForSave($_REQUEST['field_default']);
+            $field_default = $field->getValueForSave($_REQUEST['field_default']);
             //Check for multiple selections
             if (is_array($field_default)) {
-                $obj->setVar('field_default', serialize($field_default));
+                $field->setVar('field_default', serialize($field_default));
             } else {
-                $obj->setVar('field_default', $field_default);
+                $field->setVar('field_default', $field_default);
             }
         }
         
         // field_extras
         if (isset($_REQUEST['field_extras'])) {
-            $field_extras = $obj->getValueForSave($_REQUEST['field_extras']);
+            $field_extras = $field->getValueForSave($_REQUEST['field_extras']);
             //Check for multiple selections
             if (is_array($field_extras)) {
-                $obj->setVar('field_extras', serialize($field_extras));
+                $field->setVar('field_extras', serialize($field_extras));
             } else {
-                $obj->setVar('field_extras', $field_extras);
+                $field->setVar('field_extras', $field_extras);
             }
         }
     }
 
-    if ($obj->getVar('field_show')) {
-        $obj->setVar('field_weight', $_REQUEST['field_weight']);
-        $obj->setVar('cat_id', $_REQUEST['field_category']);
+    if ($field->getVar('field_show')) {
+        $field->setVar('field_weight', $_REQUEST['field_weight']);
+        $field->setVar('cat_id', $_REQUEST['field_category']);
     }
 
-    if ($fieldHandler->insert($obj)) {
+    if ($fieldHandler->insert($field)) {
         $groupPermHandler =& xoops_gethandler('groupperm');
 
         $permArray = array();
-        if ($obj->getVar('field_show')) {
+        if ($field->getVar('field_show')) {
             $permArray[] = 'field_view';
             //$permArray[] = 'field_visible';
         }
-        if ($obj->getVar('field_edit')) {
+        if ($field->getVar('field_edit')) {
             $permArray[] = 'field_edit';
         }
-        if ($obj->getVar('field_edit') || $obj->getVar('field_show')) {
+        if ($field->getVar('field_edit') || $field->getVar('field_show')) {
             $permArray[] = 'field_search';
         }
         if (count($permArray) > 0) {
             foreach ($permArray as $perm) {
                 $criteria = new CriteriaCompo(new Criteria('gperm_name', $perm));
-                $criteria->add(new Criteria('gperm_itemid', (int)$obj->getVar('field_id')));
+                $criteria->add(new Criteria('gperm_itemid', (int)$field->getVar('field_id')));
                 $criteria->add(new Criteria('gperm_modid', (int)$GLOBALS['xoopsModule']->getVar('mid')));
                 if ( isset($_REQUEST[$perm]) && is_array($_REQUEST[$perm])) {
                     $perms = $groupPermHandler->getObjects($criteria);
@@ -320,7 +343,7 @@ case 'save_field':
                         if ( !isset($groups[$groupId])) {
                             $permObj =& $groupPermHandler->create();
                             $permObj->setVar('gperm_name', $perm);
-                            $permObj->setVar('gperm_itemid', (int)$obj->getVar('field_id'));
+                            $permObj->setVar('gperm_itemid', (int)$field->getVar('field_id'));
                             $permObj->setVar('gperm_modid', $GLOBALS['xoopsModule']->getVar('mid'));
                             $permObj->setVar('gperm_groupid', $groupId);
                             $groupPermHandler->insert($permObj);
@@ -341,7 +364,7 @@ case 'save_field':
             }
         }
         if ($redirectToEdit) {
-            redirect_header($currentFile . '?op=edit_field&amp;field_id=' . $obj->getVar('field_id'), 3, sprintf("//IN PROGRESS " . _XADDRESSES_AM_NEXT_STEP, _XADDRESSES_AM_FIELD));
+            redirect_header($currentFile . '?op=edit_field&amp;field_id=' . $field->getVar('field_id'), 3, sprintf("//IN PROGRESS " . _XADDRESSES_AM_NEXT_STEP, _XADDRESSES_AM_FIELD));
         } else {
             redirect_header($currentFile, 3, sprintf(_XADDRESSES_AM_SAVEDSUCCESS, _XADDRESSES_AM_FIELD));
         }
@@ -359,9 +382,9 @@ case 'save_field':
     xaddressesAdminSubmenu ($submenuItem);
     include_once('../include/forms.php');
 
-    echo $obj->getHtmlErrors();
+    echo $field->getHtmlErrors();
 
-    $form = xaddresses_getFieldForm($obj);
+    $form = xaddresses_getFieldForm($field);
     $form->display();
     xoops_cp_footer();
     break;

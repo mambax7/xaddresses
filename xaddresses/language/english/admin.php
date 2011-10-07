@@ -303,6 +303,7 @@ define("_XADDRESSES_AM_PERMISSIONS_64","Report broken location");
 //define("_XADDRESSES_AM_ERROR_NOCAT","You have to choose a category!");
 //define("_XADDRESSES_AM_ERROR_NODESCRIPTION","you have to write a description");
 define("_XADDRESSES_AM_ERROR_NO_LOCS", "There are no locations");
+define("_XADDRESSES_AM_ERROR_NO_FIELDS", "There are no extra fields");
 //define("_XADDRESSES_AM_ERROR_SIZE","the file size must be a number");
 define("_XADDRESSES_AM_ERROR_WEIGHT","weight must be a number");
 

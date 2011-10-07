@@ -21,7 +21,7 @@ class XaddressesField extends XoopsObject
         $this->initVar('field_length', XOBJ_DTYPE_INT, 0);
         $this->initVar('field_maxlength', XOBJ_DTYPE_INT, 0);
         $this->initVar('field_weight', XOBJ_DTYPE_INT, 0);
-        $this->initVar('field_default', XOBJ_DTYPE_TXTAREA, "");
+        $this->initVar('field_default', XOBJ_DTYPE_TXTAREA, '');
         $this->initVar('field_notnull', XOBJ_DTYPE_INT, 1);
         $this->initVar('field_edit', XOBJ_DTYPE_INT, 0);
         $this->initVar('field_show', XOBJ_DTYPE_INT, 0);
@@ -636,7 +636,6 @@ class XaddressesFieldHandler extends XoopsPersistableObjectHandler
             $sql.= " " . $changetype;
             $sql.= " " . "`" . $obj->cleanVars['field_name'] . "`";
             $sql.= " " . $type . $maxlengthstring . $notnullstring . $defaultstring;
-            echo ($sql);
             if (!$this->db->query($sql)) {
                 return false;
             }
