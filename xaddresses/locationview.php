@@ -53,7 +53,6 @@ $breadcrumb = array_reverse($breadcrumb);
 $xoopsTpl->assign('breadcrumb', $breadcrumb);
 unset($breadcrumb, $crumb);
 
-
 // Get location's standard fields
 $locationAsArray = $location->toArray();
 $submitter =& $memberHandler->getUser($locationAsArray['loc_submitter']);
@@ -84,8 +83,8 @@ $xoopsTpl->assign('fieldscategoriesarray', $fieldsCategoriesArray);
 
 // Get ids of fields that can be viewed/edited
 $groupPermHandler =& xoops_gethandler('groupperm');
-$viewableFields = $groupPermHandler->getItemIds('field_view', $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid') );
-$editableFields = $groupPermHandler->getItemIds('field_edit', $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid') );
+$viewableFields = $groupPermHandler->getItemIds('field_view', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
+$editableFields = $groupPermHandler->getItemIds('field_edit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
 
 //$fields = $locationHandler->loadFields();
 // populate $elementsArray[$cat_id] tri-dimensional array with {@link XaddressesField} objects
@@ -153,9 +152,9 @@ $htmlMap = $map->showMap(false, false); // no autozoom
 // Set Google map for tamplate
 $xoopsTpl->assign('htmlMap', $htmlMap);
 
-
 // Set permission for template
-$xoopsTpl->assign('perm_vote', $permVote);
+$xoopsTpl->assign('perm_rate', $permRate);
+$xoopsTpl->assign('perm_report_broken', $permReportBroken);
 $xoopsTpl->assign('perm_tell_a_friend', $permTellAFriend);
 // Set link for tellafriend
 if (($xoopsModuleConfig['usetellafriend'] == 1) and (is_dir('../tellafriend'))) {

@@ -33,7 +33,7 @@ class XaddressesVotedata extends XoopsObject
         if ($action === false) {
             $action = $_SERVER['REQUEST_URI'];
         }
-        $title = $this->isNew() ? _AM_XADDRESSES_VOTE_NEW : _AM_XADDRESSES_VOTE_EDIT;
+        $title = $this->isNew() ? _XADDRESSES_AM_LOC_RATE_NEW : _XADDRESSES_AM_LOC_RATE_EDIT;
 
         include_once $GLOBALS['xoops']->path('class/xoopsformloader.php');
 
@@ -54,7 +54,7 @@ class XaddressesVotedata extends XoopsObject
                 '2'  => '2', 
                 '1'  => '1', 
                 '0'  => '0');
-            $rating_select = new XoopsFormSelect(_XADDRESSES_MD_LOC_RATE_VOTE, 'rating');
+            $rating_select = new XoopsFormSelect(_XADDRESSES_AM_LOC_RATE_VOTE, 'rating');
             $rating_select->addOptionArray($options);
         $form->addElement($rating_select, true);
 
@@ -65,7 +65,7 @@ class XaddressesVotedata extends XoopsObject
 
         // Submit button        
             $button_tray = new XoopsFormElementTray(_XADDRESSES_AM_ACTION, '' ,'');
-            $button_tray->addElement(new XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
+            $button_tray->addElement(new XoopsFormButton('', 'submit', _XADDRESSES_AM_LOC_RATE_RATE, 'submit'));
             $button_tray->addElement(new XoopsFormButton('', 'reset', _RESET, 'reset'));
                 $cancel_button = new XoopsFormButton('', 'cancel', _CANCEL, 'button');
                 $cancel_button->setExtra("onclick='javascript:history.back();'");

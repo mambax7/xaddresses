@@ -16,21 +16,26 @@ include_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['xoopsModule']->getVar('di
 
 $myts =& MyTextSanitizer::getInstance();
 
-// Get ids of categories in which locations can be viewed/edited/submitted
+//permission
 $groupPermHandler =& xoops_gethandler('groupperm');
-$viewableCategories = $groupPermHandler->getItemIds('in_category_view', $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid') );
-$editableCategories = $groupPermHandler->getItemIds('in_category_edit', $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid') );
-$submitableCategories = $groupPermHandler->getItemIds('in_category_submit', $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid') );
+if (is_object($GLOBALS['xoopsUser'])) {
+    $groups = $GLOBALS['xoopsUser']->getGroups();
+} else {
+	$groups = XOOPS_GROUP_ANONYMOUS;
+}
+$viewableCategories = $groupPermHandler->getItemIds('in_category_view', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
+$editableCategories = $groupPermHandler->getItemIds('in_category_edit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
+$submitableCategories = $groupPermHandler->getItemIds('in_category_submit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
 // Get extra permissions
-//$perm1 = ($groupPermHandler->checkRight('others', 1, $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid'))) ? true : false ;
-//$perm2 = ($groupPermHandler->checkRight('others', 2, $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid'))) ? true : false ;
-//$permSubmit = ($groupPermHandler->checkRight('others', 4, $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid'))) ? true : false ;
-//$permModif = ($groupPermHandler->checkRight('others', 8, $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid'))) ? true : false ;
-$permTellAFriend = ($groupPermHandler->checkRight('others', 16, $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid'))) ? true : false ;
-$permVote = ($groupPermHandler->checkRight('others', 32, $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid'))) ? true : false ;
-//$perm64 = ($groupPermHandler->checkRight('others', 64, $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid'))) ? true : false ;
-//$perm128 = ($groupPermHandler->checkRight('others', 128, $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid'))) ? true : false ;
-//$perm256 = ($groupPermHandler->checkRight('others', 256, $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid'))) ? true : false ;
+$permModifySubmitter = ($groupPermHandler->checkRight('others', 1, $groups, $GLOBALS['xoopsModule']->getVar('mid'))) ? true : false ;
+$permModifyDate = ($groupPermHandler->checkRight('others', 2, $groups, $GLOBALS['xoopsModule']->getVar('mid'))) ? true : false ;
+$permSubmit = ($groupPermHandler->checkRight('others', 4, $groups, $GLOBALS['xoopsModule']->getVar('mid'))) ? true : false ;
+$permModif = ($groupPermHandler->checkRight('others', 8, $groups, $GLOBALS['xoopsModule']->getVar('mid'))) ? true : false ;
+$permTellAFriend = ($groupPermHandler->checkRight('others', 16, $groups, $GLOBALS['xoopsModule']->getVar('mid'))) ? true : false ;
+$permRate = ($groupPermHandler->checkRight('others', 32, $groups, $GLOBALS['xoopsModule']->getVar('mid'))) ? true : false ;
+$permReportBroken = ($groupPermHandler->checkRight('others', 64, $groups, $GLOBALS['xoopsModule']->getVar('mid'))) ? true : false ;
+//$perm128 = ($groupPermHandler->checkRight('others', 128, $groups, $GLOBALS['xoopsModule']->getVar('mid'))) ? true : false ;
+//$perm256 = ($groupPermHandler->checkRight('others', 256, $groups, $GLOBALS['xoopsModule']->getVar('mid'))) ? true : false ;
 /*
 if ( $xoopsUser ) {
     if ( !$xoopsUser->isAdmin($GLOBALS['xoopsModule']->mid()) ) {
@@ -42,6 +47,7 @@ if ( $xoopsUser ) {
     exit();
 }
 */
+
 if ( !isset($GLOBALS['xoopsTpl']) || !is_object($GLOBALS['xoopsTpl'])  ) {
     include_once $GLOBALS['xoops']->path( '/class/template.php' );
     $GLOBALS['xoopsTpl'] = new XoopsTpl();

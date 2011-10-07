@@ -1,4 +1,26 @@
 <?php
+// list category children
+function getChildrenTree ($cat_id = 0, $categories, $prefix = '', $sufix = '', $order = '') {
+    $prefix = $prefix . '--';
+    $sufix = $sufix . '';
+    //load classes
+    $categoryHandler =& xoops_getModuleHandler('locationcategory', 'xaddresses');
+
+    $return = array();
+    foreach ($categories as $category) {
+        $return[] = array('prefix' => $prefix, 'sufix' => $sufix, 'category' => $category);
+        $criteria = new CriteriaCompo();
+        $criteria->add(new Criteria('cat_pid', $category->getVar('cat_id')));
+        $criteria->setSort('cat_weight ASC, cat_title');
+        $criteria->setOrder('ASC');
+        $subcategories = $categoryHandler->getall($criteria);
+        if (count($subcategories) != 0){
+            $return = array_merge ($return, getChildrenTree($category->getVar('cat_id'), $subcategories, $prefix, $sufix, $order));
+        }
+    }
+    return $return;
+}
+
 /**
  * Internal function for permissions
  *

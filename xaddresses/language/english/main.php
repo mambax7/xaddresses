@@ -1,4 +1,17 @@
 <?php
+// locationview.php:
+define("_XADDRESSES_MD_LOC_COMMENTS","Comments (%s)");
+//define("_XADDRESSES_MD_LOC_NBTELECH","Viewed %s time");
+//define("_XADDRESSES_MD_LOC_NONEXISTENT","this download does not exist in our database");
+define("_XADDRESSES_MD_LOC_RATING","Rate");
+define("_XADDRESSES_MD_LOC_VOTES","(%s votes)");
+define("_XADDRESSES_MD_LOC_MODIFY","Modify");
+define("_XADDRESSES_MD_LOC_RATELOCATION","Rate location");
+define("_XADDRESSES_MD_LOC_REPORTBROKEN","Repport broken location");
+define("_XADDRESSES_MD_LOC_TELLAFRIEND","Send to a Friend");
+define("_XADDRESSES_MD_LOC_INTLOCATIONFOUND","Here is an important location %s");
+
+
 // locationbroken.php
 define("_XADDRESSES_MD_LOC_BROKEN_ALREADYREPORTED","You have already submitted an error report for this location.");
 define("_XADDRESSES_MD_LOC_BROKEN_FORSECURITY","For security reasons your user name and IP address will also be temporarily recorded.");
@@ -6,11 +19,11 @@ define("_XADDRESSES_MD_LOC_BROKEN_REPORTBROKEN","Broken Location Report");
 define("_XADDRESSES_MD_LOC_BROKEN_THANKSFORHELP","Thank you for helping to maintain this database's integrity.");
 define("_XADDRESSES_MD_LOC_BROKEN_THANKSFORINFO","Thanks for the information. We'll look into your request shortly.");
 
+
 // locationrate.php
 define("_XADDRESSES_MD_LOC_RATE_BEOBJECTIVE","Please be objective, if everyone receives a 1 or a 10, the ratings aren't very useful.");
 define("_XADDRESSES_MD_LOC_RATE_CANTVOTEOWN","Do not vote for your own resource.<br />All votes are recorded and verified.");
 define("_XADDRESSES_MD_LOC_RATE_DONOTVOTE","Do not vote for your own resource.");
-define("_XADDRESSES_MD_LOC_RATE_RATE","Rate it !");
 define("_XADDRESSES_MD_LOC_RATE_RATINGSCALE","The scale is 1 - 10, with 1 being poor and 10 being excellent.");
 define("_XADDRESSES_MD_LOC_RATE_VOTE","Vote");
 define("_XADDRESSES_MD_LOC_RATE_VOTEOK","Your vote is appreciated.<br />Thank you for taking the time to vote here");
@@ -20,8 +33,8 @@ define("_XADDRESSES_MD_LOC_RATE_VOTEONCE","Please do not vote for the same resou
 define("_XADDRESSES_MD_SUBMIT_NEW","IN_PROGRESS");
 define("_XADDRESSES_MD_SUBMIT_EDIT","Edit");
 
-define("_XADDRESSES_MD_SUBMIT_ALLPENDING","?All location information are posted pending verification.");
-define("_XADDRESSES_MD_SUBMIT_DONTABUSE","?Username and IP are recorded, so please don't abuse the system.");
+define("_XADDRESSES_MD_SUBMIT_ALLPENDING","All location information are posted pending verification.");
+define("_XADDRESSES_MD_SUBMIT_DONTABUSE","Username and IP are recorded, so please don't abuse the system.");
 define("_XADDRESSES_MD_SUBMIT_ISAPPROVED","Your LOcatione has beeen approved");
 define("_XADDRESSES_MD_SUBMIT_PROPOSER","Submit a location");
 define("_XADDRESSES_MD_SUBMIT_RECEIVED","We have recieved your location info. Thank you !");
@@ -38,7 +51,7 @@ define("_XADDRESSES_MD_SUBMIT_TAKEDAYS","This will take many days to see your lo
 
 
 
-
+/*
 
 
 
@@ -81,20 +94,7 @@ define("_XADDRESSES_MD_CAT_TITLEATOZ","Title (A to Z)");
 define("_XADDRESSES_MD_CAT_TITLEZTOA","Title (Z to A)");
 define("_XADDRESSES_MD_CAT_VOTE","Vote");
 
-// locationview.php:
-define("_XADDRESSES_MD_LOC_AUTHOR","Submitted by");
-define("_XADDRESSES_MD_LOC_COMMENTS","Comments (%s)");
-define("_XADDRESSES_MD_LOC_DATEPROP","Submitted Date");
-define("_XADDRESSES_MD_LOC_ICI","Here");
-define("_XADDRESSES_MD_LOC_INTLOCATIONFOUND","Here is an important location %s");
-define("_XADDRESSES_MD_LOC_NBTELECH","Viewed %s time");
-define("_XADDRESSES_MD_LOC_NONEXISTENT","this download does not exist in our database");
-define("_XADDRESSES_MD_LOC_MODIFY","Modify");
-define("_XADDRESSES_MD_LOC_RATING","Rate");
-define("_XADDRESSES_MD_LOC_RATELOCATION","Rate this location");
-define("_XADDRESSES_MD_LOC_REPORTBROKEN","Rapport a broken location");
-define("_XADDRESSES_MD_LOC_TELLAFRIEND","Send to a Friend");
-define("_XADDRESSES_MD_LOC_VOTES","(%s votes)");
+
 
 // modfile.php
 define("_XADDRESSES_MD_MODFILE_THANKSFORINFO","Thanks for the information. We'll look into your request shortly.");
@@ -151,4 +151,5 @@ define("_XADDRESSES_MD_SUP_EVOLUTIONS","Envisaged Developments:");
 define("_XADDRESSES_MD_SUP_FRONTOFFICE","Front Office:");
 define("_XADDRESSES_MD_SUP_INFOS","Informations:");
 define("_XADDRESSES_MD_SUP_NOTES","Notes:");
+*/
 ?>

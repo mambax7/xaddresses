@@ -74,6 +74,14 @@ define("_XADDRESSES_AM_LOC_BROKEN","Broken locations");
 define("_XADDRESSES_AM_LOC_MODIFIED","Modified locations");
 define("_XADDRESSES_AM_LOC_SEARCH","Search");
 
+define("_XADDRESSES_AM_SORT_BY","sorted by: ");
+define("_XADDRESSES_AM_SORT_BY_DATE","date");
+define("_XADDRESSES_AM_SORT_BY_TITLE","title");
+define("_XADDRESSES_AM_SORT_BY_CAT","category");
+define("_XADDRESSES_AM_ORDER"," order: ");
+define("_XADDRESSES_AM_ORDER_DESC","DESC");
+define("_XADDRESSES_AM_ORDER_ASC","ASC");
+
 define("_XADDRESSES_AM_LOCATION","Location");
 define("_XADDRESSES_AM_LOC_ADD","Add new Location");
 define("_XADDRESSES_AM_LOC_EDIT","Modify Location");
@@ -85,8 +93,11 @@ define("_XADDRESSES_AM_LOC_COORDINATES_DESC","Latitude, Longitude and Zoom level
 define("_XADDRESSES_AM_LOC_CAT","Category");
 define("_XADDRESSES_AM_LOC_CAT_DESC","Choose the Location category");
 define("_XADDRESSES_AM_LOC_WEIGHT","Weight");
+define("_XADDRESSES_AM_LOC_WEIGHT_DESC","// IN PROGRESS");
 define("_XADDRESSES_AM_LOC_DATE","Date");
+define("_XADDRESSES_AM_LOC_DATE_DESC","// IN PROGRESS");
 define("_XADDRESSES_AM_LOC_SUBMITTER","Submitter");
+define("_XADDRESSES_AM_LOC_SUBMITTER_DESC","// IN PROGRESS");
 define("_XADDRESSES_AM_LOC_STATUS","Status");
 define("_XADDRESSES_AM_LOC_STATUS_OK","OK");
 define("_XADDRESSES_AM_LOC_STATUS_NOT_OK","NOT OK");
@@ -100,13 +111,21 @@ define("_XADDRESSES_AM_DISPLAY","Display");
 define("_XADDRESSES_AM_LOC_UNLOCK","Activate");
 define("_XADDRESSES_AM_LOC_LOCK","Dectivate");
 
-//locationbroken.php
+define("_XADDRESSES_AM_LOC_CREATED", "Location Created");
+
 //class/broken.php
 define("_XADDRESSES_AM_LOC_BROKEN_NEW","Repport Broken Location");
 define("_XADDRESSES_AM_LOC_BROKEN_EDIT","Edit Broken Location");
 define("_XADDRESSES_AM_LOC_BROKEN_DESCRIPTION","Description");
 define("_XADDRESSES_AM_LOC_BROKEN_SENDER","Repport Author");
 define("_XADDRESSES_AM_LOC_BROKEN_SURDEL","Are you sure you want to delete this repport?");
+
+//class/votedata.php
+define("_XADDRESSES_AM_LOC_RATE_NEW","Vote Location");
+define("_XADDRESSES_AM_LOC_RATE_EDIT","Edit Location Vote");
+define("_XADDRESSES_AM_LOC_RATE_VOTE","Vote");
+define("_XADDRESSES_AM_LOC_RATE_RATE","Rate it !");
+
 
 
 //admin/itemcategory.php
@@ -189,6 +208,11 @@ define("_XADDRESSES_AM_FIELD_UNICODE_TXTAREA", "Unicode Text Area");
 define("_XADDRESSES_AM_FIELD_UNICODE_TXTBOX", "Unicode Text field");
 define("_XADDRESSES_AM_FIELD_UNICODE_URL", "Unicode URL");
 
+define("_XADDRESSES_AM_FIELD_ADDOPTION", "Add Option");
+define("_XADDRESSES_AM_FIELD_REMOVEOPTIONS", "Remove Options");
+define("_XADDRESSES_AM_FIELD_KEY", "Value to be stored");
+define("_XADDRESSES_AM_FIELD_VALUE", "Text to be displayed");
+
 define("_XADDRESSES_AM_FIELD_NOTNULL", "Not Null?");
 define("_XADDRESSES_AM_FIELD_NOTNULL_DESC", "Not Null?");
 
@@ -203,14 +227,14 @@ define("_XADDRESSES_AM_FIELD_DEFAULT_DESC", "// IN PROGRESS");
 define("_XADDRESSES_AM_FIELD_REQUIRED", "Required?");
 define("_XADDRESSES_AM_FIELD_REQUIRED_DESC", "// IN PROGRESS");
 
-define("_XADDRESSES_AM_FIELD_VIEWABLE", "Vieawble by");
-define("_XADDRESSES_AM_FIELD_VIEWABLE_DESC", "// IN PROGRESS");
-define("_XADDRESSES_AM_FIELD_EDITABLE", "Editable by");
-define("_XADDRESSES_AM_FIELD_EDITABLE_DESC", "// IN PROGRESS");
-define("_XADDRESSES_AM_FIELD_SEARCHABLE", "Searchable by");
-define("_XADDRESSES_AM_FIELD_SEARCHABLE_DESC", "// IN PROGRESS");
-define("_XADDRESSES_AM_FIELD_EXPORTABLE", "Exportable by");
-define("_XADDRESSES_AM_FIELD_EXPORTABLE_DESC", "// IN PROGRESS");
+define("_XADDRESSES_AM_FIELD_VIEWABLE", "Field viewable by");
+define("_XADDRESSES_AM_FIELD_VIEWABLE_DESC", "Groups that can view data stored in this field");
+define("_XADDRESSES_AM_FIELD_EDITABLE", "Field editable by");
+define("_XADDRESSES_AM_FIELD_EDITABLE_DESC", "Groups that can edit data stored in this field");
+define("_XADDRESSES_AM_FIELD_SEARCHABLE", "Field searchable by");
+define("_XADDRESSES_AM_FIELD_SEARCHABLE_DESC", "Groups that can search data stored in field");
+define("_XADDRESSES_AM_FIELD_EXPORTABLE", "Filed exportable by");
+define("_XADDRESSES_AM_FIELD_EXPORTABLE_DESC", "Groups that can export data stored in field");
 
 
 //admin/field.php
@@ -260,19 +284,44 @@ define("_XADDRESSES_AM_PERM_EXPORTFIELD_DSC", "Choose fields than groups can exp
 
 define("_XADDRESSES_AM_PERM_OTHERS", "Other permissions");
 define("_XADDRESSES_AM_PERM_OTHERS_DSC", "Select groups that can:");
-//define("_XADDRESSES_AM_PERMISSIONS_1","// IN PROGRESS");
-//define("_XADDRESSES_AM_PERMISSIONS_2","// IN PROGRESS");
-//define("_XADDRESSES_AM_PERMISSIONS_4","Submit a location");
-//define("_XADDRESSES_AM_PERMISSIONS_8","Submit a modification");
-define("_XADDRESSES_AM_PERMISSIONS_16","Tell a friend");
-define("_XADDRESSES_AM_PERMISSIONS_32","Vote a location");
-//define("_XADDRESSES_AM_PERMISSIONS_64","// IN PROGRESS");
-//define("_XADDRESSES_AM_PERMISSIONS_128","// IN PROGRESS");
-//define("_XADDRESSES_AM_PERMISSIONS_256","// IN PROGRESS");
+define("_XADDRESSES_AM_PERMISSIONS_1","Modify location submitter");
+define("_XADDRESSES_AM_PERMISSIONS_2","Modify location date");
+//define("_XADDRESSES_AM_PERMISSIONS_4","Submit a location"); // IN PROGRESS
+//define("_XADDRESSES_AM_PERMISSIONS_8","Submit a modification"); // IN PROGRESS
+define("_XADDRESSES_AM_PERMISSIONS_16","Send to a Friend");
+define("_XADDRESSES_AM_PERMISSIONS_32","Rate location");
+define("_XADDRESSES_AM_PERMISSIONS_64","Report broken location");
+//define("_XADDRESSES_AM_PERMISSIONS_128","// IN PROGRESS"); // IN PROGRESS
+//define("_XADDRESSES_AM_PERMISSIONS_256","// IN PROGRESS"); // IN PROGRESS
+
+
+
+// Error messages
+//define("_XADDRESSES_AM_ERROR_CAT","You can not use this category (looping on itself)");
+//define("_XADDRESSES_AM_ERROR_NO_MOD_LOCS","there is not any modified addresses");
+//define("_XADDRESSES_AM_ERROR_NO_BROKEN_LOCS","there is not any broken addresses");
+//define("_XADDRESSES_AM_ERROR_NOCAT","You have to choose a category!");
+//define("_XADDRESSES_AM_ERROR_NODESCRIPTION","you have to write a description");
+define("_XADDRESSES_AM_ERROR_NO_LOCS", "There are no locations");
+//define("_XADDRESSES_AM_ERROR_SIZE","the file size must be a number");
+define("_XADDRESSES_AM_ERROR_WEIGHT","weight must be a number");
+
+// Redirection Messages
+define("_XADDRESSES_AM_REDIRECT_DEL_OK","Successfuly deleted");
+//define("_XADDRESSES_AM_REDIRECT_NODELFIELD","You can not delete this field (Basic Field)");
+define("_XADDRESSES_AM_REDIRECT_SAVE","Successfully registred");
+
+// Other Messages
+define("_XADDRESSES_AM_RU_SURE_DEL", "Are you sure you want to delete %s");
+define("_XADDRESSES_AM_FORM_SURE_DEL", "Are you sure you want to delete : <b><span style='color : Red'> %s </span></b>");
+define("_XADDRESSES_AM_DEL_SUB_CATS","The following categories will be totally deleted:");
+define("_XADDRESSES_AM_SAVEDSUCCESS", "%s saved successfully");
+define("_XADDRESSES_AM_DELETEDSUCCESS", "%s deleted successfully");
+
 
 // IN PROGRESS FROM HERE --------------------------------------------------------------------------
 
-
+/*
 
 
 //version  1.1
@@ -286,7 +335,6 @@ define("_XADDRESSES_AM_INDEX_VERSION_FICHIER_KO","The file version management mo
 //categories.php
 
 define("_XADDRESSES_AM_DELADDRESSES","with the following addresses:");
-define("_XADDRESSES_AM_DELSOUSCAT","The following categories will be totally deleted:");
 define("_XADDRESSES_AM_ADDRESSESINCAT","address(es) in this category");
 define("_XADDRESSES_AM_THEREIS","there are");
 
@@ -336,8 +384,9 @@ define("_XADDRESSES_AM_MODIFIED_SURDEL","Are you sure you want to delete this ad
     define("_XADDRESSES_AM_IMPORT_WFDOWNLOADS_SHOTS","Select Upload Directory (the path) for screen shots of WF-Downloads");
 
 //Pour les options de filtre
-define("_XADDRESSES_AM_ORDER"," order: ");
-define("_XADDRESSES_AM_TRIPAR","sorted by: ");
+
+
+
 
 //Formulaire et tableau
 define("_XADDRESSES_AM_FORMADD","Add");
@@ -364,7 +413,7 @@ define("_XADDRESSES_AM_FORMPLATFORM","Plateform");
 define("_XADDRESSES_AM_FORMPOSTER","Posted by ");
 define("_XADDRESSES_AM_FORMRATING","Note");
 define("_XADDRESSES_AM_FORMSIZE","File size(bytes)");
-define("_XADDRESSES_AM_FORMSUREDEL", "Are you sure you want to delete : <b><span style='color : Red'> %s </span></b>");
+
 define("_XADDRESSES_AM_FORMTEXT","Description");
 define("_XADDRESSES_AM_FORMTEXTADDRESSES","Description : <br /><br />Use the delimiter '<b>[pagebreak]</b>' to difine the size of the short description. <br /> The short description allows to reduce the text size in the homepage of the module and categories.");
 define("_XADDRESSES_AM_FORMTITLE","Title");
@@ -378,20 +427,7 @@ define("_XADDRESSES_AM_FORMWITHFILE","With the file: ");
 define("_XADDRESSES_AM_FORMSUBMITTER","Posted by");
 define("_XADDRESSES_AM_FORMDATEUPDATE","Update the date");
 
-//Message d'erreur
-define("_XADDRESSES_AM_ERROR_CAT","You can not use this category (looping on itself)");
-define("_XADDRESSES_AM_ERROR_NOBMODADDRESSES","there is not any modified addresses");
-define("_XADDRESSES_AM_ERROR_NOBROKENADDRESSES","there is not any broken addresses");
-define("_XADDRESSES_AM_ERROR_NOCAT","You have to choose a category!");
-define("_XADDRESSES_AM_ERROR_NODESCRIPTION","you have to write a description");
-    define("_XADDRESSES_AM_ERROR_NOADDRESSES","there is no files to download");
-define("_XADDRESSES_AM_ERROR_SIZE","the file size must be a number");
-define("_XADDRESSES_AM_ERROR_WEIGHT","weight must be a number");
 
-//Message de redirection
-define("_XADDRESSES_AM_REDIRECT_DELOK","Successfuly deleted ");
-define("_XADDRESSES_AM_REDIRECT_NODELFIELD","You can not delete this field (Basic Field)");
-define("_XADDRESSES_AM_REDIRECT_SAVE","Successfuly registred");
 
 //générique
 define("_MD_XADDRESSES_NUMBYTES","%s bytes");
@@ -419,9 +455,8 @@ define("_XADDRESSES_MD_SUP_NOTES","Notes:");
 
 define("_XADDRESSES_AM_STEP", "Step");
 
-define("_XADDRESSES_AM_SAVEDSUCCESS", "%s saved successfully");
-define("_XADDRESSES_AM_DELETEDSUCCESS", "%s deleted successfully");
-define("_XADDRESSES_AM_RUSUREDEL", "Are you sure you want to delete %s");
+
+
 define("_XADDRESSES_AM_FIELDNOTCONFIGURABLE", "The field is not configurable.");
 
 
@@ -450,10 +485,7 @@ define("_XADDRESSES_AM_FIELDVISIBLETOALL", "- Everyone");
 define("_XADDRESSES_AM_FIELDNOTVISIBLE", "is not visible");
 
 
-define("_XADDRESSES_AM_ADDOPTION", "Add Option");
-define("_XADDRESSES_AM_REMOVEOPTIONS", "Remove Options");
-define("_XADDRESSES_AM_KEY", "Value to be stored");
-define("_XADDRESSES_AM_VALUE", "Text to be displayed");
+
 
 // User management
 define("_XADDRESSES_AM_EDITUSER", "Edit User");
@@ -466,8 +498,9 @@ define("_XADDRESSES_MA_USERLEVEL", "User Level");
 
 define("_XADDRESSES_MA_ACTIVE", "Active");
 define("_XADDRESSES_MA_INACTIVE", "Inactive");
-define("_XADDRESSES_AM_USERCREATED", "User Created");
 
+
+define("_XADDRESSES_AM_USERCREATED", "User Created");
 define("_XADDRESSES_AM_CANNOTDELETESELF", "Deleting your own account is not allowed - use your profile page to delete your own account");
 define("_XADDRESSES_AM_CANNOTDELETEADMIN", "Deleting an administrator account is not allowed");
 
@@ -476,4 +509,5 @@ define("_XADDRESSES_AM_USER_ACTIVATED", "User activated");
 define("_XADDRESSES_AM_USER_DEACTIVATED", "User deactivated");
 define("_XADDRESSES_AM_USER_NOT_ACTIVATED", "Error: User NOT activated");
 define("_XADDRESSES_AM_USER_NOT_DEACTIVATED", "Error: User NOT deactivated");
+*/
 ?>

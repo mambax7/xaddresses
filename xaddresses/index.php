@@ -16,15 +16,44 @@ $locationHandler =& xoops_getModuleHandler('location', 'xaddresses');
 //$brokenHandler =& xoops_getModuleHandler('broken', 'xaddresses');
 // TO DO
 //$votedataHandler =& xoops_getModuleHandler('votedata', 'xaddresses');
+/*$criteria = new CriteriaCompo();
+$criteria->add(new Criteria('cat_pid', 0));
+$criteria->setSort('cat_weight ASC, cat_title');
+$criteria->setOrder('ASC');
+$mainCategories = $categoryHandler->getAll($criteria);
 
+$myCategoriesId = xaddresses_MygetItemIds();
+//print_r($myCategories);
+//affichage des catégories:
+$criteria = new CriteriaCompo();
+$criteria->setSort('cat_weight ASC, cat_title');
+$criteria->setOrder('ASC');
+$criteria->add(new Criteria('cat_id', '(' . implode(',', $myCategoriesId) . ')','IN'));
+$myCategories = $categoryHandler->getall($criteria);
+//print_r($myCategories_array);
+$myTree = new XoopsObjectTree($myCategories, 'cat_id', 'cat_pid');
 
+$prefix = '';
+$sufix = '';
 
+// get all categories sorted by tree structure
+$categoriesList = array();
+foreach ($mainCategories as $mainCategory) {
+    $categoriesList[] = array('prefix' => $prefix, 'sufix' => $sufix, 'category' => $mainCategory);
+    $mySubCategories = $myTree->getFirstChild($mainCategory->getVar('cat_id'));
+    //print_r($mySubCategories_array);
+    foreach ($mySubCategories as $mySubCategory)
+        $categoriesList[] = array('prefix' => '-&gt;', 'sufix' => $sufix, 'category' => $mySubCategory);
+}
+*/
 
+$myCategoriesId = xaddresses_MygetItemIds('in_category_view');
 
 $criteria = new CriteriaCompo();
 $criteria->add(new Criteria('cat_pid', 0));
 $criteria->setSort('cat_weight ASC, cat_title');
 $criteria->setOrder('ASC');
+$criteria->add(new Criteria('cat_id', '(' . implode(',', $myCategoriesId) . ')','IN'));
 $mainCategories = $categoryHandler->getAll($criteria);
 
 $prefix = '';
@@ -39,6 +68,7 @@ foreach ($mainCategories as $mainCategory) {
     $criteria->add(new Criteria('cat_pid', $mainCategory->getVar('cat_id')));
     $criteria->setSort('cat_weight ASC, cat_title');
     $criteria->setOrder('ASC');
+    $criteria->add(new Criteria('cat_id', '(' . implode(',', $myCategoriesId) . ')','IN'));
     $subCategories = $categoryHandler->getall($criteria);
     if (count($subCategories) != 0) {
         $categoriesList = array_merge ($categoriesList, getChildrenTree($mainCategory->getVar('cat_id'), $subCategories, $prefix, $sufix, $order));

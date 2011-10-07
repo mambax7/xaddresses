@@ -12,18 +12,19 @@ if($xoopsModuleConfig['com_anonpost'] == 0 && !is_object($xoopsUser)) die();
 $com_itemid = isset($_GET['com_itemid']) ? (int)($_GET['com_itemid']) : 0;
 if ($com_itemid > 0) {
     // Get location title
-    $sql = 'SELECT loc_title, loc_id, loc_cat_id FROM ' . $xoopsDB->prefix('xaddresses_location') . " WHERE loc_id=" . $com_itemid;
+    $sql = 'SELECT loc_title, loc_id, loc_cat_id';
+    $sql.= ' FROM ' . $xoopsDB->prefix('xaddresses_location');
+    $sql.= ' WHERE loc_id=' . $com_itemid;
     $result = $xoopsDB->query($sql);
     if ($result) {
-    	$categories = xaddresses_MygetItemIds();
-            print_r($categories);
-    	$row = $xoopsDB->fetchArray($result);
-		if(!in_array($row['loc_cat_id'], $categories)) {
-			redirect_header(XOOPS_URL, 2, "PIPPO" . _NOPERM);
-			exit();
-		}
-    	$com_replytitle = $row['loc_title'];
-    	include XOOPS_ROOT_PATH . '/include/comment_new.php';
+        $categories = xaddresses_MygetItemIds('in_category_view');
+        $row = $xoopsDB->fetchArray($result);
+        if(!in_array($row['loc_cat_id'], $categories)) {
+            redirect_header(XOOPS_URL, 2, "PIPPO" . _NOPERM);
+            exit();
+        }
+        $com_replytitle = $row['loc_title'];
+        include XOOPS_ROOT_PATH . '/include/comment_new.php';
     }
 }
 ?>

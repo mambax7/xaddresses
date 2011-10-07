@@ -42,7 +42,7 @@ class XaddressesField extends XoopsObject
     function setVar($key, $value, $not_gpc = false)
     {
         if ($key == 'field_options' && is_array($value)) {
-            foreach (array_keys($value) as $idx ) {
+            foreach (array_keys($value) as $idx) {
                 $value[$idx] = base64_encode($value[$idx]);
             }
         }
@@ -52,6 +52,7 @@ class XaddressesField extends XoopsObject
     function getVar($key, $format = 's')
     {
         $value = parent::getVar($key, $format);
+//print_r($value);
         if ($key == 'field_options' && !empty($value)) {
             foreach (array_keys($value) as $idx) {
                 $value[$idx] = base64_decode($value[$idx]);
@@ -564,6 +565,8 @@ class XaddressesFieldHandler extends XoopsPersistableObjectHandler
                 case XOBJ_DTYPE_ARRAY:
                 case XOBJ_DTYPE_UNICODE_ARRAY:
                     $type = "mediumtext";
+                    $maxlengthstring = "";
+                    $obj->setVar('field_maxlength', null);
                     break;
                 case XOBJ_DTYPE_UNICODE_EMAIL:
                 case XOBJ_DTYPE_UNICODE_TXTBOX:
@@ -618,17 +621,22 @@ class XaddressesFieldHandler extends XoopsPersistableObjectHandler
                 case XOBJ_DTYPE_TXTAREA:
                     $type = "text";
                     $maxlengthstring = "";
+                    $obj->setVar('field_maxlength', null);
                     $notnullstring = "";
                     break;
 
                 case XOBJ_DTYPE_MTIME:
                     $type = "date";
                     $maxlengthstring = "";
+                    $obj->setVar('field_maxlength', null);
                     break;
             }
 
-            $sql = "ALTER TABLE `" . $locationHandler->table . "` " .
-            $changetype . " `" . $obj->cleanVars['field_name'] . "` " . $type . $maxlengthstring . $notnullstring . $defaultstring;
+            $sql = "ALTER TABLE `" . $locationHandler->table . "`";
+            $sql.= " " . $changetype;
+            $sql.= " " . "`" . $obj->cleanVars['field_name'] . "`";
+            $sql.= " " . $type . $maxlengthstring . $notnullstring . $defaultstring;
+            echo ($sql);
             if (!$this->db->query($sql)) {
                 return false;
             }
@@ -654,7 +662,8 @@ class XaddressesFieldHandler extends XoopsPersistableObjectHandler
     {
         $locationHandler =& xoops_getmodulehandler('location', 'xaddresses');
         // remove column from table
-        $sql = "ALTER TABLE " . $locationHandler->table . " DROP `" . $obj->getVar('field_name', 'n') . "`";
+        $sql = "ALTER TABLE " . $locationHandler->table;
+        $sql.= " DROP `" . $obj->getVar('field_name', 'n') . "`";
         if ($this->db->query($sql)) {
             //change this to update the cached field information storage
             if (!parent::delete($obj, $force)) {
@@ -666,10 +675,10 @@ class XaddressesFieldHandler extends XoopsPersistableObjectHandler
                 $module = $moduleHandler->getByDirname('xaddresses');
                 if (is_object($module)) {
                     // Remove group permissions
-                    $groupperm_handler =& xoops_gethandler('groupperm');
+                    $groupPermHandler =& xoops_gethandler('groupperm');
                     $criteria = new CriteriaCompo(new Criteria('gperm_modid', $module->getVar('mid')));
                     $criteria->add(new Criteria('gperm_itemid', $obj->getVar('field_id')));
-                    return $groupperm_handler->deleteAll($criteria);
+                    return $groupPermHandler->deleteAll($criteria);
                 }
             }
         }

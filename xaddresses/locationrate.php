@@ -4,6 +4,12 @@ $currentFile = basename(__FILE__);
 // include module header
 include_once 'header.php';
 
+// Check permissions
+if ($permRate == false) {
+    redirect_header('index.php', 2, _NOPERM);
+    exit();
+}
+
 // load classes
 $categoryHandler =& xoops_getModuleHandler('locationcategory', 'xaddresses');
 $locationHandler =& xoops_getModuleHandler('location', 'xaddresses');
@@ -24,14 +30,6 @@ if ($locationHandler->getCount($criteria) == 0) {
     redirect_header('index.php', 3, _XADDRESSES_MD_SINGLELOC_NONEXISTENT);
     exit();
 }
-
-/*
-// Check permissions
-if ($permVote == false) {
-    redirect_header('index.php', 2, _NOPERM);
-    exit();
-}
-*/
 
 
 

@@ -21,15 +21,15 @@ $modversion['manual'] = 'Help';
 $modversion['manual_file'] = 'help.html';
 $modversion['dirname'] = $dirname;
 // Extra informations
-$modversion["release"] = "21-09-2011";
+$modversion["release"] = "06-10-2011";
 $modversion["module_status"] = "Stable";
 $modversion['support_site_url']	= "http://www.xoops.org";
 $modversion['support_site_name'] = "www.xoops.org";
 
 // About
 $modversion['status_version'] = 'RC';
-$modversion['release_date'] = '2011/09/21';
-$modversion['release'] = strtotime('2011/09/21'); // 'YYYY/MM/DD' format
+$modversion['release_date'] = '2011/10/06';
+$modversion['release'] = strtotime('2011/10/06'); // 'YYYY/MM/DD' format
 $modversion['demo_site_url'] = 'IN PROGRESS';
 $modversion['demo_site_name'] = 'IN PROGRESS';
 $modversion['forum_site_url'] = 'IN PROGRESS';

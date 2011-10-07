@@ -132,12 +132,14 @@ function xaddresses_getFieldForm(&$field, $action = false)
             //$fiedlnotnullradio = new XoopsFormRadioYN(_XADDRESSES_AM_FIELD_NOTNULL, 'field_notnull', $field->getVar('field_notnull', 'e'));
             //$fiedlnotnullradio->setDescription(_XADDRESSES_AM_FIELD_NOTNULL_DESC);
         //$form->addElement($fiedlnotnullradio);
+
         //field_options
         $fieldTypesWithOptions = array('select', 'select-multi', 'radio', 'checkbox');
         if (in_array($field->getVar('field_type'), $fieldTypesWithOptions)) {
             $options = $field->getVar('field_options');
+//            print_r($options);
             if (count($options) > 0) {
-                $remove_options = new XoopsFormCheckBox(_XADDRESSES_AM_REMOVEOPTIONS, 'removeOptions');
+                $remove_options = new XoopsFormCheckBox(_XADDRESSES_AM_FIELD_REMOVEOPTIONS, 'removeOptions');
                 $remove_options->columns = 3;
                 asort($options);
                 foreach (array_keys($options) as $key) {
@@ -146,7 +148,7 @@ function xaddresses_getFieldForm(&$field, $action = false)
                 $remove_options->addOptionArray($options);
                 $form->addElement($remove_options);
             }
-            $option_text = "<table cellspacing='1'><tr><td width='20%'>" . _XADDRESSES_AM_KEY . "</td><td>" . _XADDRESSES_AM_VALUE . "</td></tr>";
+            $option_text = "<table cellspacing='1'><tr><td width='20%'>" . _XADDRESSES_AM_FIELD_KEY . "</td><td>" . _XADDRESSES_AM_FIELD_VALUE . "</td></tr>";
             for ($i = 0; $i < 3; $i++) {
                 $option_text .= "<tr>";
                 $option_text .= "<td><input type='text' name='addOption[{$i}][key]' id='addOption[{$i}][key]' size='15' /></td>";
@@ -155,7 +157,7 @@ function xaddresses_getFieldForm(&$field, $action = false)
                 $option_text .= "<tr height='3px'><td colspan='2'> </td></tr>";
             }
             $option_text .= "</table>";
-            $form->addElement(new XoopsFormLabel(_XADDRESSES_AM_ADDOPTION, $option_text) );
+            $form->addElement(new XoopsFormLabel(_XADDRESSES_AM_FIELD_ADDOPTION, $option_text) );
         }
 /* IN_PROGRESS
         //field_extras
@@ -268,31 +270,17 @@ function xaddresses_getFieldForm(&$field, $action = false)
             $fieldRequiredRadio->setDescription(_XADDRESSES_AM_FIELD_REQUIRED_DESC);
         $form->addElement($fieldRequiredRadio);
     }
-    // permissions: field_search
-    $grouppermHandler =& xoops_gethandler('groupperm');
-    $searchableTypes = array(
-        'textbox',
-        'select',
-        'radio',
-        'yesno',
-        'date',
-        'datetime',
-        'timezone',
-        'language');
-    if (in_array($field->getVar('field_type'), $searchableTypes)) {
-        $searchableGroups = $grouppermHandler->getGroupIds('field_search', $field->getVar('field_id'), $GLOBALS['xoopsModule']->getVar('mid'));
-            $fieldSearchableSelectGroup = new XoopsFormSelectGroup(_XADDRESSES_AM_FIELD_SEARCHABLE, 'field_search', true, $searchableGroups, 5, true);
-            $fieldSearchableSelectGroup->setDescription(_XADDRESSES_AM_FIELD_SEARCHABLE_DESC);
-        $form->addElement($fieldSearchableSelectGroup);
-    }
 
-    // permissions: field_edit
+    // Permissions
+    $groupPermHandler =& xoops_gethandler('groupperm');
+    
+    // Permissions: field_view, field_edit, field_export
     if ($field->getVar('field_edit') || $field->isNew()) {
         if (!$field->isNew()) {
             //Load groups
-            $viewableGroups = $grouppermHandler->getGroupIds('field_view', $field->getVar('field_id'), $GLOBALS['xoopsModule']->getVar('mid'));
-            $editableGroups = $grouppermHandler->getGroupIds('field_edit', $field->getVar('field_id'), $GLOBALS['xoopsModule']->getVar('mid'));
-            $exportableGroups = $grouppermHandler->getGroupIds('field_export', $field->getVar('field_id'), $GLOBALS['xoopsModule']->getVar('mid'));
+            $viewableGroups = $groupPermHandler->getGroupIds('field_view', $field->getVar('field_id'), $GLOBALS['xoopsModule']->getVar('mid'));
+            $editableGroups = $groupPermHandler->getGroupIds('field_edit', $field->getVar('field_id'), $GLOBALS['xoopsModule']->getVar('mid'));
+            $exportableGroups = $groupPermHandler->getGroupIds('field_export', $field->getVar('field_id'), $GLOBALS['xoopsModule']->getVar('mid'));
         } else {
             $viewableGroups = array();
             $editableGroups = array();
@@ -309,7 +297,24 @@ function xaddresses_getFieldForm(&$field, $action = false)
         $fieldExportableSelectGroup = new XoopsFormSelectGroup(_XADDRESSES_AM_FIELD_EXPORTABLE, 'field_export', false, $editableGroups, 5, true);
             $fieldExportableSelectGroup->setDescription(_XADDRESSES_AM_FIELD_EXPORTABLE_DESC);
         $form->addElement($fieldExportableSelectGroup);
+    }
 
+    // Permissions: field_search
+    $searchableTypes = array(
+        'textbox',
+        'textarea',
+        'select',
+        'radio',
+        'yesno',
+        'date',
+        'datetime',
+        'timezone',
+        'language');
+    if (in_array($field->getVar('field_type'), $searchableTypes)) {
+        $searchableGroups = $groupPermHandler->getGroupIds('field_search', $field->getVar('field_id'), $GLOBALS['xoopsModule']->getVar('mid'));
+            $fieldSearchableSelectGroup = new XoopsFormSelectGroup(_XADDRESSES_AM_FIELD_SEARCHABLE, 'field_search', true, $searchableGroups, 5, true);
+            $fieldSearchableSelectGroup->setDescription(_XADDRESSES_AM_FIELD_SEARCHABLE_DESC);
+        $form->addElement($fieldSearchableSelectGroup);
     }
 
     $form->addElement(new XoopsFormHidden('op', 'save_field') );
@@ -344,6 +349,7 @@ function xaddresses_getLocationForm(&$location, $action = false)
     $locationHandler =& xoops_getModuleHandler('location', 'xaddresses');
     $fieldCategoryHandler =& xoops_getmodulehandler('fieldcategory', 'xaddresses');
     $fieldHandler =& xoops_getmodulehandler('field', 'xaddresses');
+    $memberHandler =& xoops_gethandler('member');
     xoops_load('formgooglemap', 'xaddresses');
 
 
@@ -353,9 +359,23 @@ function xaddresses_getLocationForm(&$location, $action = false)
 
     $categories = $categoryHandler->getObjects(null, true, false);
 
-    // Get ids of fields that can be edited
+    //permission
     $groupPermHandler =& xoops_gethandler('groupperm');
-    $editableFields = $groupPermHandler->getItemIds('field_edit', $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid') );
+    if (is_object($GLOBALS['xoopsUser'])) {
+        $groups = $GLOBALS['xoopsUser']->getGroups();
+    } else {
+    	$groups = XOOPS_GROUP_ANONYMOUS;
+    }
+    // Get ids of categories in which locations can be viewed/edited/submitted
+    $groupPermHandler =& xoops_gethandler('groupperm');
+    $viewableCategories = $groupPermHandler->getItemIds('in_category_view', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
+    $editableCategories = $groupPermHandler->getItemIds('in_category_edit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
+    $submitableCategories = $groupPermHandler->getItemIds('in_category_submit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
+    // Get ids of fields that can be edited
+    $editableFields = $groupPermHandler->getItemIds('field_edit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
+    // Get other permissions
+    $permModifySubmitter = ($groupPermHandler->checkRight('others', 1, $groups, $GLOBALS['xoopsModule']->getVar('mid'))) ? true : false ;
+    $permModifyDate = ($groupPermHandler->checkRight('others', 2, $groups, $GLOBALS['xoopsModule']->getVar('mid'))) ? true : false ;
 
     // location title
         $formLocTitle = new XoopsFormText(_XADDRESSES_AM_LOC_TITLE, 'loc_title', 35, 255, $location->getVar('loc_title'));
@@ -372,11 +392,6 @@ function xaddresses_getLocationForm(&$location, $action = false)
         $formGoogleMap->setDescription(_XADDRESSES_AM_LOC_COORDINATES_DESC);
     $form->addElement($formGoogleMap);
 
-    // Get ids of categories in which locations can be viewed/edited/submitted
-    $groupPermHandler =& xoops_gethandler('groupperm');
-    $viewableCategories = $groupPermHandler->getItemIds('in_category_view', $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid') );
-    $editableCategories = $groupPermHandler->getItemIds('in_category_edit', $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid') );
-    $submitableCategories = $groupPermHandler->getItemIds('in_category_submit', $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid') );
 
     // location category
     $criteria = new CriteriaCompo();
@@ -392,6 +407,29 @@ function xaddresses_getLocationForm(&$location, $action = false)
         $formLocCategory->setDescription(_XADDRESSES_AM_LOC_CAT_DESC);
     $form->addElement($formLocCategory, true);
 
+    if (!$location->isNew()) {
+        // location date
+        if ($permModifyDate) {
+            $formDateTime = new XoopsFormDateTime (_XADDRESSES_AM_LOC_DATE, 'loc_date', 15, $location->getVar('loc_date'), true);
+        } else {
+            $formatedDate = formatTimeStamp($location->getVar('loc_date'), _DATESTRING);
+            $formDateTime = new XoopsFormLabel (_XADDRESSES_AM_LOC_DATE, $formatedDate, '');
+        }
+        $formDateTime->setDescription(_XADDRESSES_AM_LOC_DATE_DESC);
+        $form->addElement($formDateTime, true);
+        // location submitter
+        if ($permModifySubmitter) {
+            $formSubmitter = new XoopsFormSelectUser (_XADDRESSES_AM_LOC_SUBMITTER, 'loc_submitter', true, $location->getVar('loc_submitter'), 1, false);
+        } else {
+            $submitter =& $memberHandler->getUser($location->getVar('loc_submitter'));
+            $submitterLink = xoops_getLinkedUnameFromId($submitter->getVar('uid'));
+            $formSubmitter = new XoopsFormLabel (_XADDRESSES_AM_LOC_SUBMITTER, $submitterLink, '');
+        }
+        $formSubmitter->setDescription(_XADDRESSES_AM_LOC_SUBMITTER_DESC);
+        $form->addElement($formSubmitter, true);
+    }
+
+    
     // Get extra fields categories
     $fieldsCategoriesArray = array();
     $fieldsCategoriesArray[0] = array(
