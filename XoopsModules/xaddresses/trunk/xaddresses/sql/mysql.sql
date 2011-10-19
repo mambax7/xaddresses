@@ -10,6 +10,7 @@ CREATE TABLE `xaddresses_locationcategory` (
   `cat_description`     text                    NOT NULL,
   `cat_dohtml`          tinyint(2)              NOT NULL default '0',
   `cat_weight`          int(11)                 NOT NULL default '0',
+  `cat_map_type`        varchar(255)            NOT NULL default '',
   PRIMARY KEY  (`cat_id`),
   KEY `cat_pid` (`cat_pid`)
 ) ENGINE=MyISAM;
@@ -40,7 +41,7 @@ CREATE TABLE `xaddresses_location` (
 # --------------------------------------------------------
 
 #
-# Table structure for table `xaddresses_field` and extra fields
+# Table structure for table `xaddresses_field`
 #
 
 CREATE TABLE `xaddresses_field` (
@@ -67,7 +68,7 @@ CREATE TABLE `xaddresses_field` (
 ) ENGINE=MyISAM;
 
 #
-# Table structure for table `xaddresses_fieldcategory` and `xaddresses_visibility`
+# Table structure for table `xaddresses_fieldcategory`
 #
 
 CREATE TABLE `xaddresses_fieldcategory` (
@@ -77,14 +78,6 @@ CREATE TABLE `xaddresses_fieldcategory` (
   `cat_weight`      smallint(5) unsigned    NOT NULL default '0',
   
   PRIMARY KEY  (`cat_id`)
-) ENGINE=MyISAM;
-
-CREATE TABLE `xaddresses_visibility` (
-  `field_id`            int(12) unsigned        NOT NULL default '0',
-  `user_group`          smallint(5) unsigned    NOT NULL default '0',
-  `profile_group`       smallint(5) unsigned    NOT NULL default '0',
-  PRIMARY KEY (`field_id`, `user_group`, `profile_group`),
-  KEY `visible` (`user_group`, `profile_group`)
 ) ENGINE=MyISAM;
 # --------------------------------------------------------
 
@@ -104,6 +97,26 @@ CREATE TABLE `xaddresses_broken` (
   KEY `loc_id` (`loc_id`),
   KEY `report_sender` (`report_sender`),
   KEY `report_ip` (`report_ip`)
+) ENGINE=MyISAM;
+# --------------------------------------------------------
+
+#
+# Table structure for table `xaddresses_modify`
+#
+
+CREATE TABLE `xaddresses_modify` (
+  `suggest_id`          int(12) unsigned        NOT NULL auto_increment,
+  `loc_id`              int(12) unsigned        NOT NULL default '0',
+  `suggest_loc_id`      int(12) unsigned        NOT NULL default '0',
+  `suggest_description` text,
+  `suggest_sender`      int(11)                 NOT NULL default '0',
+  `suggest_ip`          varchar(20)             NOT NULL default '',
+  `suggest_date`        int(12)                 NOT NULL default '0',
+
+  PRIMARY KEY  (`suggest_id`),
+  KEY `loc_id` (`loc_id`),
+  KEY `suggest_sender` (`suggest_sender`),
+  KEY `suggest_ip` (`suggest_ip`)
 ) ENGINE=MyISAM;
 # --------------------------------------------------------
 
@@ -145,42 +158,4 @@ CREATE TABLE `xaddresses_marker` (
   `marker_shadow`          varchar(255)            NOT NULL default '',
   PRIMARY KEY  (`marker_id`)
 ) ENGINE=MyISAM;
-
-# ------------------- NOT USED FROM HERE
-
-
-
-#
-# Table structure for table `xaddresses_mod`
-#
-
-CREATE TABLE `xaddresses_mod` (
-  `request_id`          int(12) unsigned        NOT NULL auto_increment,
-  `loc_id`              int(12) unsigned        NOT NULL default '0',
-  `cat_id`              int(12) unsigned        NOT NULL default '0',
-  `title`               varchar(255)            NOT NULL default '',
-  `url`                 varchar(255)            NOT NULL default '',
-  `homepage`            varchar(255)            NOT NULL default '',
-  `version`             varchar(10)             NOT NULL default '',
-  `size`                int(8)                  NOT NULL default '0',
-  `platform`            varchar(50)             NOT NULL default '',
-  `logourl`             varchar(255)            NOT NULL default '',
-  `description`         text                    NOT NULL,
-  `modifysubmitter`     int(11)                 NOT NULL default '0',
-  PRIMARY KEY  (`request_id`)
-) ENGINE=MyISAM;
 # --------------------------------------------------------
-
-
-
-#
-# Table structure for table `xaddresses_modfielddata`
-#
-
-CREATE TABLE `xaddresses_modfielddata` (
-  `modiddata`           int(12) unsigned        NOT NULL auto_increment,
-  `fid`                 int(12) unsigned        NOT NULL default '0',
-  `loc_id`              int(12) unsigned        NOT NULL default '0',
-  `moddata`             varchar(255)            NOT NULL default '',
-  PRIMARY KEY  (`modiddata`)
-) ENGINE=MyISAM;
