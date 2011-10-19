@@ -1,0 +1,29 @@
+<{* used in: index.php *}>
+<table>
+    <tr>
+        <th><{$smarty.const._XADDRESSES_AM_CAT_ID}></th>
+        <th><{$smarty.const._XADDRESSES_AM_CAT_TITLE}></th>
+        <th><{$smarty.const._XADDRESSES_AM_CAT_DESCRIPTION}></th>
+        <th><{$smarty.const._XADDRESSES_AM_CAT_IMG}></th>
+        <th><{$smarty.const._XADDRESSES_AM_CAT_WEIGHT}></th>
+        <th><{$smarty.const._XADDRESSES_AM_ACTION}></th>
+    </tr>
+<{foreach from=$categoriesList item='category'}>
+    <tr class="<{cycle values='odd, even'}>">
+        <td><{$category.category->getVar('cat_id')}></td>
+        <td><{$category.prefix}><{$category.category->getVar('cat_title')}><{$category.sufix}></td>
+        <td><{$category.category->getVar('cat_description')}></td>
+        <td>
+        <{if ($category.category->getVar('cat_imgurl') != '')}>
+            <img src='<{$category.category->getVar('cat_imgurl')}>' alt='<{$category.category->getVar('cat_title')}>' style='width:100px;height:auto;' />
+        <{else}>
+            &nbsp;
+        <{/if}>
+        </td>
+        <td><{$category.category->getVar('cat_weight')}></td>
+        <td><a href='locationcategoryview.php?cat_id=<{$category.category->getVar('cat_id')}>'>Visualizza</a></td>
+    </tr>
+<{/foreach}>
+</table>
+
+<{include file="db:system_notification_select.html"}>

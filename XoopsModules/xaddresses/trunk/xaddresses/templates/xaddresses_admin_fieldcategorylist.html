@@ -1,0 +1,43 @@
+<form action="fieldcategory.php" method="post" id="fieldcategoryform">
+<table>
+    <tr>
+        <th><{$smarty.const._XADDRESSES_AM_FIELDCAT_TITLE}></th>
+        <th><{$smarty.const._XADDRESSES_AM_FIELDCAT_DESCRIPTION}></th>
+        <th><{$smarty.const._XADDRESSES_AM_FIELDCAT_WEIGHT}></th>
+        <th><{$smarty.const._XADDRESSES_AM_ACTION}></th>
+    </tr>
+<{foreach item=category from=$categories}>
+    <tr class="<{cycle values='odd, even'}>">
+        <td><{$category.cat_title}></td>
+        <td><{$category.cat_description}></td>
+        <td>
+        <{if $category.canEdit}>
+            <input type="text" name="weight[<{$category.cat_id}>]" size="5" maxlength="5" value="<{$category.cat_weight}>" />
+        <{else}>
+            <{$category.cat_weight}>
+        <{/if}>
+        </td>
+        <td>
+        <{if $category.canEdit}>
+            <input type="hidden" name="oldweight[<{$category.cat_id}>]" value="<{$category.cat_weight}>" />
+            <input type="hidden" name="category_ids[]" value="<{$category.cat_id}>" />
+            <a href="fieldcategory.php?id=<{$category.cat_id}>" title="<{$smarty.const._EDIT}>"><{$smarty.const._EDIT}></a>
+            &nbsp;
+        <{/if}>
+            <a href="fieldcategory.php?op=delete_fieldcategory&amp;id=<{$category.cat_id}>" title="<{$smarty.const._DELETE}>"><{$smarty.const._DELETE}></a>
+        </td>
+    </tr>
+<{/foreach}>
+    <tr class="<{cycle values='odd, even'}>">
+        <td colspan="2">
+        </td>
+        <td>
+            <{$token}>
+            <input type="hidden" name="op" value="reorder_fieldcategories" />
+            <input type="submit" name="submit" value="<{$smarty.const._SUBMIT}>" />
+        </td>
+        <td colspan="1">
+        </td>
+    </tr>
+</table>
+</form>

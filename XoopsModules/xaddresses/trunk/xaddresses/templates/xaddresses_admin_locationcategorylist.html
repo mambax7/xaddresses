@@ -1,0 +1,63 @@
+<form action="locationcategory.php" method="post" id="locationcategoryform">
+<table>
+    <tr>
+        <th><{$smarty.const._XADDRESSES_AM_CAT_ID}></th>
+        <th><{$smarty.const._XADDRESSES_AM_CAT_TITLE}></th>
+        <th><{$smarty.const._XADDRESSES_AM_CAT_DESCRIPTION}></th>
+        <th><{$smarty.const._XADDRESSES_AM_CAT_IMG}></th>
+        <th><{$smarty.const._XADDRESSES_AM_CAT_WEIGHT}></th>
+        <th><{$smarty.const._XADDRESSES_AM_CAT_INFO}></th>
+        <th><{$smarty.const._XADDRESSES_AM_ACTION}></th>
+    </tr>
+<{foreach from=$categoriesList item='category'}>
+    <tr class="<{cycle values='odd, even'}>">
+        <td><{$category.category->getVar('cat_id')}></td>
+        <td><{$category.prefix}><{$category.category->getVar('cat_title')}><{$category.sufix}></td>
+        <td><{$category.category->getVar('cat_description')}></td>
+        <td>
+        <{if ($category.category->getVar('cat_imgurl') != '')}>
+            <img src='<{$category.category->getVar('cat_imgurl')}>' alt='<{$category.category->getVar('cat_title')}>' style='width:100px;height:auto;' />
+        <{else}>
+            &nbsp;
+        <{/if}>
+        </td>
+        <td>
+        <{if $category.canEdit}>
+            <input type="text" name="weight[<{$category.category->getVar('cat_id')}>]" size="5" maxlength="5" value="<{$category.category->getVar('cat_weight')}>" />
+        <{else}>
+            <{$category.category->getVar('cat_weight')}>
+        <{/if}>
+        </td>
+        <td>
+        <{$category.info}>
+        </td>
+        <td>
+        <{if ($category.canView)}>
+            <a href="locationcategory.php?op=view_locationcategory&amp;cat_id=<{$category.category->getVar('cat_id')}>" title="<{$smarty.const._XADDRESSES_AM_DISPLAY}>"><{$smarty.const._XADDRESSES_AM_DISPLAY}></a>
+            &nbsp;
+        <{/if}>
+        <{if $category.canEdit}>
+            <input type="hidden" name="oldweight[<{$category.category->getVar('cat_id')}>]" value="<{$category.category->getVar('cat_weight')}>" />
+            <input type="hidden" name="category_ids[]" value="<{$category.category->getVar('cat_id')}>" />
+            <a href="locationcategory.php?cat_id=<{$category.category->getVar('cat_id')}>" title="<{$smarty.const._EDIT}>"><{$smarty.const._EDIT}></a>
+            &nbsp;
+        <{/if}>
+        <{if $category.canDelete}>
+            <a href="locationcategory.php?op=delete_locationcategory&amp;cat_id=<{$category.category->getVar('cat_id')}>" title="<{$smarty.const._DELETE}>"><{$smarty.const._DELETE}></a>
+        <{/if}>
+        </td>
+    </tr>
+<{/foreach}>
+    <tr class="<{cycle values='odd, even'}>">
+        <td colspan="4">
+        </td>
+        <td>
+            <{$token}>
+            <input type="hidden" name="op" value="reorder_locationcategories" />
+            <input type="submit" name="submit" value="<{$smarty.const._SUBMIT}>" />
+        </td>
+        <td colspan="2">
+        </td>
+    </tr>
+</table>
+</form>
