@@ -90,65 +90,65 @@ default:
 case 'in_category_view': // view permission
     $titleOfForm = _XADDRESSES_AM_PERM_VIEW;
     $permName = 'in_category_view';
-    $permDesc = _XADDRESSES_AM_PERM_VIEW_DSC;
+    $permDesc = _XADDRESSES_AM_PERM_VIEW_DESC;
     $anonymous = true;
     break;
 case 'in_category_submit': // submit permission
     $titleOfForm = _XADDRESSES_AM_PERM_SUBMIT;
     $permName = 'in_category_submit';
-    $permDesc = _XADDRESSES_AM_PERM_SUBMIT_DSC;
+    $permDesc = _XADDRESSES_AM_PERM_SUBMIT_DESC;
     $anonymous = true;
     break;
 case 'in_category_edit': // edit permission
     $titleOfForm = _XADDRESSES_AM_PERM_EDIT;
     $permName = 'in_category_edit';
-    $permDesc = _XADDRESSES_AM_PERM_EDIT_DSC;
+    $permDesc = _XADDRESSES_AM_PERM_EDIT_DESC;
     $anonymous = true;
     break;
 case 'in_category_delete': // edit permission
     $titleOfForm = _XADDRESSES_AM_PERM_DELETE;
     $permName = 'in_category_delete';
-    $permDesc = _XADDRESSES_AM_PERM_DELETE_DSC;
+    $permDesc = _XADDRESSES_AM_PERM_DELETE_DESC;
     $anonymous = true;
     break;
 case 'field_view': // view field permission
     $titleOfForm = _XADDRESSES_AM_PERM_VIEWFIELD;
     $permName = 'field_view';
-    $permDesc = _XADDRESSES_AM_PERM_VIEWFIELD_DSC;
+    $permDesc = _XADDRESSES_AM_PERM_VIEWFIELD_DESC;
     $restriction = 'field_edit';
     $anonymous = true;
     break;
 case 'field_edit': // edit field permission
     $titleOfForm = _XADDRESSES_AM_PERM_EDITFIELD;
     $permName = 'field_edit';
-    $permDesc = _XADDRESSES_AM_PERM_EDITFIELD_DSC;
+    $permDesc = _XADDRESSES_AM_PERM_EDITFIELD_DESC;
     $restriction = '';
     $anonymous = true;
     break;
 case 'field_search': // search field permission
     $titleOfForm = _XADDRESSES_AM_PERM_SEARCHFIELD;
     $permName = 'field_search';
-    $permDesc = _XADDRESSES_AM_PERM_SEARCHFIELD_DSC;
+    $permDesc = _XADDRESSES_AM_PERM_SEARCHFIELD_DESC;
     $restriction = '';
     $anonymous = true;
     break;
 case 'field_export': // export field permission // IN PROGRESS
     $titleOfForm = _XADDRESSES_AM_PERM_EXPORTFIELD;
     $permName = 'field_export';
-    $permDesc = _XADDRESSES_AM_PERM_EXPORTFIELD_DSC;
+    $permDesc = _XADDRESSES_AM_PERM_EXPORTFIELD_DESC;
     $restriction = '';
     $anonymous = true;
     break;
 case 'extra': // IN_PROGRESS
     $titleOfForm = _XADDRESSES_AM_PERM_OTHERS;
     $permName = "others";
-    $permDesc = _XADDRESSES_AM_PERM_OTHERS_DSC;
+    $permDesc = _XADDRESSES_AM_PERM_OTHERS_DESC;
     $anonymous = true;
     $globalPermsArray = array(
         '1'     => _XADDRESSES_AM_PERMISSIONS_1 ,   // Modify location submitter
         '2'     => _XADDRESSES_AM_PERMISSIONS_2 ,   // Modify location date
         //'4'     => _XADDRESSES_AM_PERMISSIONS_4 ,   // Submit a location
-        //'8'     => _XADDRESSES_AM_PERMISSIONS_8 ,   // Submit a modification
+        '8'     => _XADDRESSES_AM_PERMISSIONS_8 ,   // Suggest location correction/modification
         '16'    => _XADDRESSES_AM_PERMISSIONS_16 ,  // Send to a Friend
         '32'    => _XADDRESSES_AM_PERMISSIONS_32,   // Rate location
         '64'    => _XADDRESSES_AM_PERMISSIONS_64,   // Report broken location

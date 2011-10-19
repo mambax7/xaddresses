@@ -83,6 +83,7 @@ define("_XADDRESSES_AM_ORDER_DESC","DESC");
 define("_XADDRESSES_AM_ORDER_ASC","ASC");
 
 define("_XADDRESSES_AM_LOCATION","Location");
+define("_XADDRESSES_AM_LOCATIONS","Locations");
 define("_XADDRESSES_AM_LOC_ADD","Add new Location");
 define("_XADDRESSES_AM_LOC_EDIT","Modify Location");
 define("_XADDRESSES_AM_LOC_ID","Id");
@@ -92,6 +93,7 @@ define("_XADDRESSES_AM_LOC_COORDINATES","Coordinates");
 define("_XADDRESSES_AM_LOC_COORDINATES_DESC","Latitude, Longitude and Zoom level");
 define("_XADDRESSES_AM_LOC_CAT","Category");
 define("_XADDRESSES_AM_LOC_CAT_DESC","Choose the Location category");
+define("_XADDRESSES_AM_LOC_CATS","Categories");
 define("_XADDRESSES_AM_LOC_WEIGHT","Weight");
 define("_XADDRESSES_AM_LOC_WEIGHT_DESC","// IN PROGRESS");
 define("_XADDRESSES_AM_LOC_DATE","Date");
@@ -143,6 +145,13 @@ define("_XADDRESSES_AM_CAT_IMG","Category image");
 define("_XADDRESSES_AM_CAT_PARENT","In the category");
 define("_XADDRESSES_AM_CAT_WEIGHT","Weight");
 
+define("_XADDRESSES_AM_CAT_MAP_SETTING","GoogleMaps settings");
+define("_XADDRESSES_AM_CAT_MAP_TYPE","Map type");
+define("_XADDRESSES_AM_CAT_MAP_TYPE_DESC","The initial map type<br /><ul><li>HYBRID This map type displays a transparent layer of major streets on satellite images.</li><li>ROADMAP This map type displays a normal street map.</li><li>SATELLITE This map type displays satellite images.</li><li>TERRAIN This map type displays maps with physical features such as terrain and vegetation.</li></ul>");
+
+define("_XADDRESSES_AM_CAT_PERMISSIONS","Permissions");
+
+define("_XADDRESSES_AM_CAT_INFO","Informations");
 
 // include/form.php xaddresses_getFieldForm
 define("_XADDRESSES_AM_ADD_FIELD","Add new field");
@@ -258,36 +267,36 @@ define("_XADDRESSES_AM_FIELDCAT_WEIGHT_DESC","// IN PROGRESS");
 
 
 // admin/permissions.php
-define("_XADDRESSES_AM_PERM_ITEM_PERMISSIONS", "Addresses Permissions");
+define("_XADDRESSES_AM_PERM_ITEM_PERMISSIONS", "Locations Permissions");
 define("_XADDRESSES_AM_PERM_FIELD_PERMISSIONS", "Fields Permissions");
 define("_XADDRESSES_AM_PERM_EXTRA_PERMISSIONS", "Extra Permissions");
 
 define("_XADDRESSES_AM_PERM_NOCAT", "Permission cannot be set: There are no Categories created yet! Please create a Category first.");
 define("_XADDRESSES_AM_PERM_NOCAT_DESC", "");
 define("_XADDRESSES_AM_PERM_VIEW", "View Permission");
-define("_XADDRESSES_AM_PERM_VIEW_DSC", "Choose groups than can view Locations in categories");
+define("_XADDRESSES_AM_PERM_VIEW_DESC", "Choose groups than can view Locations in categories");
 define("_XADDRESSES_AM_PERM_SUBMIT", "Submit Permission");
-define("_XADDRESSES_AM_PERM_SUBMIT_DSC", "Choose groups that can submit Locations to categories");
+define("_XADDRESSES_AM_PERM_SUBMIT_DESC", "Choose groups that can submit Locations to categories");
 define("_XADDRESSES_AM_PERM_EDIT", "Edit Permission");
-define("_XADDRESSES_AM_PERM_EDIT_DSC", "Choose groups than can edit Locations in categories");
+define("_XADDRESSES_AM_PERM_EDIT_DESC", "Choose groups than can edit Locations in categories");
 define("_XADDRESSES_AM_PERM_DELETE", "Delete Permission");
-define("_XADDRESSES_AM_PERM_DELETE_DSC", "Choose groups than can delete Locations in categories");
+define("_XADDRESSES_AM_PERM_DELETE_DESC", "Choose groups than can delete Locations in categories");
 
 define("_XADDRESSES_AM_PERM_VIEWFIELD", "View Fields Permission");
-define("_XADDRESSES_AM_PERM_VIEWFIELD_DSC", "Choose fields than groups can view");
+define("_XADDRESSES_AM_PERM_VIEWFIELD_DESC", "Choose fields than groups can view");
 define("_XADDRESSES_AM_PERM_EDITFIELD", "Edit Fields Permission");
-define("_XADDRESSES_AM_PERM_EDITFIELD_DSC", "Choose fields than groups can edit");
+define("_XADDRESSES_AM_PERM_EDITFIELD_DESC", "Choose fields than groups can edit");
 define("_XADDRESSES_AM_PERM_SEARCHFIELD", "Search in Fields Permission");
-define("_XADDRESSES_AM_PERM_SEARCHFIELD_DSC", "Choose fields than groups can search");
+define("_XADDRESSES_AM_PERM_SEARCHFIELD_DESC", "Choose fields than groups can search");
 define("_XADDRESSES_AM_PERM_EXPORTFIELD", "Export Fields Permission");
-define("_XADDRESSES_AM_PERM_EXPORTFIELD_DSC", "Choose fields than groups can export");
+define("_XADDRESSES_AM_PERM_EXPORTFIELD_DESC", "Choose fields than groups can export");
 
 define("_XADDRESSES_AM_PERM_OTHERS", "Other permissions");
-define("_XADDRESSES_AM_PERM_OTHERS_DSC", "Select groups that can:");
+define("_XADDRESSES_AM_PERM_OTHERS_DESC", "Select groups that can:");
 define("_XADDRESSES_AM_PERMISSIONS_1","Modify location submitter");
 define("_XADDRESSES_AM_PERMISSIONS_2","Modify location date");
 //define("_XADDRESSES_AM_PERMISSIONS_4","Submit a location"); // IN PROGRESS
-//define("_XADDRESSES_AM_PERMISSIONS_8","Submit a modification"); // IN PROGRESS
+define("_XADDRESSES_AM_PERMISSIONS_8","Suggest location correction/modification"); // IN PROGRESS
 define("_XADDRESSES_AM_PERMISSIONS_16","Send to a Friend");
 define("_XADDRESSES_AM_PERMISSIONS_32","Rate location");
 define("_XADDRESSES_AM_PERMISSIONS_64","Report broken location");
@@ -318,6 +327,7 @@ define("_XADDRESSES_AM_FORM_SURE_DEL", "Are you sure you want to delete : <b><sp
 define("_XADDRESSES_AM_DEL_SUB_CATS","The following categories will be totally deleted:");
 define("_XADDRESSES_AM_SAVEDSUCCESS", "%s saved successfully");
 define("_XADDRESSES_AM_DELETEDSUCCESS", "%s deleted successfully");
+define("_XADDRESSES_AM_UPDATESUCCESS", "%s updated successfully");
 
 
 // IN PROGRESS FROM HERE --------------------------------------------------------------------------

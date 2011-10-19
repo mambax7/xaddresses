@@ -22,14 +22,14 @@ unset($criteria);
 // count waiting/not valid locations
 $criteria = new CriteriaCompo();
 $criteria->add(new Criteria('loc_status', 0));
-$waitingLocations = $locationHandler->getCount($criteria);
+$countWaitingLocations = $locationHandler->getCount($criteria);
 unset($criteria);
 
 // count broken locations
-$brokenLocations = 0;
+$countBrokenLocations = 0;
 
 // count modified locations
-$modifiedLocations = 0;
+$countModifyLocations = 0;
 /*
 // compte le nombre de rapport de téléchargements brisés
 $countLocations_broken = $addresses_broken_Handler->getCount();
@@ -77,11 +77,11 @@ printf(_XADDRESSES_AM_INDEX_COUNTCATEGORIES, $countCategories);
 echo '<br />';
 printf(_XADDRESSES_AM_INDEX_COUNTLOCATIONS, $countLocations);
 echo '<br />';
-printf(_XADDRESSES_AM_INDEX_COUNTWAITING, $waitingLocations);
+printf(_XADDRESSES_AM_INDEX_COUNTWAITING, $countWaitingLocations);
 echo '<br/>';
-printf(_XADDRESSES_AM_INDEX_COUNTBROKEN, $brokenLocations);
+printf(_XADDRESSES_AM_INDEX_COUNTBROKEN, $countBrokenLocations);
 echo '<br/>';
-printf(_XADDRESSES_AM_INDEX_COUNTMODIFIED, $modifiedLocations);
+printf(_XADDRESSES_AM_INDEX_COUNTMODIFIED, $countModifyLocations);
 echo '<br/>';
 echo '</fieldset>';
 

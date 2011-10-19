@@ -3,10 +3,10 @@
 # Waiting Contents Extensible                                            #
 # Plugin for module Xaddresses                                           #
 #                                                                        #
-# Author          -   Lucio ROta                                         #
+# Author          -   Lucio Rota                                         #
 # Danordesign     -   lucio.rota@gmail.com                               #
 #                                                                        #
-# Last modified on 11/11/2010                                            #
+# Last modified on 10/11/2011                                            #
 /*************************************************************************/
 function b_waiting_xaddresses()
 {
@@ -15,9 +15,9 @@ function b_waiting_xaddresses()
 
 	// Xaddresses waiting
 	$block = array();
-	$result = $xoopsDB->query("SELECT COUNT(*) FROM ".$xoopsDB->prefix("xaddresses_location")." WHERE loc_status=0");
+	$result = $xoopsDB->query("SELECT COUNT(*) FROM " . xoopsDB->prefix("xaddresses_location") . " WHERE loc_status=0");
 	if ( $result ) {
-		$block['adminlink'] = XOOPS_URL."/modules/xaddresses/admin/addresses.php?op=list&statut_display=0";
+		$block['adminlink'] = XOOPS_URL . "/modules/xaddresses/admin/location.php?op=list_locations";
 		list($block['pendingnum']) = $xoopsDB->fetchRow($result);
 		$block['lang_linkname'] = _PI_WAITING_WAITINGS ;
 	}
@@ -27,17 +27,23 @@ function b_waiting_xaddresses()
 	$block = array();
 	$result = $xoopsDB->query("SELECT COUNT(*) FROM ".$xoopsDB->prefix("xaddresses_broken"));
 	if ( $result ) {
-		$block['adminlink'] = XOOPS_URL."/modules/xaddresses/admin/broken.php";
+		$block['adminlink'] = XOOPS_URL . "/modules/xaddresses/admin/location.php";
 		list($block['pendingnum']) = $xoopsDB->fetchRow($result);
 		$block['lang_linkname'] = _PI_WAITING_BROKENS ;
 	}
 	$ret[] = $block ;
 
 	// Xaddresses modreq
+    // IN PROGRESS
+    // IN PROGRESS
+    // IN PROGRESS
+    // IN PROGRESS
+    // IN PROGRESS
+    // IN PROGRESS
 	$block = array();
-	$result = $xoopsDB->query("SELECT COUNT(*) FROM ".$xoopsDB->prefix("xaddresses_mod"));
+	$result = $xoopsDB->query("SELECT COUNT(*) FROM " . $xoopsDB->prefix("xaddresses_mod"));
 	if ( $result ) {
-		$block['adminlink'] = XOOPS_URL."/modules/xaddresses/admin/modified.php";
+		$block['adminlink'] = XOOPS_URL . "/modules/xaddresses/admin/modified.php";
 		list($block['pendingnum']) = $xoopsDB->fetchRow($result);
 		$block['lang_linkname'] = _PI_WAITING_MODREQS ;
 	}

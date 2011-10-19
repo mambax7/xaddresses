@@ -4,14 +4,15 @@ $currentFile = basename(__FILE__);
 
 $op = isset($_REQUEST['op']) ? $_REQUEST['op'] : (isset($_REQUEST['cat_id']) ? "edit_locationcategory" : 'list_locationcategories');
 
-//load classes
+// load classes
 $categoryHandler =& xoops_getModuleHandler('locationcategory', 'xaddresses');
 $locationHandler =& xoops_getModuleHandler('location', 'xaddresses');
-//$locations_votedata_handler =& xoops_getModuleHandler('votedata', 'xaddresses');
-//$locations_field_handler =& xoops_getModuleHandler('field', 'xaddresses');
-//$locations_fielddata_handler =& xoops_getModuleHandler('fielddata', 'xaddresses');
-//$locations_broken_handler =& xoops_getModuleHandler('broken', 'xaddresses');
+$fieldHandler =& xoops_getModuleHandler('field', 'xaddresses');
+$brokenHandler =& xoops_getModuleHandler('broken', 'xaddresses');
+$votedataHandler =& xoops_getModuleHandler('votedata', 'xaddresses');
 
+$memberHandler =& xoops_gethandler('member');
+$groupPermHandler =& xoops_gethandler('groupperm');
 
 
 switch ($op) {
@@ -60,6 +61,16 @@ case 'list_locationcategories':
 
     foreach ($categoriesList as $key=>$categoriesListItem) {
         $category = $categoriesListItem['category'];
+        $info = _XADDRESSES_AM_CAT_MAP_TYPE . ': ' . $category->getVar('cat_map_type');
+        // count valid locations
+        $criteria = new CriteriaCompo();
+        $criteria->add(new Criteria('loc_status', 0, '!='));
+        $criteria->add(new Criteria('loc_cat_id', $category->getVar('cat_id')));
+        $countLocations = $locationHandler->getCount($criteria);
+        $info.= '<br />';
+        $info.= _XADDRESSES_AM_LOCATIONS . ': ' . $countLocations;
+        $categoriesList[$key]['info'] = $info;
+
         if ($xoopsUser->isAdmin($GLOBALS['xoopsModule']->mid())) {
             // admin can do everything
             $categoriesList[$key]['canView'] = true;
@@ -132,8 +143,8 @@ case "new_locationcategory":
     $submenuItem[] = ($op == 'list_locationcategories' ? _XADDRESSES_AM_CAT_LIST : '<a href="' . $currentFile . '?op=list_locationcategories">' . _XADDRESSES_AM_CAT_LIST . '</a>');
     xaddressesAdminSubmenu ($submenuItem);
 
-    $obj =& $categoryHandler->create();
-    $form = $obj->getForm($currentFile);
+    $category =& $categoryHandler->create();
+    $form = $category->getForm($currentFile);
     $form->display();
 
     xoops_cp_footer();
@@ -153,8 +164,8 @@ case "edit_locationcategory":
     $submenuItem[] = ($op == 'list_locationcategories' ? _XADDRESSES_AM_CAT_LIST : '<a href="' . $currentFile . '?op=list_locationcategories">' . _XADDRESSES_AM_CAT_LIST . '</a>');
     xaddressesAdminSubmenu ($submenuItem);
 
-    $obj = $categoryHandler->get($_REQUEST['cat_id']);
-    $form = $obj->getForm($currentFile);
+    $category = $categoryHandler->get($_REQUEST['cat_id']);
+    $form = $category->getForm($currentFile);
     $form->display();
 
     xoops_cp_footer();
@@ -164,176 +175,100 @@ case "edit_locationcategory":
 
 // delete category
 case 'delete_locationcategory':
-// TO DO
-// TO DO
-// TO DO
-// TO DO
-// TO DO
-    global $xoopsModule;
-    $obj =& $categoryHandler->get($_REQUEST['cat_id']);
+    $category =& $categoryHandler->get($_REQUEST['cat_id']);
+    $categoriesToDelete = array();
+    $categoriesToDelete[] = $category;
+    // Get all subcategories
+    $categories = $categoryHandler->getall();
+    $mytree = new XoopsObjectTree($categories, 'cat_id', 'cat_pid');
+    $subcategories =$mytree->getAllChild($_REQUEST['cat_id']);
+
+    $categoriesToDelete = array_merge($categoriesToDelete, $subcategories);
+
     if (isset($_REQUEST['ok']) && $_REQUEST['ok'] == 1) {
         if (!$GLOBALS['xoopsSecurity']->check()) {
             redirect_header($currentFile, 3, implode(',', $GLOBALS['xoopsSecurity']->getErrors()));
         }
-        // supression des téléchargements de la catégorie
-        $criteria = new CriteriaCompo();
-        $criteria->add(new Criteria('cat_id', $_REQUEST['cat_id']));
-        $locations = $locationHandler->getall($criteria);
-        foreach (array_keys($locations) as $i) {
-            // supression des votes
-            $criteria_1 = new CriteriaCompo();
-            $criteria_1->add(new Criteria('loc_id', $locations[$i]->getVar('loc_id')));
-            $locations_votedata = $locations_votedata_handler->getall($criteria_1);
-            foreach (array_keys($locations_votedata) as $j) {
-                $obj_votedata =& $locations_votedata_handler->get($locations_votedata[$j]->getVar('ratingid'));
-                $locations_votedata_handler->delete($obj_votedata) or $obj_votedata->getHtmlErrors();
-            }
-            // supression des rapports de fichier brisé
-            $criteria_2 = new CriteriaCompo();
-            $criteria_2->add(new Criteria('loc_id', $locations[$i]->getVar('loc_id')));
-            $locations_broken = $locations_broken_handler->getall($criteria_2);
-            foreach (array_keys($locations_broken) as $j) {
-                $obj_broken =& $locations_broken_handler->get($locations_broken[$j]->getVar('reportid'));
-                $locations_broken_handler->delete($obj_broken ) or $obj_broken ->getHtmlErrors();
-            }
-            // supression des data des champs sup.
-            $criteria_3 = new CriteriaCompo();
-            $criteria_3->add(new Criteria('loc_id', $locations[$i]->getVar('loc_id')));
-            $locations_fielddata = $locations_fielddata_handler->getall($criteria_3);
-            if ($locations_fielddata_handler->getCount( $criteria_3 ) > 0){
-                foreach (array_keys($locations_fielddata) as $j) {
-                    $obj_fielddata =& $locations_fielddata_handler->get($locations_fielddata[$j]->getVar('iddata'));
-                    $locations_fielddata_handler->delete($obj_fielddata) or $obj_fielddata->getHtmlErrors();
-                }
-            }
-            // supression des commentaires
-            if ($locations[$i]->getVar('comments') > 0){
-                xoops_comment_delete($xoopsModule->getVar('mid'), $locations[$i]->getVar('loc_id'));
-            }
-            //supression des tags
-            if (($xoopsModuleConfig['usetag'] == 1) and (is_dir('../../tag'))){
-                $tag_handler = xoops_getmodulehandler('link', 'tag');
-                $criteria = new CriteriaCompo();
-                $criteria->add(new Criteria('tag_locationid', $locations[$i]->getVar('loc_id')));
-                $locations_tags = $tag_handler->getall( $criteria );
-                if (count($locations_tags) > 0){
-                    foreach (array_keys($locations_tags) as $j) {
-                        $obj_tags =& $tag_handler->get($locations_tags[$j]->getVar('tl_id'));
-                        $tag_handler->delete($obj_tags) or $obj_tags->getHtmlErrors();
-                    }
-                }
-            }
-            // supression du fichier
-            // pour extraire le nom du fichier
-            $urlfile = substr_replace($downloads_arr[$i]->getVar('url'),'',0,strlen($uploadurl_downloads));
-            // chemin du fichier
-            $urlfile = $uploaddir_downloads . $urlfile;
-            if (is_file($urlfile)){		
-                chmod($urlfile, 0777);
-                unlink($urlfile);
-            }
-            // supression du téléchargment
-            $obj_addresses =& $locationHandler->get($locations[$i]->getVar('loc_id'));
-            $locationHandler->delete($obj_addresses) or $obj_addresses->getHtmlErrors();
-        }
-        // supression des sous catégories avec leurs téléchargements            
-        $categories = $categoryHandler->getall();
-        $mytree = new XoopsObjectTree($categories, 'cat_id', 'cat_pid');
-        $subcategories = $mytree->getAllChild($_REQUEST['cat_id']);
-        foreach (array_keys($subcategories) as $i) {
-            // supression de la catégorie
-            $obj_child =& $categoryHandler->get($subcategories[$i]->getVar('cat_id'));
-            $categoryHandler->delete($obj_child) or $obj_child->getHtmlErrors();
-            // supression des téléchargements associés
+        foreach($categoriesToDelete as $categoryToDelete) {
             $criteria = new CriteriaCompo();
-            $criteria->add(new Criteria('cat_id', $subcategories[$i]->getVar('cat_id')));
-            $locations = $locationHandler->getall( $criteria );
-            foreach (array_keys($downloads_arr) as $i) {
-                // supression des votes
-                $criteria = new CriteriaCompo();
-                $criteria->add(new Criteria('loc_id', $locations[$i]->getVar('loc_id')));
-                $locations_votedata = $locations_votedata_handler->getall( $criteria );
-                foreach (array_keys($downloads_votedata) as $j) {
-                    $obj_votedata =& $locations_votedata_handler->get($locations_votedata[$j]->getVar('rating_id'));
-                    $locations_votedata_handler->delete($obj_votedata) or $obj_votedata->getHtmlErrors();
-                }
-                // supression des rapports de fichier brisé
-                $criteria = new CriteriaCompo();
-                $criteria->add(new Criteria('loc_id', $locations[$i]->getVar('loc_id')));
-                $locations_broken = $locations_broken_handler->getall( $criteria );
-                foreach (array_keys($locations_broken) as $j) {
-                    $obj_broken =& $locations_broken_handler->get($locations_broken[$j]->getVar('report_id'));
-                    $locations_broken_handler->delete($obj_broken ) or $obj_broken ->getHtmlErrors();
-                }
-                // supression des data des champs sup.
-                $criteria = new CriteriaCompo();
-                $criteria->add(new Criteria('loc_id', $locations[$i]->getVar('loc_id')));
-                $locations_fielddata = $locations_fielddata_handler->getall( $criteria );
-                foreach (array_keys($locations_fielddata) as $j) {
-                    $obj_fielddata =& $locations_fielddata_handler->get($locations_fielddata[$j]->getVar('iddata'));
-                    $locations_fielddata_handler->delete($obj_fielddata) or $obj_fielddata->getHtmlErrors();
-                }
-                // supression des commentaires
-                if ($locations[$i]->getVar('comments') > 0){
-                    xoops_comment_delete($xoopsModule->getVar('mid'), $locations[$i]->getVar('loc_id'));
-                }
-                //supression des tags
-                if (($xoopsModuleConfig['usetag'] == 1) and (is_dir('../../tag'))){
-                    $tag_handler = xoops_getmodulehandler('link', 'tag');
+            $criteria->add(new Criteria('loc_cat_id', $categoryToDelete->getVar('cat_id')));
+            $locationsToDelete = $locationHandler->getall($criteria);
+            // Delete all locations in this category
+            foreach($locationsToDelete as $locationToDelete) {
+                $loc_id = $locationToDelete->getVar('loc_id');
+                if ($locationHandler->delete($locationToDelete)) {
+                    // Delete all ratings
                     $criteria = new CriteriaCompo();
-                    $criteria->add(new Criteria('tag_locationid', $downloads_arr[$i]->getVar('loc_id')));
-                    $locations_tags = $tag_handler->getall( $criteria );
-                    if (count($locations_tags) > 0){
-                        foreach (array_keys($locations_tags) as $j) {
-                            $obj_tags =& $tag_handler->get($locations_tags[$j]->getVar('tl_id'));
-                            $tag_handler->delete($obj_tags) or $obj_tags->getHtmlErrors();
+                    $criteria->add(new Criteria('loc_id', $loc_id));
+                    $votes = $votedataHandler->getall($criteria);
+                    foreach ($votes as $vote) {
+                        $votedataHandler->delete($vote) or $vote->getHtmlErrors();
+                    }
+                    // Delete all broken reports
+                    $criteria = new CriteriaCompo();
+                    $criteria->add(new Criteria('loc_id', $loc_id));
+                    $brokens = $brokenHandler->getall($criteria);
+                    foreach ($brokens as $broken) {
+                        $brokenHandler->delete($broken) or $broken->getHtmlErrors();
+                    }
+            /*
+                        // supression des data des champs sup.
+                        $criteria = new CriteriaCompo();
+                        $criteria->add(new Criteria('loc_id', $addresses_loc_id));
+                        $addresses_fielddata = $addressesfielddata_handler->getall( $criteria );
+                        foreach (array_keys($addresses_fielddata) as $i) {
+                            $category_fielddata =& $addressesfielddata_handler->get($addresses_fielddata[$i]->getVar('iddata'));
+                            $addressesfielddata_handler->delete($category_fielddata) or $category_fielddata->getHtmlErrors();
+                        }
+            */
+                    // Delete all comments
+                    xoops_comment_delete($GLOBALS['xoopsModule']->getVar('mid'), $loc_id);
+                    // Delete tags
+                    if (($xoopsModuleConfig['usetag'] == 1) and (is_dir('../../tag'))){
+                        $tagHandler = xoops_getmodulehandler('link', 'tag');
+                        $criteria = new CriteriaCompo();
+                        $criteria->add(new Criteria('tag_itemid', $loc_id));
+                        $location_tags = $tagHandler->getall($criteria);
+                        foreach (array_keys($location_tags) as $i) {
+                            $obj_tags =& $tagHandler->get($location_tags[$i]->getVar('tl_id'));
+                            $tagHandler->delete($obj_tags) or $obj_tags->getHtmlErrors();
                         }
                     }
+                } else {
+                    echo $locationToDelete->getHtmlErrors();
                 }
-                // supression du téléchargment
-                $obj_addresses =& $locationHandler->get($locations[$i]->getVar('loc_id'));
-                $locationHandler->delete($obj_addresses) or $obj_addresses->getHtmlErrors();
             }
+            // Delete the category
+            if (!$categoryHandler->delete($categoryToDelete)) {
+                echo $categoryToDelete->getHtmlErrors();
+            }
+        redirect_header($currentFile, 1, _XADDRESSES_AM_REDIRECT_DEL_OK);
         }
-        if ($categoryHandler->delete($obj)) {
-            redirect_header($currentFile, 1, _XADDRESSES_AM_REDIRECT_DELOK);
-        } else {
-            echo $obj->getHtmlErrors();
-        }
+        
     } else {
-        $message = '';
-        $criteria = new CriteriaCompo();
-        $criteria->add(new Criteria('cat_id', $_REQUEST['cat_id']));
-        $locations = $locationHandler->getall( $criteria );
-        if (count($locations) > 0) {
-            $message .= _XADDRESSES_AM_DELADDRESSES .'<br />';
-            foreach (array_keys($locations) as $i) {
-                $message .= '<span style="color : Red">' . $locations[$i]->getVar('loc_title') . '</span><br />';
-            }
-        }            
-        $categories = $categoryHandler->getall();
-        $mytree = new XoopsObjectTree($categories, 'cat_id', 'cat_pid');
-        $subcategories =$mytree->getAllChild($_REQUEST['cat_id']);
         if (count($subcategories) > 0) {
-            $message .= _XADDRESSES_AM_DEL_SUB_CATS . ' <br /><br />';
+            $warning = '<br />';
+            $warning.= _XADDRESSES_AM_DEL_SUB_CATS;
+            $warning.= '<br />';
             foreach (array_keys($subcategories) as $i) {
-                $message .= '<b><span style="color : Red">' . $subcategories[$i]->getVar('cat_title') . '</span></b><br />';
+                $warning.= '<b><span style="color : Red">' . $subcategories[$i]->getVar('cat_title') . '</span></b>';
+                $warning.= '<br />';
                 $criteria = new CriteriaCompo();
-                $criteria->add(new Criteria('cat_id', $subcategories[$i]->getVar('cat_id')));
+                $criteria->add(new Criteria('loc_cat_id', $subcategories[$i]->getVar('cat_id')));
                 $locations = $locationHandler->getall( $criteria );
                 if (count($locations) > 0) {
-                    $message .= _XADDRESSES_AM_DELADDRESSES .'<br />';
+                    $warning .= _XADDRESSES_AM_DELADDRESSES .'<br />';
                     foreach (array_keys($locations) as $i) {
-                        $message .= '<span style="color : Red">' . $locations[$i]->getVar('loc_title') . '</span><br />';
+                        $warning .= '<span style="color : Red">' . $locations[$i]->getVar('loc_title') . '</span><br />';
                     }
                 }
             }
         } else {
-            $message.='';
+            $warning = '';
         }
         // render start here
         xoops_cp_header();
-        xoops_confirm(array('ok' => 1, 'cat_id' => $_REQUEST['cat_id'], 'op' => 'delete_locationcategory'), $_SERVER['REQUEST_URI'], sprintf(_XADDRESSES_AM_FORM_SURE_DEL, $obj->getVar('cat_title')) . '<br /><br />' . $message);
+        xoops_confirm(array('ok' => 1, 'cat_id' => $_REQUEST['cat_id'], 'op' => 'delete_locationcategory'), $_SERVER['REQUEST_URI'], sprintf(_XADDRESSES_AM_FORM_SURE_DEL, $category->getVar('cat_title')) . $warning);
         xoops_cp_footer();
     }
     break;
@@ -341,6 +276,7 @@ case 'delete_locationcategory':
 
 
 case 'view_locationcategory':
+// TO DO
 // TO DO
 // TO DO
 // TO DO
@@ -373,49 +309,76 @@ case 'save_locationcategory':
        redirect_header($currentFile, 3, implode(',', $GLOBALS['xoopsSecurity']->getErrors()));
     }
     if (isset($_REQUEST['cat_id'])) {
-       $obj =& $categoryHandler->get($_REQUEST['cat_id']);
+       $category =& $categoryHandler->get($_REQUEST['cat_id']);
     } else {
-       $obj =& $categoryHandler->create();
+       $category =& $categoryHandler->create();
     }
 
-    $error = FALSE;
-    $messageError = '';
+    $errorFlag = FALSE;
+    $errorMessage = '';
 
-    $obj->setVar('cat_imgurl', $_POST['cat_imgurl']);
-    $obj->setVar('cat_pid', $_POST['cat_pid']);
-    $obj->setVar('cat_title', $_POST['cat_title']);
-    $obj->setVar('cat_description', $_POST['cat_description']);
-    $obj->setVar('cat_weight', $_POST['cat_weight']);
-    if (intval($_REQUEST['cat_weight'])==0 && $_REQUEST['cat_weight'] != '0') {
-        $error = TRUE;
-        $messageError = _XADDRESSES_AM_ERROR_WEIGHT . '<br />';
+    $category->setVar('cat_imgurl', $_POST['cat_imgurl']);
+    $category->setVar('cat_pid', $_POST['cat_pid']);
+    $category->setVar('cat_title', $_POST['cat_title']);
+    $category->setVar('cat_description', $_POST['cat_description']);
+    $category->setVar('cat_weight', (int)$_POST['cat_weight']);
+
+    $category->setVar('cat_map_type', $_POST['cat_map_type']);
+ 
+    // Check values
+    if ((int)$_REQUEST['cat_weight']==0 && $_REQUEST['cat_weight'] != '0') {
+        $errorFlag = TRUE;
+        $errorMessage = _XADDRESSES_AM_ERROR_WEIGHT . '<br />';
     }
     if (isset($_REQUEST['cat_id'])) {
         if ($_REQUEST['cat_id'] == $_REQUEST['cat_pid']) {
-            $error = TRUE;
-            $messageError .= _XADDRESSES_AM_ERROR_CAT;
+            $errorFlag = TRUE;
+            $errorMessage .= _XADDRESSES_AM_ERROR_CAT;
         }
     }
-    if ($error == TRUE) {
-        echo '<div class="errorMsg" style="text-align: left;">' . $messageError . '</div>';        
+    if ($errorFlag == TRUE) {
+        echo '<div class="errorMsg" style="text-align: left;">' . $errorMessage . '</div>';        
     } else {
-        if ($categoryHandler->insert($obj)) {
+        if ($categoryHandler->insert($category)) {
+            // Set permissions
+            // Resets all permissions
+            $criteria = new CriteriaCompo();
+            $criteria->add(new Criteria('gperm_itemid', $category->getVar('cat_id')));
+            $criteria->add(new Criteria('gperm_modid', $GLOBALS['xoopsModule']->getVar('mid')));
+            $groupPermHandler->deleteAll($criteria);
+            // Set view permissions
+            $groupsViewIds = $_POST['in_category_view'];
+            foreach($groupsViewIds as $id => $value)
+                $groupPermHandler->addRight('in_category_view', $category->getVar('cat_id'), $value, $GLOBALS['xoopsModule']->getVar('mid'));
+            // Set submit permissions
+            $groupsSubmitIds = $_POST['in_category_submit'];
+            foreach($groupsSubmitIds as $id => $value)
+                $groupPermHandler->addRight('in_category_submit', $category->getVar('cat_id'), $value, $GLOBALS['xoopsModule']->getVar('mid'));
+            // Set edit permissions
+            $groupsEditIds = $_POST['in_category_edit'];
+            foreach($groupsEditIds as $id => $value)
+                $groupPermHandler->addRight('in_category_edit', $category->getVar('cat_id'), $value, $GLOBALS['xoopsModule']->getVar('mid'));
+            // Set delete permissions
+            $groupsDeleteIds = $_POST['in_category_delete'];
+            foreach($groupsDeleteIds as $id => $value)
+                $groupPermHandler->addRight('in_category_delete', $category->getVar('cat_id'), $value, $GLOBALS['xoopsModule']->getVar('mid'));
+
+            // Send notification
             if (!isset($_REQUEST['cat_modified'])) {
                 $tags = array();
                 $tags['CATEGORY_NAME'] = $_POST['cat_title'];
-                $tags['CATEGORY_URL'] = XOOPS_URL . '/modules/' . $xoopsModule->getVar('dirname') . '/viewcat.php?cat_id=' . $obj->getVar('cat_id');
+                $tags['CATEGORY_URL'] = XOOPS_URL . '/modules/' . $xoopsModule->getVar('dirname') . '/viewcat.php?cat_id=' . $category->getVar('cat_id');
                 $notificationHandler =& xoops_gethandler('notification');
                 $notificationHandler->triggerEvent('global', 0, 'new_category', $tags);
             }
-            redirect_header($currentFile . '?op=list_categories', 1, _XADDRESSES_AM_REDIRECT_SAVE);
+            redirect_header($currentFile . '?op=list_categories', 1, sprintf(_XADDRESSES_AM_SAVEDSUCCESS, $category->getVar('cat_title')));
         }
-        echo $obj->getHtmlErrors();
+        echo $category->getHtmlErrors();
     }
-    $form =& $obj->getForm();
+    $form =& $category->getForm();
     $form->display();
     break;
 }
-
 
 
 

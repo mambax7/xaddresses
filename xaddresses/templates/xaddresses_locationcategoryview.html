@@ -1,0 +1,65 @@
+<{* breadcrumb *}>
+<{if ($breadcrumb)}>
+<{foreach item=bread from=$breadcrumb}>
+    <a href="<{$bread.url}>"><{$bread.title}></a>
+    &gt;
+<{/foreach}>
+<{/if}>
+
+<h1><{$category->getVar('cat_title')}></h1>
+
+<h2>SUBCATEGORIES</h2>
+<!-- Start category loop -->
+<ul>
+<{foreach item=subcategory from=$subcategories}>
+    <li><a href="locationcategoryview.php?cat_id=<{$subcategory->getVar('cat_id')}>"><{$subcategory->getVar('cat_title')}></a></li>
+<{/foreach}>
+</ul>
+<!-- End category loop -->
+
+<{* Google map code *}>
+<{$htmlMap}>
+
+<h2>LOCATIONS</h2>
+<!-- Start category loop -->
+<ul>
+<{foreach item=location from=$locations}>
+    <li><a href="locationview.php?loc_id=<{$location->getVar('loc_id')}>"><{$location->getVar('loc_title')}></a></li>
+<{/foreach}>
+</ul>
+<!-- End category loop -->
+
+
+<{*
+<div style="margin: 15px 0 10px 0;" align="center">
+    <{$smarty.const._MD_XADDRESSES_CAT_SORTBY}>&nbsp;&nbsp;<{$smarty.const._MD_XADDRESSES_CAT_TITLE}> (
+    <a href="<{$xoops_url}>/modules/TDMDownloads/viewcat.php?cid=<{$category_id}>&amp;sort=title&amp;order=ASC">
+    <img src="<{$xoops_url}>/modules/TDMDownloads/images/up.gif" align="middle" alt="<{$smarty.const._MD_XADDRESSES_CAT_TITLEATOZ}>" title="<{$smarty.const._MD_XADDRESSES_CAT_TITLEATOZ}>"/>
+    </a>
+    <a href="<{$xoops_url}>/modules/TDMDownloads/viewcat.php?cid=<{$category_id}>&amp;sort=title&amp;order=DESC">
+    <img src="<{$xoops_url}>/modules/TDMDownloads/images/down.gif" align="middle"  alt="<{$smarty.const._MD_XADDRESSES_CAT_TITLEZTOA}>" title="<{$smarty.const._MD_XADDRESSES_CAT_TITLEZTOA}>"/>
+    </a>)&nbsp;<{$smarty.const._MD_XADDRESSES_CAT_DATE}>(
+    <a href="<{$xoops_url}>/modules/TDMDownloads/viewcat.php?cid=<{$category_id}>&amp;sort=date&amp;order=ASC">
+    <img src="<{$xoops_url}>/modules/TDMDownloads/images/up.gif" align="middle" alt="<{$smarty.const._MD_XADDRESSES_CAT_DATEOLD}>" title="<{$smarty.const._MD_XADDRESSES_CAT_DATEOLD}>" />
+    </a>
+    <a href="<{$xoops_url}>/modules/TDMDownloads/viewcat.php?cid=<{$category_id}>&amp;sort=date&amp;order=DESC">
+    <img src="<{$xoops_url}>/modules/TDMDownloads/images/down.gif" align="middle" alt="<{$smarty.const._MD_XADDRESSES_CAT_DATENEW}>" title="<{$smarty.const._MD_XADDRESSES_CAT_DATENEW}>" />
+    </a>)&nbsp;<{$smarty.const._MD_XADDRESSES_CAT_RATING}>(
+    <a href="<{$xoops_url}>/modules/TDMDownloads/viewcat.php?cid=<{$category_id}>&amp;sort=rating&amp;order=ASC">
+    <img src="<{$xoops_url}>/modules/TDMDownloads/images/up.gif" align="middle" alt="<{$smarty.const._MD_XADDRESSES_CAT_RATINGLTOH}>" title="<{$smarty.const._MD_XADDRESSES_CAT_RATINGLTOH}>" />
+    </a>
+    <a href="<{$xoops_url}>/modules/TDMDownloads/viewcat.php?cid=<{$category_id}>&amp;sort=rating&amp;order=DESC">
+    <img src="<{$xoops_url}>/modules/TDMDownloads/images/down.gif" align="middle" alt="<{$smarty.const._MD_XADDRESSES_CAT_RATINGHTOL}>" title="<{$smarty.const._MD_XADDRESSES_CAT_RATINGHTOL}>" />
+    </a>)&nbsp;<{$smarty.const._MD_XADDRESSES_CAT_POPULARITY}>(
+    <a href="<{$xoops_url}>/modules/TDMDownloads/viewcat.php?cid=<{$category_id}>&amp;sort=hits&amp;order=ASC">
+    <img src="<{$xoops_url}>/modules/TDMDownloads/images/up.gif" align="middle" alt="<{$smarty.const._MD_XADDRESSES_CAT_POPULARITYLTOM}>" title="<{$smarty.const._MD_XADDRESSES_CAT_POPULARITYLTOM}>" />
+    </a>
+    <a href="<{$xoops_url}>/modules/TDMDownloads/viewcat.php?cid=<{$category_id}>&amp;sort=hits&amp;order=DESC">
+    <img src="<{$xoops_url}>/modules/TDMDownloads/images/down.gif" align="middle" alt="<{$smarty.const._MD_XADDRESSES_CAT_POPULARITYMTOL}>" title="<{$smarty.const._MD_XADDRESSES_CAT_POPULARITYMTOL}>" />
+    </a>)<br />
+	<b><{$affichage_tri}></b>
+</div>
+*}>
+
+<{* notification system *}>
+<{include file="db:system_notification_select.html"}>

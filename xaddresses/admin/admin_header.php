@@ -25,6 +25,14 @@ if ( $xoopsUser ) {
     exit();
 }
 
+// Get user groups
+$groupPermHandler =& xoops_gethandler('groupperm');
+if (is_object($GLOBALS['xoopsUser'])) {
+    $groups = $GLOBALS['xoopsUser']->getGroups();
+} else {
+	$groups = XOOPS_GROUP_ANONYMOUS;
+}
+
 if ( !isset($GLOBALS['xoopsTpl']) || !is_object($GLOBALS['xoopsTpl'])  ) {
     include_once $GLOBALS['xoops']->path( '/class/template.php' );
     $GLOBALS['xoopsTpl'] = new XoopsTpl();
@@ -34,6 +42,7 @@ if ( !isset($GLOBALS['xoopsTpl']) || !is_object($GLOBALS['xoopsTpl'])  ) {
 xoops_loadLanguage('admin', 'system');
 xoops_loadLanguage('modinfo', $GLOBALS['xoopsModule']->getVar('dirname'));
 xoops_loadLanguage('admin', $GLOBALS['xoopsModule']->getVar('dirname'));
+xoops_loadLanguage('main', $GLOBALS['xoopsModule']->getVar('dirname'));
 
 include_once 'admin_functions.php'; // admin functions
 include_once '../include/functions.php';
