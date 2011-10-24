@@ -10,13 +10,12 @@ include_once XOOPS_ROOT_PATH . '/class/xoopslists.php';
 include_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 include_once XOOPS_ROOT_PATH . '/class/xoopstopic.php';
 include_once XOOPS_ROOT_PATH . '/class/xoopsform/grouppermform.php';
-include_once '../include/functions.php';
 
 $myts =& MyTextSanitizer::getInstance();
 
-if ( $xoopsUser ) {
-    $xoopsModule = XoopsModule::getByDirname('xaddresses');
-    if ( !$xoopsUser->isAdmin($GLOBALS['xoopsModule']->mid()) ) {
+// Only Xoops or Module administrators can access admin area
+if ( $GLOBALS['xoopsUser'] ) {
+    if ( !$GLOBALS['xoopsUser']->isAdmin($GLOBALS['xoopsModule']->mid()) ) {
         redirect_header(XOOPS_URL . '/', 3, _NOPERM);
         exit();
     }
@@ -38,13 +37,14 @@ if ( !isset($GLOBALS['xoopsTpl']) || !is_object($GLOBALS['xoopsTpl'])  ) {
     $GLOBALS['xoopsTpl'] = new XoopsTpl();
 }
 
-// include language files
+// Include language files
 xoops_loadLanguage('admin', 'system');
 xoops_loadLanguage('modinfo', $GLOBALS['xoopsModule']->getVar('dirname'));
 xoops_loadLanguage('admin', $GLOBALS['xoopsModule']->getVar('dirname'));
 xoops_loadLanguage('main', $GLOBALS['xoopsModule']->getVar('dirname'));
 
-include_once 'admin_functions.php'; // admin functions
-include_once '../include/functions.php';
-include_once '../include/forms.php';
+// Include module functions
+include_once XOOPS_ROOT_PATH . '/modules/'. $GLOBALS['xoopsModule']->getVar('dirname') .'/include/functions.php';
+include_once XOOPS_ROOT_PATH . '/modules/'. $GLOBALS['xoopsModule']->getVar('dirname') .'/admin/admin_functions.php'; // admin functions
+include_once XOOPS_ROOT_PATH . '/modules/'. $GLOBALS['xoopsModule']->getVar('dirname') .'/include/forms.php';
 ?>

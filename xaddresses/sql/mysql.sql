@@ -28,14 +28,16 @@ CREATE TABLE `xaddresses_location` (
   `loc_lng`             varchar(255)            NOT NULL default '',
   `loc_zoom`            varchar(255)            NOT NULL default '',
   `loc_submitter`       int(11)                 NOT NULL default '0',
-  `loc_status`          tinyint(2)              NOT NULL default '0',
   `loc_date`            int(12)                 NOT NULL default '0',
+  `loc_status`          tinyint(2)              NOT NULL default '0',
+  `loc_suggested`       tinyint(2)              NOT NULL default '0',
   `loc_comments`        int(11) unsigned        NOT NULL default '0',
   `loc_rating`          double(6,4)             NOT NULL default '0.0000',
   `loc_votes`           int(11) unsigned        NOT NULL default '0',
   PRIMARY KEY  (`loc_id`),
   KEY `loc_cat_id` (`loc_cat_id`),
   KEY `loc_status` (`loc_status`),
+  KEY `loc_suggested` (`loc_suggested`),
   KEY `loc_title` (`loc_title`)
 ) ENGINE=MyISAM;
 # --------------------------------------------------------

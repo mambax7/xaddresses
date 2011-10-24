@@ -21,7 +21,7 @@ $op = isset($_REQUEST['op']) ? $_REQUEST['op'] : 'in_category_view';
 // render start here
 xoops_cp_header();
 // main admin menu
-include (XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->dirname() . '/admin/menu.php');
+include (XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['xoopsModule']->dirname() . '/admin/menu.php');
 echo moduleAdminTabMenu($adminmenu, $currentFile);
 
 switch ($op) {

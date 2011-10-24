@@ -22,7 +22,7 @@ class XaddressesMarker extends XoopsObject
     
     function getForm($marker_id, $action = false)
     {
-		global $xoopsDB, $xoopsModule, $xoopsModuleConfig;
+		global $xoopsDB, $xoopsModuleConfig;
 		if ($action === false) {
 			$action = $_SERVER['REQUEST_URI'];
 		}

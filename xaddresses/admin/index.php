@@ -15,12 +15,14 @@ $countCategories = $categoryHandler->getCount();
 
 // count valid locations
 $criteria = new CriteriaCompo();
+$criteria->add(new Criteria('loc_suggested', false));
 $criteria->add(new Criteria('loc_status', 0, '!='));
 $countLocations = $locationHandler->getCount($criteria);
 unset($criteria);
 
 // count waiting/not valid locations
 $criteria = new CriteriaCompo();
+$criteria->add(new Criteria('loc_suggested', false));
 $criteria->add(new Criteria('loc_status', 0));
 $countWaitingLocations = $locationHandler->getCount($criteria);
 unset($criteria);
@@ -46,18 +48,18 @@ $op = (isset($_GET['op']))? $_GET['op'] : "";
 xoops_cp_header();
 
 // main admin menu
-include (XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->dirname() . '/admin/menu.php');
+include (XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['xoopsModule']->dirname() . '/admin/menu.php');
 echo moduleAdminTabMenu($adminmenu, $currentFile);
 
 // index menu
-include_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->dirname() . '/class/menu.php';
+include_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['xoopsModule']->dirname() . '/class/menu.php';
 //$menu = new moduleMenu();
 $menu = new testMenu();
 foreach ($adminmenu as $menuitem) {
     $menu->addItem($menuitem['name'], '../' . $menuitem['link'], '../' . $menuitem['icon'], $menuitem['title']);
 }
 
-$menu->addItem('Preferences', '../../system/admin.php?fct=preferences&amp;op=showmod&amp;mod=' . $xoopsModule ->getVar('mid') . '&amp;&confcat_id=1', '../images/icons/32x32/prefs.png', _PREFERENCES);
+$menu->addItem('Preferences', '../../system/admin.php?fct=preferences&amp;op=showmod&amp;mod=' . $GLOBALS['xoopsModule'] ->getVar('mid') . '&amp;&confcat_id=1', '../images/icons/32x32/prefs.png', _PREFERENCES);
 
 echo $menu->getCSS();
 echo '<table width="100%" border="0" cellspacing="10" cellpadding="4">';

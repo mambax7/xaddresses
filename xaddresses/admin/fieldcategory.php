@@ -17,7 +17,7 @@ default:
     // render start here
     xoops_cp_header();
     // render main admin menu
-    include (XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->dirname() . '/admin/menu.php');
+    include (XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['xoopsModule']->dirname() . '/admin/menu.php');
     echo moduleAdminTabMenu($adminmenu, $currentFile);
     // render submenu
     $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
@@ -82,7 +82,7 @@ case 'new_fieldcategory':
     // render start here
     xoops_cp_header();
     // render main admin menu
-    include (XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->dirname() . '/admin/menu.php');
+    include (XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['xoopsModule']->dirname() . '/admin/menu.php');
     echo moduleAdminTabMenu($adminmenu, $currentFile);
     // render submenu
     $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
@@ -104,7 +104,7 @@ case 'edit_fieldcategory':
     // render start here
     xoops_cp_header();
     // render main admin menu
-    include (XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->dirname() . '/admin/menu.php');
+    include (XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['xoopsModule']->dirname() . '/admin/menu.php');
     echo moduleAdminTabMenu($adminmenu, $currentFile);
     // render submenu
     $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
@@ -140,7 +140,7 @@ case 'save_fieldcategory':
         // render start here
         xoops_cp_header();
         // render main admin menu
-        include (XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->dirname() . '/admin/menu.php');
+        include (XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['xoopsModule']->dirname() . '/admin/menu.php');
         echo moduleAdminTabMenu($adminmenu, $currentFile);
         // render submenu
         $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;

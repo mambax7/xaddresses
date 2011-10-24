@@ -5,7 +5,7 @@ include_once 'admin_header.php';
 xoops_cp_header();
 
 // main admin menu
-include (XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->dirname() . '/admin/menu.php');
+include (XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['xoopsModule']->dirname() . '/admin/menu.php');
 echo moduleAdminTabMenu($adminmenu, $currentFile);
 
 //Action dans switch

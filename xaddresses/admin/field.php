@@ -4,7 +4,6 @@ include 'admin_header.php';
 $op = isset($_REQUEST['op']) ? $_REQUEST['op'] : (isset($_REQUEST['field_id']) ? 'edit_field' : 'list_fields');
 
 // load classes
-$locationHandler =& xoops_getmodulehandler('location', 'xaddresses');
 $fieldCategoryHandler =& xoops_getmodulehandler('fieldcategory', 'xaddresses');
 $fieldHandler =& xoops_getmodulehandler('field', 'xaddresses');
 
@@ -16,7 +15,7 @@ case 'list_fields':
     // render start here
     xoops_cp_header();
     // main admin menu
-    include (XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->dirname() . '/admin/menu.php');
+    include (XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['xoopsModule']->dirname() . '/admin/menu.php');
     echo moduleAdminTabMenu($adminmenu, $currentFile);
     // submenu
     $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
@@ -106,7 +105,7 @@ case 'new_field':
     // render start here
     xoops_cp_header();
     // main admin menu
-    include (XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->dirname() . '/admin/menu.php');
+    include (XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['xoopsModule']->dirname() . '/admin/menu.php');
     echo moduleAdminTabMenu($adminmenu, $currentFile);
     // submenu
     $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
@@ -132,7 +131,7 @@ case 'edit_field':
     // render start here
     xoops_cp_header();
     // main admin menu
-    include (XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->dirname() . '/admin/menu.php');
+    include (XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['xoopsModule']->dirname() . '/admin/menu.php');
     echo moduleAdminTabMenu($adminmenu, $currentFile);
     // submenu
     $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
@@ -373,7 +372,7 @@ case 'save_field':
     // render start here
     xoops_cp_header();
     // main admin menu
-    include (XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->dirname() . '/admin/menu.php');
+    include (XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['xoopsModule']->dirname() . '/admin/menu.php');
     echo moduleAdminTabMenu($adminmenu, $currentFile);
     // submenu
     $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;

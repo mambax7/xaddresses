@@ -6,7 +6,7 @@ if(!isset($xoopsModuleConfig)) die();
 // Comments are deactivate
 if($xoopsModuleConfig['com_rule'] == 0) die();
 // Anonymous users can't post
-if($xoopsModuleConfig['com_anonpost'] == 0 && !is_object($xoopsUser)) die();
+if($xoopsModuleConfig['com_anonpost'] == 0 && !is_object($GLOBALS['xoopsUser'])) die();
 
 
 $com_itemid = isset($_GET['com_itemid']) ? (int)($_GET['com_itemid']) : 0;

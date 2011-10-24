@@ -54,6 +54,7 @@ unset($breadcrumb, $crumb);
 // get locations in this category
 $criteria = new CriteriaCompo();
 $criteria->add(new Criteria('loc_cat_id', $cat_id));
+$criteria->add(new Criteria('loc_suggested', false));
 $criteria->add(new Criteria('loc_status', 0, '!=')); // show only active locations
 $criteria->setSort('loc_date ASC, loc_title');
 $criteria->setOrder('ASC');
@@ -67,7 +68,7 @@ $xoopsTpl->assign('locations', $locationsArray);
 $criteria = new CriteriaCompo();
 $criteria->setSort('cat_weight ASC, cat_title');
 $criteria->setOrder('ASC');
-$criteria->add(new Criteria('cat_pid', intval($_REQUEST['cat_id'])));
+$criteria->add(new Criteria('cat_pid', (int)$_REQUEST['cat_id']));
 //$criteria->add(new Criteria('cid', '(' . implode(',', $categories) . ')','IN'));
 $subcategoriesArray = $categoryHandler->getall($criteria);
 // Set subcategory object array for tamplate
@@ -119,19 +120,9 @@ $xoopsTpl->assign('htmlMap', $htmlMap);
 
 
 /*
-// pour les permissions (si pas de droit, redirection)
-$categories = xaddresses_MygetItemIds();
-if(!in_array((int)($_REQUEST['cat_id']), $categories)) {
-    redirect_header('index.php', 2, _NOPERM);
-    exit();
-}
 
-$criteria = new CriteriaCompo();
-$criteria->setSort('cat_weight ASC, cat_title');
-$criteria->setOrder('ASC');
-$criteria->add(new Criteria('cat_id', '(' . implode(',', $categories) . ')','IN'));
-$categoriesArray = $categoryHandler->getall($criteria);
-$mytree = new XoopsObjectTree($categoriesArray, 'cat_id', 'cat_pid');
+
+
 
 
 //navigation
@@ -288,7 +279,7 @@ foreach (array_keys($downloads_arr) as $i) {
 	$pop = populaire_image($downloads_arr[$i]->getVar('hits'));
     
     // Défini si la personne est un admin
-    if (is_object($xoopsUser) && $xoopsUser->isAdmin($xoopsModule->mid())) {
+    if (is_object($GLOBALS['xoopsUser']) && $GLOBALS['xoopsUser']->isAdmin($xoopsModule->mid())) {
         $adminlink = '<a href='' . XOOPS_URL . '/modules/TDMDownloads/admin/addresses.php?op=view_downloads&amp;downloads_loc_id=' . $loc_id . '' title='' . _MD_XADDRESSES_EDITTHISDL . ''><img src='' . XOOPS_URL . '/modules/TDMDownloads/images/editicon.png' width='16px' height='16px' border='0' alt='' . _MD_XADDRESSES_EDITTHISDL . '' /></a>';
     } else {
         $adminlink = '';

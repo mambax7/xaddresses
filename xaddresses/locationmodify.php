@@ -13,6 +13,8 @@ if ($permSuggestModify == false) {
 // load classes
 $categoryHandler =& xoops_getModuleHandler('locationcategory', 'xaddresses');
 $locationHandler =& xoops_getModuleHandler('location', 'xaddresses');
+$fieldCategoryHandler =& xoops_getmodulehandler('fieldcategory', 'xaddresses');
+$fieldHandler =& xoops_getModuleHandler('field', 'xaddresses');
 $modifyHandler =& xoops_getModuleHandler('modify', 'xaddresses');
 
 $xoopsOption['template_main'] = 'xaddresses_locationmodify.html';
@@ -74,17 +76,35 @@ case "new_modify":
     $title = _XADDRESSES_MD_LOC_MODIFY_SUGGESTMODIFY . '&nbsp;-&nbsp;';
     $title.= $location->getVar('loc_title') . '&nbsp;-&nbsp;';
     $title.= $category->getVar('cat_title') . '&nbsp;-&nbsp;';
-    $title.= $xoopsModule->name();
+    $title.= $GLOBALS['xoopsModule']->name();
     $xoopsTpl->assign('xoops_pagetitle', $title);
     // Set description for template
     $xoTheme->addMeta( 'meta', 'description', strip_tags(_XADDRESSES_MD_LOC_MODIFY_SUGGESTMODIFY . ' (' . $location->getVar('loc_title') . ')'));
-// IN PROGRESS
-    // Set themeSuggestForm for template
+
+    // IN PROGRESS
     $newSuggest =& $modifyHandler->create();
-    $form = $newSuggest->getForm($loc_id);
-    $xoopsTpl->assign('themeSuggestForm', $form->render());
+    $title = $newSuggest->isNew() ? _XADDRESSES_AM_LOC_MODIFY_NEW : _XADDRESSES_AM_LOC_MODIFY_EDIT;
+    $form = new XoopsThemeForm($title, 'modifyform', $currentFile, 'post', true);
+    $form = &$newSuggest->getForm($loc_id, $currentFile, $form);
+    // Set themeSuggestForm for template
+    $form->addElement(new XoopsFormLabel(_XADDRESSES_MD_LOC_MODIFY_CAPTION, _XADDRESSES_MD_LOC_MODIFY_VALUE));
     // Set themeModifyForm for template
-    $form = xaddresses_getModifyForm($location, $currentFile);
+    $form = &xaddresses_getModifyForm($location, $currentFile, $form);
+    // Captcha
+    xoops_load('xoopscaptcha');
+    $form->addElement(new XoopsFormCaptcha(), true);
+    // Hidden Fields
+    $form->addElement(new XoopsFormHidden('loc_id', $loc_id));
+    $form->addElement(new XoopsFormHidden('op', 'save_modify'));
+    // Submit button		
+        $button_tray = new XoopsFormElementTray(_XADDRESSES_AM_ACTION, '' ,'');
+        $button_tray->addElement(new XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
+        $button_tray->addElement(new XoopsFormButton('', 'reset', _RESET, 'reset'));
+            $cancel_button = new XoopsFormButton('', 'cancel', _CANCEL, 'button');
+            $cancel_button->setExtra("onclick='javascript:history.back();'");
+        $button_tray->addElement($cancel_button);
+    $form->addElement($button_tray);
+    
     $xoopsTpl->assign('themeModifyForm', $form->render());  
     break;
 
@@ -92,48 +112,118 @@ case "new_modify":
 
 case "list_modify":
     // NOP
+    // LIST ALL MODIFY SUGGESTIONS
     break;
 
 
 
 case "save_modify":
-    $newSuggest =& $modifyHandler->create();
-    if(empty($xoopsUser)){
-        $suggestingUserId = 0;
-        // si c'est un utilisateur anonyme on vérifie qu'il n'envoie pas 2 fois un rapport
+    $errorFlag = false;
+    $errorMessage = '';
+
+    if ( !$GLOBALS['xoopsSecurity']->check()  ) {
+        redirect_header('locationview.php?loc_id=' . $loc_id, 3, _US_NOEDITRIGHT . "<br />" . implode('<br />', $GLOBALS['xoopsSecurity']->getErrors() ));
+        exit;
+    }
+
+    // Captcha test
+    xoops_load('xoopscaptcha');
+    $xoopsCaptcha = XoopsCaptcha::getInstance();
+    if ( !$xoopsCaptcha->verify() ) {
+        $errorMessage.= $xoopsCaptcha->getMessage() . '<br />';
+        $errorFlag = true;
+    }
+
+    if(empty($GLOBALS['xoopsUser'])) {
+        $suggestingUserId = 0; // Anonymous user
+    } else {
+        $suggestingUserId = $GLOBALS['xoopsUser']->getVar('uid');
+    }
+
+    // Check if user has already suggested for this location
+    if($suggestingUserId == 0) {
+        // If user is anonymous
         $criteria = new CriteriaCompo();
         $criteria->add(new Criteria('loc_id', $loc_id));
-        $criteria->add(new Criteria('suggest_sender', 0));
+        $criteria->add(new Criteria('suggest_sender', 0)); // Anonymous user
         $criteria->add(new Criteria('suggest_ip', getenv("REMOTE_ADDR")));
         if ($modifyHandler->getCount($criteria) >= 1) {
-            redirect_header('locationview.php?loc_id=' . $loc_id, 2, _MD_XADDRESSES_LOC_BROKEN_ALREADYREPORTED);
+            redirect_header('locationview.php?loc_id=' . $loc_id, 2, _XADDRESSES_MD_LOC_MODIFY_ALREADYSUGGESTED);
             exit();
         }
     } else {
-        $suggestingUserId = $xoopsUser->getVar('uid');
-        // si c'est un membre on vérifie qu'il n'envoie pas 2 fois un rapport
+        // If user is not anonymous
         $criteria = new CriteriaCompo();
         $criteria->add(new Criteria('loc_id', $loc_id));
         $modifySuggests = $modifyHandler->getall($criteria);
         foreach ($modifySuggests as $modifySuggest) {
             if ($modifySuggest->getVar('suggest_sender') == $suggestingUserId) {
-                redirect_header('locationview.php?loc_id=' . $loc_id, 2, _MD_XADDRESSES_LOC_BROKEN_ALREADYREPORTED);
+                redirect_header('locationview.php?loc_id=' . $loc_id, 2, _XADDRESSES_MD_LOC_MODIFY_ALREADYSUGGESTED);
                 exit();
             }
         }
     }
 
-    $error = false;
-    $errorMessage = '';
-    // Test avant la validation
-    xoops_load("captcha");
-    $xoopsCaptcha = XoopsCaptcha::getInstance();
-    if ( !$xoopsCaptcha->verify() ) {
-        $errorMessage.= $xoopsCaptcha->getMessage() . '<br />';
-        $error = true;
+
+
+    // STEP 1: Create suggested location
+    // Get fields
+    $fields = $fieldHandler->loadFields();
+
+    // Get ids of fields that can be viewed/edited
+    //$groupPermHandler =& xoops_gethandler('groupperm');
+    //$viewableFields = $groupPermHandler->getItemIds('field_view', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
+    //$editableFields = $groupPermHandler->getItemIds('field_edit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
+
+    $locationFields = $locationHandler->getLocationVars();
+
+    $location = $locationHandler->create();
+    if (count($fields) > 0) {
+        foreach ($fields as $field) {
+            $fieldname = $field->getVar('field_name');
+            if (in_array($fieldname, $locationFields)) {
+                $default = $field->getVar('field_default');
+                if ($default === '' || $default === null) continue;
+                $location->setVar($fieldname, $default);
+            }
+        }
     }
+
+    $myts =& MyTextSanitizer::getInstance();
+    $location->setVar('loc_suggested', true); // Set suggested flag
+    $location->setVar('loc_title', $_POST['loc_title_modify']);
+    $location->setVar('loc_cat_id', $_POST['loc_cat_id_modify']);
+    $location->setVar('loc_lat', $_POST['loc_googlemap_modify']['lat']);
+    $location->setVar('loc_lng', $_POST['loc_googlemap_modify']['lng']);
+    $location->setVar('loc_zoom', $_POST['loc_googlemap_modify']['zoom']);
+    // Set submitter
+    $location->setVar('loc_submitter', $suggestingUserId);
+    // Set creation date
+    $location->setVar('loc_date', time());
+
+    foreach ($fields as $field) {
+        $fieldname = $field->getVar('field_name');
+        //if ( in_array($field->getVar('field_id'), $editable_fields) && isset($_REQUEST[$fieldname])  ) {
+        $value = $field->getValueForSave((isset($_REQUEST[$fieldname . '_modify']) ? $_REQUEST[$fieldname . '_modify'] : ''));
+        $location->setVar($fieldname, $value);
+       //     }
+    }
+
+    if ($error == true) {
+        $xoopsTpl->assign('errorMessage', $errorMessage);
+    } else {
+        if (!$locationHandler->insert($location)) {
+            $errorFlag = true;
+            $errorMessage.= $location->getHtmlErrors();
+        }
+    }
+    
+    $suggest_loc_id = $location->getVar('loc_id');
+
+    // STEP 2: Create suggestion/modify
+    $newSuggest =& $modifyHandler->create();
     $newSuggest->setVar('loc_id', $loc_id);
-    $newSuggest->setVar('suggest_loc_id', $loc_id);
+    $newSuggest->setVar('suggest_loc_id', $suggest_loc_id);
     $newSuggest->setVar('suggest_sender', $suggestingUserId);
     $newSuggest->setVar('suggest_ip', getenv("REMOTE_ADDR"));
     $newSuggest->setVar('suggest_date', time()); // creation date
@@ -143,114 +233,28 @@ case "save_modify":
     } else {
         if ($modifyHandler->insert($newSuggest)) {
             $tags = array();
-            $tags['MODIFYSUGGESTS_URL'] = XOOPS_URL . '/modules/' . $xoopsModule->getVar('dirname') . '/admin/modify.php';
+            $tags['MODIFYSUGGESTS_URL'] = XOOPS_URL . '/modules/' . $GLOBALS['xoopsModule']->getVar('dirname') . '/admin/modify.php';
             $notification_handler =& xoops_gethandler('notification');
             $notification_handler->triggerEvent('global', 0, 'location_modify', $tags);
-            redirect_header('locationview.php?loc_id=' . $loc_id, 2, _MD_XADDRESSES_LOC_MODIFY_THANKSFORINFO);
+            redirect_header('locationview.php?loc_id=' . $loc_id, 2, _XADDRESSES_MD_LOC_MODIFY_THANKSFORINFO);
+        } else {
+            $errorFlag = true;
+            $errorMessage.= $newSuggest->getHtmlErrors();
         }
-        echo $obj->getHtmlErrors();
     }
+    
+    if ($error == true) {
+        $xoopsTpl->assign('errorMessage', $errorMessage);
+        echo $newSuggest->getHtmlErrors();
+    }
+    // TO DO
+    // TO DO
+    // TO DO
     //Affichage du formulaire de notation des téléchargements
-    $form =& $obj->getForm((int)$_REQUEST['loc_id']);
-    $xoopsTpl->assign('themeForm', $form->render());   
+    //$form =& $obj->getForm((int)$_REQUEST['loc_id']);
+    //$xoopsTpl->assign('themeForm', $form->render());   
     break;    
-    
-    
-/*
-    xoops_loadLanguage("main", $GLOBALS['xoopsModule']->getVar('dirname', 'n') );
-//        if ( !$GLOBALS['xoopsSecurity']->check()  ) {
-//            redirect_header('address.php', 3, _US_NOEDITRIGHT . "<br />" . implode('<br />', $GLOBALS['xoopsSecurity']->getErrors() ));
-//            exit;
-//        }
+}
 
-    // Get fields
-    $fields = $fieldHandler->loadFields();
-
-    // Get ids of fields that can be viewed/edited
-    $groupPermHandler =& xoops_gethandler('groupperm');
-    $viewableFields = $groupPermHandler->getItemIds('field_view', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
-    $editableFields = $groupPermHandler->getItemIds('field_edit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
-
-    $locationFields = $locationHandler->getLocationVars();
-
-    if (!empty($_POST['loc_id'])) {
-        $loc_id = (int)$_POST['loc_id'];
-        $location = $locationHandler->get($loc_id);
-        if (!is_object($location)) {
-            $location = $locationHandler->create();
-            $location->setVar('loc_id', $loc_id);
-        }
-    } else {
-        $location = $locationHandler->create();
-        if (count($fields) > 0) {
-            foreach ($fields as $field) {
-                $fieldname = $field->getVar('field_name');
-                if (in_array($fieldname, $locationFields)) {
-                    $default = $field->getVar('field_default');
-                    if ($default === '' || $default === null) continue;
-                    $location->setVar($fieldname, $default);
-                }
-            }
-        }
-    }
-
-    $myts =& MyTextSanitizer::getInstance();
-    $location->setVar('loc_title', $_POST['loc_title']);
-    $location->setVar('loc_cat_id', $_POST['loc_cat_id']);
-    $location->setVar('loc_lat', $_POST['loc_googlemap']['lat']);
-    $location->setVar('loc_lng', $_POST['loc_googlemap']['lng']);
-    $location->setVar('loc_zoom', $_POST['loc_googlemap']['zoom']);
-    // Set submitter and time
-    if (isset($_POST['loc_submitter'])) {
-        $location->setVar('loc_submitter', $_POST['loc_submitter']);
-    } else {
-        $location->setVar('loc_submitter', $xoopsUser->uid());
-    }
-    if (isset($_POST['loc_date'])) {
-        $location->setVar('loc_date', strtotime($_POST['loc_date']['date']) + $_POST['loc_date']['time']); // creation date
-    } else {
-        $location->setVar('loc_date', time()); // creation date
-    }
-
-    $errors = array();
-    if ($stop != "") {
-        $errors[] = $stop;
-    }
-
-    foreach ($fields as $field) {
-        $fieldname = $field->getVar('field_name');
-        //if ( in_array($field->getVar('field_id'), $editable_fields) && isset($_REQUEST[$fieldname])  ) {
-        $value = $field->getValueForSave((isset($_REQUEST[$fieldname]) ? $_REQUEST[$fieldname] : ''));
-        $location->setVar($fieldname, $value);
-       //     }
-    }
-
-    $new_groups = isset($_POST['groups']) ? $_POST['groups'] : array();
-
-    if (count($errors) == 0) {
-        if ($locationHandler->insert($location)) {
-            if ($location->isNew()) {
-                redirect_header($currentFile, 2, _XADDRESSES_AM_ADDRESSCREATED, false);
-            } else {
-                redirect_header('locationview.php?loc_id=' . $location->getVar('loc_id'), 2, _US_PROFUPDATED, false);
-            }
-        }
-    } else {
-        foreach ($errors as $err) {
-            $user->setErrors($err);
-        }
-    }
-    //$location->setGroups($new_groups);
-    echo $location->getHtmlErrors();
-
-    $form = xaddresses_getModifyForm($location, $currentFile);
-    $form->display();
-    break;
-*/
-    
-    
-    
-    }
-
-include XOOPS_ROOT_PATH.'/footer.php';
+include XOOPS_ROOT_PATH . '/footer.php';
 ?>

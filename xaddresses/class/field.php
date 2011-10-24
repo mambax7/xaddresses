@@ -17,7 +17,7 @@ class XaddressesField extends XoopsObject
         $this->initVar('field_name', XOBJ_DTYPE_TXTBOX, null, true);
         $this->initVar('field_title', XOBJ_DTYPE_TXTBOX);
         $this->initVar('field_description', XOBJ_DTYPE_TXTAREA);
-        $this->initVar('field_required', XOBJ_DTYPE_INT, 0); //0 = no, 1 = yes
+        $this->initVar('field_required', XOBJ_DTYPE_INT, 0); // 0 = no, 1 = yes
         $this->initVar('field_length', XOBJ_DTYPE_INT, 0);
         $this->initVar('field_maxlength', XOBJ_DTYPE_INT, 0);
         $this->initVar('field_weight', XOBJ_DTYPE_INT, 0);
@@ -52,7 +52,6 @@ class XaddressesField extends XoopsObject
     function getVar($key, $format = 's')
     {
         $value = parent::getVar($key, $format);
-//print_r($value);
         if ($key == 'field_options' && !empty($value)) {
             foreach (array_keys($value) as $idx) {
                 $value[$idx] = base64_decode($value[$idx]);
@@ -80,7 +79,6 @@ class XaddressesField extends XoopsObject
         $options = $this->getVar('field_options');
         if (is_array($options)) {
             //asort($options);
-
             foreach (array_keys($options) as $key) {
                 $optval = defined($options[$key]) ? constant($options[$key]) : $options[$key];
                 $optkey = defined($key) ? constant($key) : $key;
@@ -89,25 +87,21 @@ class XaddressesField extends XoopsObject
             }
         }
         include_once $GLOBALS['xoops']->path('class/xoopsformloader.php');
-        switch ($this->getVar('field_type')  ) {
+        switch ($this->getVar('field_type')) {
             default:
             case "autotext":
                 //autotext is not for editing
                 $element = new XoopsFormLabel($caption, $this->getOutputValue($location));
                 break;
-
             case "textbox":
                 $element = new XoopsFormText($caption, $name, $this->getVar('field_length'), $this->getVar('field_maxlength'), $value);
                 break;
-
             case "textarea":
                 $element = new XoopsFormTextArea($caption, $name, $value, 4, 30);
                 break;
-
             case "dhtml":
                 $element = new XoopsFormDhtmlTextArea($caption, $name, $value, 10, 30);
                 break;
-
             case "select":
                 $element = new XoopsFormSelect($caption, $name, $value);
                 // If options do not include an empty element, then add a blank option to prevent any default selection
@@ -122,59 +116,46 @@ class XaddressesField extends XoopsObject
                 }
                 $element->addOptionArray($options);
                 break;
-
             case "select_multi":
                 $element = new XoopsFormSelect($caption, $name, $value, 5, true);
                 $element->addOptionArray($options);
                 break;
-
             case "radio":
                 $element = new XoopsFormRadio($caption, $name, $value);
                 $element->addOptionArray($options);
                 break;
-
             case "checkbox":
                 $element = new XoopsFormCheckBox($caption, $name, $value);
                 $element->addOptionArray($options);
                 break;
-
             case "yesno":
                 $element = new XoopsFormRadioYN($caption, $name, $value);
                 break;
-
             case "group":
                 $element = new XoopsFormSelectGroup($caption, $name, true, $value);
                 break;
-
             case "group_multi":
                 $element = new XoopsFormSelectGroup($caption, $name, true, $value, 5, true);
                 break;
-
             case "language":
                 $element = new XoopsFormSelectLang($caption, $name, $value);
                 break;
-
             case "date":
                 $element = new XoopsFormTextDateSelect($caption, $name, 15, $value);
                 break;
-
             case "longdate":
                 $element = new XoopsFormTextDateSelect($caption, $name, 15, str_replace("-", "/", $value) );
                 break;
-
             case "datetime":
                 $element = new XoopsFormDatetime($caption, $name, 15, $value);
                 break;
-
             case "list":
                 $element = new XoopsFormSelectList($caption, $name, $value, 1, $options[0]);
                 break;
-
             case "timezone":
                 $element = new XoopsFormSelectTimezone($caption, $name, $value);
                 $element->setExtra("style='width: 280px;'");
                 break;
-
             case "rank":
                 $element = new XoopsFormSelect($caption, $name, $value);
 
@@ -183,13 +164,12 @@ class XaddressesField extends XoopsObject
                 $element->addOption(0, "--------------");
                 $element->addOptionArray($ranks);
                 break;
-
             case 'theme':
                 $element = new XoopsFormSelect($caption, $name, $value);
                 $element->addOption("0", _XADDRESSES_MA_SITEDEFAULT);
                 $handle = opendir(XOOPS_THEME_PATH . '/');
                 $dirlist = array();
-                while (false !== ($file = readdir($handle) ) ) {
+                while (false !== ($file = readdir($handle))) {
                     if (is_dir(XOOPS_THEME_PATH . '/' . $file) && !preg_match("/^[.]{1,2}$/", $file) && strtolower($file) != 'cvs' ) {
                         if (file_exists(XOOPS_THEME_PATH . "/" . $file . "/theme.html") && in_array($file, $GLOBALS['xoopsConfig']['theme_set_allowed'])) {
                             $dirlist[$file] = $file;
@@ -202,25 +182,21 @@ class XaddressesField extends XoopsObject
                     $element->addOptionArray($dirlist);
                 }
                 break;
-
             case "file":
                 $element = new FormFileManager ($caption, $name, $value); // custom form class
                 break;
             case "multiplefile":
                 $element = new FormMultipleFileManager ($caption, $name, $value); // custom form class
                 break;
-
             case "image":
                 $element = new FormXoopsImage ($caption, $name, $this->getVar('field_length'), $this->getVar('field_maxlength'), $value); // custom form class
                 break;
             case "multipleimage":
                 $element = new FormMultipleXoopsImage ($caption, $name, $this->getVar('field_length'), $this->getVar('field_maxlength'), $value); // custom form class
                 break;
-
             case "kmlmap":
                 $element = new FormKmlEditor ($caption, $name, $value); // custom form class
                 break;
-
         }
         if ($this->getVar('field_description') != "") {
             $element->setDescription($this->getVar('field_description') );
@@ -244,15 +220,15 @@ class XaddressesField extends XoopsObject
             include_once $GLOBALS['xoops']->path('modules/xaddresses/language/english/modinfo.php');
         }
 
-        $value = in_array($this->getVar('field_name'), $this->getLocationVars() ) ? $user->getVar($this->getVar('field_name') ) : $location->getVar($this->getVar('field_name'));
+        $value = in_array($this->getVar('field_name'), $this->getLocationVars()) ? $user->getVar($this->getVar('field_name')) : $location->getVar($this->getVar('field_name'));
 
-        switch ($this->getVar('field_type')  ) {
+        switch ($this->getVar('field_type')) {
             default:
             case "textbox":
-                if ( $this->getVar('field_name') == 'url' && $value != '') {
-                     return '<a href="' . formatURL($value) . '" rel="external">' . $value . '</a>';
-                   } else {
-                     return $value;
+                if ($this->getVar('field_name') == 'url' && $value != '') {
+                    return '<a href="' . formatURL($value) . '" rel="external">' . $value . '</a>';
+                } else {
+                    return $value;
                 }
                 break;
             case "textarea":
@@ -262,33 +238,27 @@ class XaddressesField extends XoopsObject
             case "list":
                 return $value;
                 break;
-
             case "image":
             case "file":
                 return $value;
                 break;
-
             case "multipleimage":
             case "multiplefile":
                 return $value;
                 break;
-
-
             case "kmlmap":
                 return $value;
                 break;
-
             case "select":
             case "radio":
                 $options = $this->getVar('field_options');
                 if (isset($options[$value])) {
-                    $value = htmlspecialchars( defined($options[$value]) ? constant($options[$value]) : $options[$value]);
+                    $value = htmlspecialchars(defined($options[$value]) ? constant($options[$value]) : $options[$value]);
                 } else {
                     $value = "";
                 }
                 return $value;
                 break;
-
             case "select_multi":
             case "checkbox":
                 $options = $this->getVar('field_options');
@@ -302,26 +272,21 @@ class XaddressesField extends XoopsObject
                 }
                 return $ret;
                 break;
-
             case "group":
                 //change to retrieve groups and return name of group
                 return $value;
                 break;
-
             case "group_multi":
                 //change to retrieve groups and return array of group names
                 return "";
                 break;
-
             case "longdate":
                 //return YYYY/MM/DD format - not optimal as it is not using local date format, but how do we do that
                 //when we cannot convert it to a UNIX timestamp?
                 return str_replace("-", "/", $value);
-
             case "date":
                 return formatTimestamp($value, 's');
                 break;
-
             case "datetime":
                 if (!empty($value)) {
                        return formatTimestamp($value, 'm');
@@ -350,7 +315,6 @@ class XaddressesField extends XoopsObject
             case "yesno":
                 return $value ? _YES : _NO;
                 break;
-
             case "timezone":
                 include_once $GLOBALS['xoops']->path('class/xoopslists.php');
                 $timezones = XoopsLists::getTimeZoneList();
@@ -391,7 +355,6 @@ class XaddressesField extends XoopsObject
             case "file":
             case "kmlmap":
                 return $value;
-
             case "multipleimage":
             case "multiplefile":
                 $ret = array();
@@ -399,14 +362,12 @@ class XaddressesField extends XoopsObject
                     if ($val != '') $ret[] = $val;
                 }
                 return $ret; // IN_PROGRESS
-
             case "date":
                 if ($value != "") {
                     return strtotime($value);
                 }
                 return $value;
                 break;
-
             case "datetime":
                 if (!empty($value)) {
                     return strtotime($value['date']) + intval($value['time']);
@@ -478,50 +439,42 @@ class XaddressesFieldHandler extends XoopsPersistableObjectHandler
         $obj->setVar('field_name', str_replace(' ', '_', $obj->getVar('field_name')));
         $obj->cleanVars();
         $defaultstring = "";
-        switch ($obj->getVar('field_type')  ) {
+        switch ($obj->getVar('field_type')) {
             case "datetime":
             case "date":
                 $obj->setVar('field_valuetype', XOBJ_DTYPE_INT);
                 $obj->setVar('field_maxlength', 10);
                 break;
-
             case "longdate":
                 $obj->setVar('field_valuetype', XOBJ_DTYPE_MTIME);
                 break;
-
             case "yesno":
                 $obj->setVar('field_valuetype', XOBJ_DTYPE_INT);
                 $obj->setVar('field_maxlength', 1);
                 break;
-
             case "textbox":
                 if ($obj->getVar('field_valuetype') != XOBJ_DTYPE_INT) {
                     $obj->setVar('field_valuetype', XOBJ_DTYPE_TXTBOX);
                 }
                 break;
-
             case "autotext":
                 if ($obj->getVar('field_valuetype') != XOBJ_DTYPE_INT) {
                     $obj->setVar('field_valuetype', XOBJ_DTYPE_TXTAREA);
                 }
                 break;
-
             case "group_multi":
             case "select_multi":
             case "checkbox":
                 $obj->setVar('field_valuetype', XOBJ_DTYPE_ARRAY);
                 break;
-
             case "language":
             case "timezone":
             case "theme":
                 $obj->setVar('field_valuetype', XOBJ_DTYPE_TXTBOX);
                 break;
-
             case "image":
                 $obj->setVar('field_valuetype', XOBJ_DTYPE_TXTBOX);
                 break;
-
             case "file":
                 $obj->setVar('field_valuetype', XOBJ_DTYPE_TXTBOX);
                 break;
@@ -529,7 +482,6 @@ class XaddressesFieldHandler extends XoopsPersistableObjectHandler
             case "multipleimage":
                 $obj->setVar('field_valuetype', XOBJ_DTYPE_ARRAY);
                 break;
-
             case "multiplefile":
                 $obj->setVar('field_valuetype', XOBJ_DTYPE_ARRAY);
                 break;
@@ -538,7 +490,6 @@ class XaddressesFieldHandler extends XoopsPersistableObjectHandler
             case "textarea":
                 $obj->setVar('field_valuetype', XOBJ_DTYPE_TXTAREA);
                 break;
-
             case "kmlmap":
                 $obj->setVar('field_valuetype', XOBJ_DTYPE_TXTAREA);
                 break;
@@ -591,7 +542,6 @@ class XaddressesFieldHandler extends XoopsPersistableObjectHandler
                         $defaultstring = " DEFAULT " . $this->db->quote($obj->cleanVars['field_default']);
                     //}
                     break;
-
                 case XOBJ_DTYPE_INT:
                     $type = "int";
                     if ($obj->getVar('field_default') || $obj->getVar('field_default') !== '') {
@@ -599,7 +549,6 @@ class XaddressesFieldHandler extends XoopsPersistableObjectHandler
                         $obj->setVar('field_default', intval($obj->cleanVars['field_default']));
                     }
                     break;
-
                 case XOBJ_DTYPE_DECIMAL:
                     $type = "decimal(14,6)";
                     if ($obj->getVar('field_default') || $obj->getVar('field_default') !== '') {
@@ -607,7 +556,6 @@ class XaddressesFieldHandler extends XoopsPersistableObjectHandler
                         $obj->setVar('field_default', doubleval($obj->cleanVars['field_default']));
                     }
                     break;
-
                 case XOBJ_DTYPE_FLOAT:
                     $type = "float(15,9)";
                     if ($obj->getVar('field_default') || $obj->getVar('field_default') !== '') {
@@ -615,7 +563,6 @@ class XaddressesFieldHandler extends XoopsPersistableObjectHandler
                         $obj->setVar('field_default', floatval($obj->cleanVars['field_default']));
                     }
                     break;
-
                 case XOBJ_DTYPE_OTHER:
                 case XOBJ_DTYPE_UNICODE_TXTAREA:
                 case XOBJ_DTYPE_TXTAREA:
@@ -624,7 +571,6 @@ class XaddressesFieldHandler extends XoopsPersistableObjectHandler
                     $obj->setVar('field_maxlength', null);
                     $notnullstring = "";
                     break;
-
                 case XOBJ_DTYPE_MTIME:
                     $type = "date";
                     $maxlengthstring = "";

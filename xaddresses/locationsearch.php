@@ -7,10 +7,11 @@ include_once 'header.php';
 // load classes
 $categoryHandler =& xoops_getModuleHandler('locationcategory', 'xaddresses');
 $locationHandler =& xoops_getModuleHandler('location', 'xaddresses');
+$fieldCategoryHandler =& xoops_getmodulehandler('fieldcategory', 'xaddresses');
 $fieldHandler =& xoops_getModuleHandler('field', 'xaddresses');
 $gpermHandler =& xoops_gethandler('groupperm');
 $memberHandler =& xoops_gethandler('member');
-$groups = $GLOBALS['xoopsUser'] ? $GLOBALS['xoopsUser']->getGroups() : array(XOOPS_GROUP_ANONYMOUS);
+xoops_load('formgooglemap', 'xaddresses');
 
 // Get ids of fields that can be searched
 $searchableFields = $gpermHandler->getItemIds('field_search', $groups, $GLOBALS['xoopsModule']->getVar('mid'));
@@ -25,9 +26,6 @@ $searchableTypes = array(
     'timezone',
     'language');
 
-
-$myts =& MyTextSanitizer::getInstance();
-
 $limit_default = 20;
 $op = isset($_REQUEST['op']) ? $_REQUEST['op'] : "search";
 
@@ -36,36 +34,111 @@ $op = isset($_REQUEST['op']) ? $_REQUEST['op'] : "search";
 switch ($op ) {
 default:
 case "search":
-    $xoopsOption['template_main'] = "xaddresses_search.html";
+    // Get ids of categories in which locations can be viewed/edited/submitted
+    $viewableCategories = $groupPermHandler->getItemIds('in_category_view', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
+    $editableCategories = $groupPermHandler->getItemIds('in_category_edit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
+    $submitableCategories = $groupPermHandler->getItemIds('in_category_submit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
+    // Get ids of fields that can be edited
+    $editableFields = $groupPermHandler->getItemIds('field_edit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
+    $searchableFields = $groupPermHandler->getItemIds('field_search', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
+
+    $xoopsOption['template_main'] = "xaddresses_locationsearch.html";
     include_once XOOPS_ROOT_PATH . '/header.php';
-
-    $xoopsOption['cache_group'] = implode('', $groups);
-    $xoBreadcrumbs[] = array('title' => _SEARCH);
-    $sortby_arr = array();
-
-    // Get fields
-    $fields = $locationHandler->loadFields();
     
+    // count valid locations
+    $criteria = new CriteriaCompo();
+    $criteria->add(new Criteria('loc_suggested', false));
+    $criteria->add(new Criteria('loc_status', 0, '!='));
+    $countLocations = $locationHandler->getCount($criteria);
+    unset($criteria);
+    $GLOBALS['xoopsTpl']->assign('total_locations', sprintf(_XADDRESSES_AM_INDEX_COUNTLOCATIONS, $countLocations));
+
+    /*
+    // Breadcrumb
+    $breadcrumb = array();
+    $crumb['title'] = $location->getVar('loc_title');
+    $crumb['url'] = 'locationview.php?loc_id=' . $location->getVar('loc_id');
+    $breadcrumb[] = $crumb;
+    $crumb['title'] = $category->getVar('cat_title');
+    $crumb['url'] = 'locationcategoryview.php?cat_id=' . $category->getVar('cat_id');
+    $breadcrumb[] = $crumb;
+    while ($category->getVar('cat_pid') != 0) {
+        $category = $categoryHandler->get($category->getVar('cat_pid'));
+        $crumb['title'] = $category->getVar('cat_title');
+        $crumb['url'] = 'locationcategoryview.php?cat_id=' . $category->getVar('cat_id');
+        $breadcrumb[] = $crumb;
+    }
+    // Set breadcrumb array for tamplate
+    $breadcrumb = array_reverse($breadcrumb);
+    $xoopsTpl->assign('breadcrumb', $breadcrumb);
+    unset($breadcrumb, $crumb);
+*/
+
+/*
+$R = 6371; // km: is the earth’s radius (mean radius = 6,371km)
+$point1 = array('lat' => 0, 'lng' => 0);
+$point2 = array('lat' => 0, 'lng' => 0);
+$dLat = toRad($point2['lat'] - $point1['lat']);
+$dLon = toRad($point2['lng'] - $point1['lng']);
+$dLat1 = toRad($point1['lat']);
+$dLat2 = toRad($point2['lat']);
+$a = sin($dLat/2) * sin($dLat/2) + cos($dLat1) * cos($dLat1) * sin($dLon/2) * sin($dLon/2);
+$c = 2 * atan2(sqrt($a), sqrt(1-$a));
+$distance = $R * $c; // km
+
+MORE INFO HERE
+http://www.movable-type.co.uk/scripts/latlong.html
+
+$distance = abs(acos(sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(lon2 - lon1))) * 6371;
+*/
 
     include_once $GLOBALS['xoops']->path('class/xoopsformloader.php');
-    $searchform = new XoopsThemeForm("", "searchform", "search.php", "post");
+    $searchform = new XoopsThemeForm("", "searchform", $currentFile, "post");
 
-        $name_tray = new XoopsFormElementTray(_US_NICKNAME);
-        $name_tray->addElement(new XoopsFormSelectMatchOption('', 'uname_match'));
-        $name_tray->addElement(new XoopsFormText('', 'uname', 35, 255) );
-    $searchform->addElement($name_tray);
+    // location title
+        $formLocTitle = new XoopsFormElementTray(_XADDRESSES_AM_LOC_TITLE);
+        $formLocTitle->setDescription(_XADDRESSES_AM_LOC_TITLE_DESC);
+        $formLocTitle->addElement(new XoopsFormSelectMatchOption('', 'loc_title_match'));
+        $formLocTitle->addElement(new XoopsFormText('', 'loc_title', 35, 255));
+    $searchform->addElement($formLocTitle);
 
-        $email_tray = new XoopsFormElementTray(_US_EMAIL);
-        $email_tray->addElement(new XoopsFormSelectMatchOption('', 'email_match'));
-        $email_tray->addElement(new XoopsFormText('', 'email', 35, 255));
-    $searchform->addElement($email_tray);
+    // location coordinates
+        $formGoogleMap = new FormGoogleMap(_XADDRESSES_AM_LOC_COORDINATES, 'loc_googlemap', null);
+        $formGoogleMap->setDescription(_XADDRESSES_AM_LOC_COORDINATES_DESC);
+    //$searchform->addElement($formGoogleMap);
+        $formMaxDistance = new XoopsFormElementTray(_XADDRESSES_AM_LOC_MAXDISTANCE, '<br />');
+        $formMaxDistance->setDescription(_XADDRESSES_AM_LOC_MAXDISTANCE_DESC);
+        //$formMaxDistance->addElement(new XoopsFormSelectMatchOption('', 'loc_maxdistance_match'));
+        $formMaxDistance->addElement(new XoopsFormText('', 'loc_maxdistance', 35, 255));
+        $formMaxDistance->addElement($formGoogleMap);
+    $searchform->addElement($formMaxDistance);
+    // TO DO
+    // TO DO
+    // TO DO
+    // TO DO
+    // TO DO
+    // TO DO
 
-    // add search groups , only for Webmasters
-    if ($GLOBALS['xoopsUser'] && $GLOBALS['xoopsUser']->isAdmin()) {
-            $group_tray = new XoopsFormElementTray(_US_GROUPS);
-            $group_tray->addElement(new XoopsFormSelectGroup('', "selgroups", null, false, 5, true));
-        $searchform->addElement($group_tray);
-    }
+    // location category
+        $criteria = new CriteriaCompo();
+        $criteria->setSort('cat_weight ASC, cat_title');
+        $criteria->setOrder('ASC');
+        $criteria->add(new Criteria('cat_id', ' (' . implode(',', $viewableCategories) . ')', 'IN'));
+        $criteria->setOrder('ASC');
+        $categoriesArray = $categoryHandler->getall($criteria);
+        $categoriesTree = new XoopsObjectTree($categoriesArray, 'cat_id', 'cat_pid');
+        $formSelectCategoryMaxLines = 5; // Max lines in groups select
+        $countCategory = count($categoriesArray);
+        $FormSelectCategoryLines = ($countGroups < $formSelectCategoryMaxLines) ? $countCategory : $formSelectCategoryMaxLines;
+        $htmlSelBox = $categoriesTree->makeSelBox('loc_cat_id', 'cat_title', '--', 0, false, 0, "multiple='multiple' size='{formSelectCategoryMaxLines}'");
+        //$htmlSelBox = str_replace("<select ", "<select multiple='multiple' size='5' ", $htmlSelBox);
+        $formLocCategory = new XoopsFormLabel(_XADDRESSES_AM_LOC_CAT, $htmlSelBox);
+        $formLocCategory->setDescription(_XADDRESSES_AM_LOC_CAT_DESC);
+    $searchform->addElement($formLocCategory);
+
+    
+    // Get fields
+    $fields = $locationHandler->loadFields();
 
     foreach (array_keys($fields) as $i) {
         if (!in_array($fields[$i]->getVar('field_id'), $searchableFields) || !in_array($fields[$i]->getVar('field_type'), $searchableTypes)) {
@@ -85,7 +158,6 @@ case "search":
                     unset($tray);
                 }
                 break;
-
             case "radio":
             case "select":
                 $options = $fields[$i]->getVar('field_options');
@@ -96,7 +168,6 @@ case "search":
                 $searchform->addElement($element);
                 unset($element);
                 break;
-
             case "yesno":
                 $element = new XoopsFormSelect($fields[$i]->getVar('field_title'), $fields[$i]->getVar('field_name'), null, 2, true);
                 $element->addOption(1, _YES);
@@ -104,13 +175,11 @@ case "search":
                 $searchform->addElement($element);
                 unset($element);
                 break;
-
             case "date":
             case "datetime":
                 $searchform->addElement(new XoopsFormTextDateSelect(sprintf(_PROFILE_MA_LATERTHAN, $fields[$i]->getVar('field_title') ), $fields[$i]->getVar('field_name')."_larger", 15, 0));
                 $searchform->addElement(new XoopsFormTextDateSelect(sprintf(_PROFILE_MA_EARLIERTHAN, $fields[$i]->getVar('field_title') ), $fields[$i]->getVar('field_name')."_smaller", 15, time()));
                 break;
-
             case "timezone":
                 $element = new XoopsFormSelect($fields[$i]->getVar('field_title'), $fields[$i]->getVar('field_name'), null, 6, true);
                 include_once $GLOBALS['xoops']->path('class/xoopslists.php');
@@ -118,7 +187,6 @@ case "search":
                 $searchform->addElement($element);
                 unset($element);
                 break;
-
             case "language":
                 $element = new XoopsFormSelectLang($fields[$i]->getVar('field_title'), $fields[$i]->getVar('field_name'), null, 6);
                 $searchform->addElement($element);
@@ -126,8 +194,11 @@ case "search":
                 break;
         }
     }
+
+    $searchform->addElement(new XoopsFormLabel('// IN PROGRESS', '// IN PROGRESS'));
+
     asort($sortby_arr);
-        $sortby_arr = array_merge(array("" => _NONE, "uname" =>_US_NICKNAME, "email" => _US_EMAIL), $sortby_arr);
+        $sortby_arr = array_merge(array("" => _NONE, "title" =>_US_NICKNAME, "email" => _US_EMAIL), $sortby_arr);
         $sortby_select = new XoopsFormSelect(_PROFILE_MA_SORTBY, 'sortby');
         $sortby_select->addOptionArray($sortby_arr);
     $searchform->addElement($sortby_select);
@@ -145,15 +216,10 @@ case "search":
     $searchform->assign($GLOBALS['xoopsTpl']);
     $GLOBALS['xoopsTpl']->assign('page_title', _PROFILE_MA_SEARCH);
 
-    //added count user
-    $memberHandler =& xoops_gethandler('member');
-    $acttotal = $memberHandler->getUserCount(new Criteria('level', 0, '>'));
-    $total = sprintf(_PROFILE_MA_ACTUS, "<span style='color:#ff0000;'>{$acttotal}</span>");
-    $GLOBALS['xoopsTpl']->assign('total_users', $total);
     break;
 
 case "results":
-    $xoopsOption['template_main'] = "xaddresses_results.html";
+    $xoopsOption['template_main'] = "xaddresses_locationsearchresults.html";
     include_once XOOPS_ROOT_PATH . '/header.php';
 
     $GLOBALS['xoopsTpl']->assign('page_title', _PROFILE_MA_RESULTS);
