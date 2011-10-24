@@ -22,13 +22,13 @@ $criteria->setSort('cat_weight ASC, cat_title');
 $criteria->setOrder('ASC');
 $mainCategories = $categoryHandler->getAll($criteria);
 
-$myCategoriesId = xaddresses_MygetItemIds();
+$viewableCategoriesId = xaddresses_MygetItemIds();
 //print_r($myCategories);
 //affichage des catégories:
 $criteria = new CriteriaCompo();
 $criteria->setSort('cat_weight ASC, cat_title');
 $criteria->setOrder('ASC');
-$criteria->add(new Criteria('cat_id', '(' . implode(',', $myCategoriesId) . ')','IN'));
+$criteria->add(new Criteria('cat_id', '(' . implode(',', $viewableCategoriesId) . ')','IN'));
 $myCategories = $categoryHandler->getall($criteria);
 //print_r($myCategories_array);
 $myTree = new XoopsObjectTree($myCategories, 'cat_id', 'cat_pid');
@@ -47,13 +47,13 @@ foreach ($mainCategories as $mainCategory) {
 }
 */
 
-$myCategoriesId = xaddresses_MygetItemIds('in_category_view');
+$viewableCategoriesId = xaddresses_MygetItemIds('in_category_view');
 
 $criteria = new CriteriaCompo();
 $criteria->add(new Criteria('cat_pid', 0));
 $criteria->setSort('cat_weight ASC, cat_title');
 $criteria->setOrder('ASC');
-$criteria->add(new Criteria('cat_id', '(' . implode(',', $myCategoriesId) . ')','IN'));
+$criteria->add(new Criteria('cat_id', '(' . implode(',', $viewableCategoriesId) . ')','IN'));
 $mainCategories = $categoryHandler->getAll($criteria);
 
 $prefix = '';
@@ -68,7 +68,7 @@ foreach ($mainCategories as $mainCategory) {
     $criteria->add(new Criteria('cat_pid', $mainCategory->getVar('cat_id')));
     $criteria->setSort('cat_weight ASC, cat_title');
     $criteria->setOrder('ASC');
-    $criteria->add(new Criteria('cat_id', '(' . implode(',', $myCategoriesId) . ')','IN'));
+    $criteria->add(new Criteria('cat_id', '(' . implode(',', $viewableCategoriesId) . ')','IN'));
     $subCategories = $categoryHandler->getall($criteria);
     if (count($subCategories) != 0) {
         $categoriesList = array_merge ($categoriesList, getChildrenTree($mainCategory->getVar('cat_id'), $subCategories, $prefix, $sufix, $order));
@@ -86,12 +86,11 @@ $GLOBALS['xoopsTpl']->assign('categoriesList', $categoriesList);
 
 /*
 // pour les permissions
-$categories = xaddresses_MygetItemIds();
 //affichage des catégories:
 $criteria = new CriteriaCompo();
 $criteria->setSort('weight ASC, cat_title');
 $criteria->setOrder('ASC');
-$criteria->add(new Criteria('cid', '(' . implode(',', $categories) . ')','IN'));
+$criteria->add(new Criteria('loc_cat_id', '(' . implode(',', $viewableCategoriesId) . ')','IN'));
 $downloadscat_arr = $categoryHandler->getall($criteria);
 $mytree = new XoopsObjectTree($downloadscat_arr, 'cat_id', 'cat_pid');
 
@@ -99,101 +98,112 @@ $criteria = new CriteriaCompo();
 $criteria->setSort('cat_weight ASC, cat_title');
 $criteria->setOrder('ASC');
 $criteria->add(new Criteria('cat_pid', 0));
-$criteria->add(new Criteria('cat_id', '(' . implode(',', $categories) . ')','IN'));
+$criteria->add(new Criteria('cat_id', '(' . implode(',', $viewableCategoriesId) . ')','IN'));
 $downloadscat_arr = $categoryHandler->getall($criteria);
 
 $count = 1;
 $keywords = '';
 foreach (array_keys($downloadscat_arr) as $i) {
-    $totaldownloads = nombreEntree($downloadscat_arr[$i]->getVar('cid'), '1');
-    $subcategories_arr = $mytree->getFirstChild($downloadscat_arr[$i]->getVar('cid'));
+    $totaldownloads = nombreEntree($downloadscat_arr[$i]->getVar('loc_cat_id'), '1');
+    $subcategories_arr = $mytree->getFirstChild($downloadscat_arr[$i]->getVar('loc_cat_id'));
     $chcount = 0;
     $subcategories = '';    
     //pour les mots clef
     $keywords .= $downloadscat_arr[$i]->getVar('title') . ',';
     foreach (array_keys($subcategories_arr) as $j) {
             if ($chcount>=$xoopsModuleConfig['nbsouscat']){				
-                $subcategories .= '<li>[<a href='' . XOOPS_URL . '/modules/xaddresses/viewcat.php?cid=' . $downloadscat_arr[$i]->getVar('cid') . ''>+</a>]</li>';
+                $subcategories .= '<li>[<a href='' . XOOPS_URL . '/modules/xaddresses/viewcat.php?cat_id=' . $downloadscat_arr[$i]->getVar('loc_cat_id') . ''>+</a>]</li>';
                 break;
             }
-            $subcategories .= '<li><a href='' . XOOPS_URL . '/modules/xaddresses/viewcat.php?cid=' . $subcategories_arr[$j]->getVar('cid') . ''>' . $subcategories_arr[$j]->getVar('title') . '</a></li>';
+            $subcategories .= '<li><a href='' . XOOPS_URL . '/modules/xaddresses/viewcat.php?loc_cat_id=' . $subcategories_arr[$j]->getVar('loc_cat_id') . ''>' . $subcategories_arr[$j]->getVar('title') . '</a></li>';
             $keywords .= $downloadscat_arr[$i]->getVar('title') . ',';
             $chcount++;
     }
-    $xoopsTpl->append('categories', array('image' => $uploadurl . $downloadscat_arr[$i]->getVar('imgurl'), 'id' => $downloadscat_arr[$i]->getVar('cid'), 'title' => $downloadscat_arr[$i]->getVar('title'), 'description_main' => $downloadscat_arr[$i]->getVar('description_main'), 'subcategories' => $subcategories, 'totaldownloads' => $totaldownloads, 'count' => $count));
+    $xoopsTpl->append('viewableCategoriesId', array('image' => $uploadurl . $downloadscat_arr[$i]->getVar('imgurl'), 'id' => $downloadscat_arr[$i]->getVar('loc_cat_id'), 'title' => $downloadscat_arr[$i]->getVar('title'), 'description_main' => $downloadscat_arr[$i]->getVar('description_main'), 'subcategories' => $subcategories, 'totaldownloads' => $totaldownloads, 'count' => $count));
     $count++;
 }
-
-//pour afficher les résumés
-//téléchargements récents
-if($xoopsModuleConfig['bldate']==1){
+*/
+// Get 
+// Get more recents locations list
+if($xoopsModuleConfig['index_list_recent'] == true) {
     $criteria = new CriteriaCompo();
-    $criteria->add(new Criteria('status', 0, '!='));
-    $criteria->add(new Criteria('cid', '(' . implode(',', $categories) . ')','IN'));
-    $criteria->setSort('date');
+    $criteria->add(new Criteria('loc_status', 0, '!='));
+    $criteria->add(new Criteria('loc_cat_id', '(' . implode(',', $viewableCategoriesId) . ')','IN'));
+    $criteria->setSort('loc_date');
     $criteria->setOrder('DESC');
-    $criteria->setLimit($xoopsModuleConfig['nbbl']);
-    $downloads_arr = $locationHandler->getall($criteria);
-    foreach (array_keys($downloads_arr) as $i) {
-        $title = $downloads_arr[$i]->getVar('title');
-        if (strlen($title) >= $xoopsModuleConfig['longbl']) {
-            $title = substr($title,0,($xoopsModuleConfig['longbl'])).'...';
+    $criteria->setLimit($xoopsModuleConfig['index_list_number']);
+    $locations = $locationHandler->getall($criteria);
+    foreach (array_keys($locations) as $i) {
+        $title = $locations[$i]->getVar('loc_title');
+        if (strlen($title) >= $xoopsModuleConfig['index_list_titlelenght']) {
+            $title = substr($title, 0, ($xoopsModuleConfig['index_list_titlelenght'])) . '...';
         }
-        $date = formatTimestamp($downloads_arr[$i]->getVar('date'),'s');
-        $xoopsTpl->append('bl_date', array('id' => $downloads_arr[$i]->getVar('loc_id'),'cid' => $downloads_arr[$i]->getVar('cid'),'date' => $date,'title' => $title));
+        $date = formatTimestamp($locations[$i]->getVar('loc_date'), 's');
+        $xoopsTpl->append('index_list_recent', array(
+            'loc_id' => $locations[$i]->getVar('loc_id'), 
+            'loc_cat_id' => $locations[$i]->getVar('loc_cat_id'), 
+            'loc_date' => $date, 
+            'title' => $title
+        ));
     }
+    unset($locations);
 }
+
+// Get top rated locations list
+if($xoopsModuleConfig['index_list_toprated'] == true) {
+    $criteria = new CriteriaCompo();
+    $criteria->add(new Criteria('loc_status', 0, '!='));
+    $criteria->add(new Criteria('loc_cat_id', '(' . implode(',', $viewableCategoriesId) . ')','IN'));
+    $criteria->setSort('loc_rate');
+    $criteria->setOrder('DESC');
+    $criteria->setLimit($xoopsModuleConfig['index_list_number']);
+    $locations = $locationHandler->getall($criteria);
+    foreach (array_keys($locations) as $i) {
+        $title = $locations[$i]->getVar('loc_title');
+        if (strlen($title) >= $xoopsModuleConfig['index_list_titlelenght']) {
+            $title = substr($title,0,($xoopsModuleConfig['index_list_titlelenght'])) . '...';
+        }
+        $rating = number_format($locations[$i]->getVar('rating'), 1);
+        $xoopsTpl->append('index_list_toprated', array(
+            'loc_id' => $locations[$i]->getVar('loc_id'), 
+            'loc_cat_id' => $locations[$i]->getVar('loc_cat_id'), 
+            'loc_rating' => $rating, 
+            'loc_title' => $title
+        ));
+    }
+    unset($locations);
+}
+
+/*
 //plus téléchargés
 if($xoopsModuleConfig['blpop']==1){
     $criteria = new CriteriaCompo();
     $criteria->add(new Criteria('status', 0, '!='));
-    $criteria->add(new Criteria('cid', '(' . implode(',', $categories) . ')','IN'));
+    $criteria->add(new Criteria('loc_cat_id', '(' . implode(',', $viewableCategoriesId) . ')','IN'));
     $criteria->setSort('hits');
     $criteria->setOrder('DESC');
-    $criteria->setLimit($xoopsModuleConfig['nbbl']);
+    $criteria->setLimit($xoopsModuleConfig['index_show_number']);
     $downloads_arr = $locationHandler->getall($criteria);
     foreach (array_keys($downloads_arr) as $i) {
         $title = $downloads_arr[$i]->getVar('title');
-        if (strlen($title) >= $xoopsModuleConfig['longbl']) {
-            $title = substr($title,0,($xoopsModuleConfig['longbl'])).'...';
+        if (strlen($title) >= $xoopsModuleConfig['index_list_titlelenght']) {
+            $title = substr($title,0,($xoopsModuleConfig['index_list_titlelenght'])) . '...';
         }
-        $xoopsTpl->append('bl_pop', array('id' => $downloads_arr[$i]->getVar('loc_id'),'cid' => $downloads_arr[$i]->getVar('cid'),'hits' => $downloads_arr[$i]->getVar('hits'),'title' => $title));
+        $xoopsTpl->append('bl_pop', array(
+            'id' => $downloads_arr[$i]->getVar('loc_id'), 
+            'loc_cat_id' => $downloads_arr[$i]->getVar('loc_cat_id'), 
+            'hits' => $downloads_arr[$i]->getVar('hits'), 
+            'title' => $title
+        ));
     }
 }
-//mieux notés
-if($xoopsModuleConfig['blrating']==1){
-    $criteria = new CriteriaCompo();
-    $criteria->add(new Criteria('status', 0, '!='));
-    $criteria->add(new Criteria('cid', '(' . implode(',', $categories) . ')','IN'));
-    $criteria->setSort('rating');
-    $criteria->setOrder('DESC');
-    $criteria->setLimit($xoopsModuleConfig['nbbl']);
-    $downloads_arr = $locationHandler->getall($criteria);
-    foreach (array_keys($downloads_arr) as $i) {
-        $title = $downloads_arr[$i]->getVar('title');
-        if (strlen($title) >= $xoopsModuleConfig['longbl']) {
-            $title = substr($title,0,($xoopsModuleConfig['longbl'])).'...';
-        }
-        $rating = number_format($downloads_arr[$i]->getVar('rating'),1);
-        $xoopsTpl->append('bl_rating', array('id' => $downloads_arr[$i]->getVar('loc_id'),'cid' => $downloads_arr[$i]->getVar('cid'),'rating' => $rating,'title' => $title));
-    }
-}
-if ($xoopsModuleConfig['bldate']==0 and $xoopsModuleConfig['blpop']==0 and $xoopsModuleConfig['blrating']==0){
-    $bl_affichage = 0;
-}else{
-    $bl_affichage = 1;
-}
-$xoopsTpl->assign('bl_affichage', $bl_affichage);
 
 // affichage des téléchargements
 //Utilisation d'une copie d'écran avec la largeur selon les préférences
-if ($xoopsModuleConfig['useshots'] == 1) {
-    $xoopsTpl->assign('shotwidth', $xoopsModuleConfig['shotwidth']);
-    $xoopsTpl->assign('show_screenshot', true);
-}
+
 $criteria = new CriteriaCompo();
 $criteria->add(new Criteria('status', 0, '!='));
-$criteria->add(new Criteria('cid', '(' . implode(',', $categories) . ')','IN'));
+$criteria->add(new Criteria('loc_cat_id', '(' . implode(',', $viewableCategoriesId) . ')','IN'));
 $numrows = $locationHandler->getCount($criteria);
 $xoopsTpl->assign('lang_thereare', sprintf(_MD_XADDRESSES_INDEX_THEREARE,$numrows));
 $criteria->setLimit($xoopsModuleConfig['newdownloads']);
@@ -227,7 +237,7 @@ foreach (array_keys($downloads_arr) as $i) {
     $logourl = $downloads_arr[$i]->getVar('logourl');
     $logourl = $uploadurl_shots . $logourl;
     $datetime = formatTimestamp($downloads_arr[$i]->getVar('date'),'s');
-    $cid = $downloads_arr[$i]->getVar('cid');
+    $loc_cat_id = $downloads_arr[$i]->getVar('loc_cat_id');
     $loc_id = $downloads_arr[$i]->getVar('loc_id');
     $submitter = XoopsUser::getUnameFromId($downloads_arr[$i]->getVar('submitter'));
     $description = $downloads_arr[$i]->getVar('description');
@@ -250,12 +260,12 @@ foreach (array_keys($downloads_arr) as $i) {
     $pop = populaire_image($downloads_arr[$i]->getVar('hits'));
     
     // Défini si la personne est un admin
-    if (is_object($xoopsUser) && $xoopsUser->isAdmin($xoopsModule->mid())) {
+    if (is_object($GLOBALS['xoopsUser']) && $GLOBALS['xoopsUser']->isAdmin($xoopsModule->mid())) {
         $adminlink = '<a href='' . XOOPS_URL . '/modules/TDMDownloads/admin/addresses.php?op=view_downloads&amp;downloads_loc_id=' . $loc_id . '' title='' . _MD_XADDRESSES_EDITTHISDL . ''><img src='' . XOOPS_URL . '/modules/TDMDownloads/images/editicon.png' width='16px' height='16px' border='0' alt='' . _MD_XADDRESSES_EDITTHISDL . '' /></a>';
     } else {
         $adminlink = '';
     }    
-    $xoopsTpl->append('file', array('id' => $loc_id,'cid'=>$cid, 'title' => $dtitle.$new.$pop,'logourl' => $logourl,'updated' => $datetime,'description_short' => $description_short,
+    $xoopsTpl->append('file', array('id' => $loc_id,'loc_cat_id'=>$loc_cat_id, 'title' => $dtitle.$new.$pop,'logourl' => $logourl,'updated' => $datetime,'description_short' => $description_short,
                                     'adminlink' => $adminlink, 'submitter' => $submitter));
     //pour les mots clef
     $keywords .= $dtitle . ',';
@@ -267,5 +277,5 @@ $xoTheme->addMeta('meta', 'description', strip_tags($xoopsModule->name()));
 $keywords = substr($keywords,0,-1);
 $xoTheme->addMeta('meta', 'keywords', $keywords);
 */
-include XOOPS_ROOT_PATH.'/footer.php';
+include XOOPS_ROOT_PATH . '/footer.php';
 ?>

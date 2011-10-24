@@ -266,6 +266,7 @@ class FormGoogleMap extends XoopsFormElementTray
 
         $html.= "<div id='{$this->name}_GoogleMap' style='{$this->config['style']}'>";
         $html.= _FORMGOOGLEMAP_GOOGLEMAPHERE;
+        $html.= "<br />";
         $html.= _FORMGOOGLEMAP_GOOGLEMAPHERE_DESC;
         $html.= "</div>";
         $ret.= $html . "\n";

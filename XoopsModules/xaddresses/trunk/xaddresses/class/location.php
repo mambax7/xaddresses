@@ -12,13 +12,16 @@ class XaddressesLocation extends XoopsObject
         $this->initVar('loc_lat', XOBJ_DTYPE_DECIMAL);
         $this->initVar('loc_lng', XOBJ_DTYPE_DECIMAL);
         $this->initVar('loc_zoom', XOBJ_DTYPE_INT);
-        $this->initVar('loc_submitter', XOBJ_DTYPE_INT, null, true);
-        $this->initVar('loc_status', XOBJ_DTYPE_INT, 0); //0 = no, 1 = yes
+        $this->initVar('loc_submitter', XOBJ_DTYPE_INT, null, true); // sumbmitter id
         $this->initVar('loc_date', XOBJ_DTYPE_INT, 0);
-        $this->initVar('loc_comments', XOBJ_DTYPE_INT, null, false, 11);
-		$this->initVar('loc_rating', XOBJ_DTYPE_OTHER, null, false, 10);
-        $this->initVar('loc_votes', XOBJ_DTYPE_INT, null, false, 11);
-        //extra fields
+        // Flags
+        $this->initVar('loc_status', XOBJ_DTYPE_INT, 0); // 0 = location not enabled, 1 = location enabled/ok
+        $this->initVar('loc_suggested', XOBJ_DTYPE_INT, 0); // 0 = normal location, 1 = suggested location
+        // Infos
+        $this->initVar('loc_comments', XOBJ_DTYPE_INT, null, false, 11); // number of comments
+		$this->initVar('loc_rating', XOBJ_DTYPE_OTHER, null, false, 10); // rating
+        $this->initVar('loc_votes', XOBJ_DTYPE_INT, null, false, 11); // number of votes
+        // Extra fields
         $this->init($fields);
     }
 
@@ -240,7 +243,6 @@ class XaddressesLocationHandler extends XoopsPersistableObjectHandler
     function insert(&$obj, $force = false, $checkObject = true)
     {
         $locationVars = $this->getLocationVars();
-//error_log (print_r($locationVars,true));
         /*foreach ($locationVars as $var) {
             unset($obj->vars[$var]);
         }

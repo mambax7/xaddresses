@@ -1,23 +1,48 @@
 <?php
 defined('XOOPS_ROOT_PATH') or die("XOOPS root path not defined");
 
+
+
+
+
+
+
 /**
  * Get {@link XoopsThemeForm} for adding/editing fields
  *
  * @param object $field {@link XaddressesField} object to get edit form for
  * @param mixed $action URL to submit to - or false for $_SERVER['REQUEST_URI']
+ * @param object $form {@link XoopsThemeForm} object or null
  *
  * @return object
  */
-function xaddresses_getFieldForm(&$field, $action = false)
+function xaddresses_getFieldForm(&$field, $action = false, &$form = null)
 {
-    if ( $action === false ) {
+    // Module classes/handlers
+    $fieldCategoryHandler =& xoops_getmodulehandler('fieldcategory', 'xaddresses');
+    $fieldHandler =& xoops_getmodulehandler('field', 'xaddresses');
+    // Xoops classes/handlers
+    $groupPermHandler =& xoops_gethandler('groupperm');
+
+    if ($action === false) {
         $action = $_SERVER['REQUEST_URI'];
     }
     include_once $GLOBALS['xoops']->path('class/xoopsformloader.php');
-    
-    $title = $field->isNew() ? _XADDRESSES_AM_ADD_FIELD : _XADDRESSES_AM_EDIT_FIELD;
-    $form = new XoopsThemeForm($title, 'field_form', $action, 'post', true);
+    if (!isset($form) || empty($form) || get_class($form) != 'XoopsThemeForm') {
+        $formIsNew = true;
+        $title = $field->isNew() ? _XADDRESSES_AM_ADD_FIELD : _XADDRESSES_AM_EDIT_FIELD;
+        $form = new XoopsThemeForm($title, 'field_form', $action, 'post', true);
+    } else {
+        $formIsNew = false;
+    }
+
+    // Get user groups
+    if (is_object($GLOBALS['xoopsUser'])) {
+        $groups = $GLOBALS['xoopsUser']->getGroups();
+    } else {
+    	$groups = XOOPS_GROUP_ANONYMOUS;
+    }
+
     // field_title
         $fieldTitleText = new XoopsFormText(_XADDRESSES_AM_FIELD_TITLE, 'field_title', 35, 255, $field->getVar('field_title', 'e'));
         $fieldTitleText->setDescription(_XADDRESSES_AM_FIELD_TITLE_DESC);
@@ -32,7 +57,6 @@ function xaddresses_getFieldForm(&$field, $action = false)
     } else {
         $fieldcat_id = 0;
     }
-    $fieldCategoryHandler =& xoops_getmodulehandler('fieldcategory');
         $fieldCategorySelect = new XoopsFormSelect(_XADDRESSES_AM_FIELD_CATEGORY, 'field_category', $fieldcat_id);
         $fieldCategorySelect->setDescription(_XADDRESSES_AM_FIELD_CATEGORY_DESC);
         $fieldCategorySelect->addOption(0, _XADDRESSES_AM_FIELD_CATEGORY_DEFAULT);
@@ -272,7 +296,7 @@ function xaddresses_getFieldForm(&$field, $action = false)
     }
 
     // Permissions
-    $groupPermHandler =& xoops_gethandler('groupperm');
+
     
     // Permissions: field_view, field_edit, field_export
     if ($field->getVar('field_edit') || $field->isNew()) {
@@ -317,57 +341,66 @@ function xaddresses_getFieldForm(&$field, $action = false)
         $form->addElement($fieldSearchableSelectGroup);
     }
 
-    $form->addElement(new XoopsFormHidden('op', 'save_field') );
-    // Submit button		
-        $button_tray = new XoopsFormElementTray(_XADDRESSES_AM_ACTION, '' ,'');
-        $button_tray->addElement(new XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
-        $button_tray->addElement(new XoopsFormButton('', 'reset', _RESET, 'reset'));
-            $cancel_button = new XoopsFormButton('', 'cancel', _CANCEL, 'button');
-            $cancel_button->setExtra("onclick='javascript:history.back();'");
-        $button_tray->addElement($cancel_button);
-    $form->addElement($button_tray);
-
+    if ($formIsNew) {
+        $form->addElement(new XoopsFormHidden('op', 'save_field') );
+        // Submit button		
+            $button_tray = new XoopsFormElementTray(_XADDRESSES_AM_ACTION, '' ,'');
+            $button_tray->addElement(new XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
+            $button_tray->addElement(new XoopsFormButton('', 'reset', _RESET, 'reset'));
+                $cancel_button = new XoopsFormButton('', 'cancel', _CANCEL, 'button');
+                $cancel_button->setExtra("onclick='javascript:history.back();'");
+            $button_tray->addElement($cancel_button);
+        $form->addElement($button_tray);
+    }
     return $form;
 }
 
 
 
-/**
-* Get {@link XoopsThemeForm} for adding/editing locations
-*
-* @param object $location {@link XaddressesLocation} to edit
-*
-* @return object
-*/
-function xaddresses_getLocationForm(&$location, $action = false)
-{
-    if ($action === false) {
-        $action = $_SERVER['REQUEST_URI'];
-    }
 
+
+
+
+/**
+ * Get {@link XoopsThemeForm} for adding/editing locations
+ *
+ * @param object $location {@link XaddressesLocation} to edit
+ * @param mixed $action URL to submit to - or false for $_SERVER['REQUEST_URI']
+ * @param object $form {@link XoopsThemeForm} object or null
+ *
+ * @return object
+ */
+function xaddresses_getLocationForm(&$location, $action = false, &$form = null)
+{
+    // Module classes/handlers
     $categoryHandler =& xoops_getModuleHandler('locationcategory', 'xaddresses');
     $locationHandler =& xoops_getModuleHandler('location', 'xaddresses');
     $fieldCategoryHandler =& xoops_getmodulehandler('fieldcategory', 'xaddresses');
     $fieldHandler =& xoops_getmodulehandler('field', 'xaddresses');
-    $memberHandler =& xoops_gethandler('member');
     xoops_load('formgooglemap', 'xaddresses');
-
-
-    include_once $GLOBALS['xoops']->path('class/xoopsformloader.php');
-    $formTitle = $location->isNew() ? _XADDRESSES_AM_LOC_ADD : _XADDRESSES_AM_LOC_EDIT;
-    $form = new XoopsThemeForm($formTitle, 'location_form', $action, 'post', true);
-
-    $categories = $categoryHandler->getObjects(null, true, false);
-
-    //permission
+    // Xoops classes/handlers
+    $memberHandler =& xoops_gethandler('member');
     $groupPermHandler =& xoops_gethandler('groupperm');
+
+    if ($action === false) {
+        $action = $_SERVER['REQUEST_URI'];
+    }
+    include_once $GLOBALS['xoops']->path('class/xoopsformloader.php');
+    if (!isset($form) || empty($form) || get_class($form) != 'XoopsThemeForm') {
+        $formIsNew = true;
+        $formTitle = $location->isNew() ? _XADDRESSES_AM_LOC_ADD : _XADDRESSES_AM_LOC_EDIT;
+        $form = new XoopsThemeForm($formTitle, 'location_form', $action, 'post', true);
+    } else {
+        $formIsNew = false;
+    }
+
+    // Get user groups
     if (is_object($GLOBALS['xoopsUser'])) {
         $groups = $GLOBALS['xoopsUser']->getGroups();
     } else {
     	$groups = XOOPS_GROUP_ANONYMOUS;
     }
     // Get ids of categories in which locations can be viewed/edited/submitted
-    $groupPermHandler =& xoops_gethandler('groupperm');
     $viewableCategories = $groupPermHandler->getItemIds('in_category_view', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
     $editableCategories = $groupPermHandler->getItemIds('in_category_edit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
     $submitableCategories = $groupPermHandler->getItemIds('in_category_submit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
@@ -376,6 +409,8 @@ function xaddresses_getLocationForm(&$location, $action = false)
     // Get other permissions
     $permModifySubmitter = ($groupPermHandler->checkRight('others', 1, $groups, $GLOBALS['xoopsModule']->getVar('mid'))) ? true : false ;
     $permModifyDate = ($groupPermHandler->checkRight('others', 2, $groups, $GLOBALS['xoopsModule']->getVar('mid'))) ? true : false ;
+
+
 
     // location title
         $formLocTitle = new XoopsFormText(_XADDRESSES_AM_LOC_TITLE, 'loc_title', 35, 255, $location->getVar('loc_title'));
@@ -485,58 +520,66 @@ function xaddresses_getLocationForm(&$location, $action = false)
         }
     }
 
+    if ($formIsNew) {
     $form->addElement(new XoopsFormHidden('loc_id', $location->getVar('loc_id')));
     $form->addElement(new XoopsFormHidden('op', 'save_location'));
-    // Submit button		
-        $button_tray = new XoopsFormElementTray(_XADDRESSES_AM_ACTION, '' ,'');
-        $button_tray->addElement(new XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
-        $button_tray->addElement(new XoopsFormButton('', 'reset', _RESET, 'reset'));
-            $cancel_button = new XoopsFormButton('', 'cancel', _CANCEL, 'button');
-            $cancel_button->setExtra("onclick='javascript:history.back();'");
-        $button_tray->addElement($cancel_button);
-    $form->addElement($button_tray);
+        // Submit button
+            $button_tray = new XoopsFormElementTray(_XADDRESSES_AM_ACTION, '' ,'');
+            $button_tray->addElement(new XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
+            $button_tray->addElement(new XoopsFormButton('', 'reset', _RESET, 'reset'));
+                $cancel_button = new XoopsFormButton('', 'cancel', _CANCEL, 'button');
+                $cancel_button->setExtra("onclick='javascript:history.back();'");
+            $button_tray->addElement($cancel_button);
+        $form->addElement($button_tray);
+    }
     return $form;
 }
 
 
 
-/**
-* Get {@link XoopsThemeForm} for suggesting a location correction/modification
-*
-* @param object $location {@link XaddressesLocation} to edit
-*
-* @return object
-*/
-function xaddresses_getModifyForm(&$location, $action = false)
-{
-    if ($action === false) {
-        $action = $_SERVER['REQUEST_URI'];
-    }
 
+
+
+
+/**
+ * Get {@link XoopsThemeForm} for suggesting a location correction/modification
+ *
+ * @param object $location {@link XaddressesLocation} to edit
+ * @param mixed $action URL to submit to - or false for $_SERVER['REQUEST_URI']
+ * @param object $form {@link XoopsThemeForm} object or null
+ *
+ * @return object
+ */
+function xaddresses_getModifyForm(&$location, $action = false, &$form = null)
+{
+    // Module classes/handlers
     $categoryHandler =& xoops_getModuleHandler('locationcategory', 'xaddresses');
     $locationHandler =& xoops_getModuleHandler('location', 'xaddresses');
     $fieldCategoryHandler =& xoops_getmodulehandler('fieldcategory', 'xaddresses');
     $fieldHandler =& xoops_getmodulehandler('field', 'xaddresses');
-    $memberHandler =& xoops_gethandler('member');
     xoops_load('formgooglemap', 'xaddresses');
-
-
-    include_once $GLOBALS['xoops']->path('class/xoopsformloader.php');
-    //$formTitle = $location->isNew() ? _XADDRESSES_AM_LOC_ADD : _XADDRESSES_AM_LOC_EDIT;
-    $formTitle = _XADDRESSES_MD_LOC_MODIFY_SUGGESTMODIFY;
-    $form = new XoopsThemeForm($formTitle, 'modify_form', $action, 'post', true);
-
-    $categories = $categoryHandler->getObjects(null, true, false);
-
-    // Get user groups
+    // Xoops classes/handlers
+    $memberHandler =& xoops_gethandler('member');
     $groupPermHandler =& xoops_gethandler('groupperm');
+
+    if ($action === false) {
+        $action = $_SERVER['REQUEST_URI'];
+    }
+    include_once $GLOBALS['xoops']->path('class/xoopsformloader.php');
+    if (!isset($form) || empty($form) || get_class($form) != 'XoopsThemeForm') {
+        $formIsNew = true;
+        $formTitle = _XADDRESSES_MD_LOC_MODIFY_SUGGESTMODIFY;
+        $form = new XoopsThemeForm($formTitle, 'modify_form', $action, 'post', true);
+    } else {
+        $formIsNew = false;
+    }
+    // Get user groups
     if (is_object($GLOBALS['xoopsUser'])) {
         $groups = $GLOBALS['xoopsUser']->getGroups();
     } else {
     	$groups = XOOPS_GROUP_ANONYMOUS;
     }
     // Get ids of categories in which locations can be viewed/edited/submitted
-    $groupPermHandler =& xoops_gethandler('groupperm');
     $viewableCategories = $groupPermHandler->getItemIds('in_category_view', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
     $editableCategories = $groupPermHandler->getItemIds('in_category_edit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
     $submitableCategories = $groupPermHandler->getItemIds('in_category_submit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
@@ -549,8 +592,9 @@ function xaddresses_getModifyForm(&$location, $action = false)
 
     // location title
     $formLocTitle_element_tray = new XoopsFormElementTray(_XADDRESSES_AM_LOC_TITLE, '<br />');
-    $formLocTitle_element_tray->setDescription(_XADDRESSES_AM_LOC_TITLE_DESC);
-        //$formLocTitle = new XoopsFormText('', 'loc_title', 35, 255, $location->getVar('loc_title'));
+    $formLocTitle_element_tray->setDescription("pippo" . _XADDRESSES_AM_LOC_TITLE_DESC);
+    $formLocTitle_element_tray->setExtra("class='suggest'");
+    //$formLocTitle = new XoopsFormText('', 'loc_title', 35, 255, $location->getVar('loc_title'));
         //$formLocTitle->setExtra("readonly='readonly'");
         //$formLocTitle->setExtra("disabled='disabled'");
         $formLocTitle = new XoopsFormLabel('', $location->getVar('loc_title'), 'loc_title');
@@ -558,7 +602,15 @@ function xaddresses_getModifyForm(&$location, $action = false)
         $formLocTitleModify = new XoopsFormText('', 'loc_title_modify', 35, 255, $location->getVar('loc_title'));
     $formLocTitle_element_tray->addElement($formLocTitleModify);
     $form->addElement($formLocTitle_element_tray, true);
-
+/*
+    $formLocDescriptiontext1 = new XoopsFormLabel('', $location->getVar('loc_title'), 'loc_title');
+    $formLocDescriptiontext1->setDescription(_XADDRESSES_AM_LOC_TITLE_DESC);
+    $formLocDescriptiontext1->setClass('suggest');
+    $form->addElement($formLocDescriptiontext1, true);
+    $formLocDescriptiontext2 = new XoopsFormText('', 'loc_title_modify', 35, 255, $location->getVar('loc_title'));
+    $formLocDescriptiontext2->setDescription("2" . _XADDRESSES_AM_LOC_TITLE_DESC);
+    $form->addElement($formLocDescriptiontext2, true);
+*/
 
     // location coordinates
     $value = array(
@@ -664,17 +716,19 @@ function xaddresses_getModifyForm(&$location, $action = false)
             unset($elementsByCategory);
         }
     }
-
-    $form->addElement(new XoopsFormHidden('loc_id', $location->getVar('loc_id')));
-    $form->addElement(new XoopsFormHidden('op', 'save_modify'));
-    // Submit button		
-        $button_tray = new XoopsFormElementTray(_XADDRESSES_AM_ACTION, '' ,'');
-        $button_tray->addElement(new XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
-        $button_tray->addElement(new XoopsFormButton('', 'reset', _RESET, 'reset'));
-            $cancel_button = new XoopsFormButton('', 'cancel', _CANCEL, 'button');
-            $cancel_button->setExtra("onclick='javascript:history.back();'");
-        $button_tray->addElement($cancel_button);
-    $form->addElement($button_tray);
+ 
+    if ($formIsNew) {
+        $form->addElement(new XoopsFormHidden('loc_id', $location->getVar('loc_id')));
+        $form->addElement(new XoopsFormHidden('op', 'save_modify'));
+        // Submit button		
+            $button_tray = new XoopsFormElementTray(_XADDRESSES_AM_ACTION, '' ,'');
+            $button_tray->addElement(new XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
+            $button_tray->addElement(new XoopsFormButton('', 'reset', _RESET, 'reset'));
+                $cancel_button = new XoopsFormButton('', 'cancel', _CANCEL, 'button');
+                $cancel_button->setExtra("onclick='javascript:history.back();'");
+            $button_tray->addElement($cancel_button);
+        $form->addElement($button_tray);
+    }
     return $form;
 }
 ?>

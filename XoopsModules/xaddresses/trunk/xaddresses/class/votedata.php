@@ -24,20 +24,25 @@ class XaddressesVotedata extends XoopsObject
     * Get {@link XoopsThemeForm} for adding/editing categories
     *
     * @param int   $loc_id  location id
-    * @param mixed $action  URL to submit to or false for $_SERVER['REQUEST_URI']
+    * @param mixed $action URL to submit to - or false for $_SERVER['REQUEST_URI']
+    * @param object $form {@link XoopsThemeForm} object or null
     *
     * @return object
     */
-    function getForm($loc_id, $action = false)
+    function getForm($loc_id, $action = false, &$form = null)
     {
         if ($action === false) {
             $action = $_SERVER['REQUEST_URI'];
         }
-        $title = $this->isNew() ? _XADDRESSES_AM_LOC_RATE_NEW : _XADDRESSES_AM_LOC_RATE_EDIT;
-
         include_once $GLOBALS['xoops']->path('class/xoopsformloader.php');
+        if (!isset($form) || empty($form) || get_class($form) != 'XoopsThemeForm') {
+            $formIsNew = true;
+            $title = $this->isNew() ? _XADDRESSES_AM_LOC_RATE_NEW : _XADDRESSES_AM_LOC_RATE_EDIT;
+            $form = new XoopsThemeForm($title, 'rateform', $action, 'post');
+        } else {
+            $formIsNew = false;
+        }
 
-        $form = new XoopsThemeForm($title, 'rateform', $action, 'post');
         $form->setExtra('enctype="multipart/form-data"');
 
             // vote
@@ -63,15 +68,22 @@ class XaddressesVotedata extends XoopsObject
         $form->addElement(new XoopsFormHidden('loc_id', $loc_id));
         $form->addElement(new XoopsFormHidden('op', 'save_vote'));
 
-        // Submit button        
-            $button_tray = new XoopsFormElementTray(_XADDRESSES_AM_ACTION, '' ,'');
-            $button_tray->addElement(new XoopsFormButton('', 'submit', _XADDRESSES_AM_LOC_RATE_RATE, 'submit'));
-            $button_tray->addElement(new XoopsFormButton('', 'reset', _RESET, 'reset'));
-                $cancel_button = new XoopsFormButton('', 'cancel', _CANCEL, 'button');
-                $cancel_button->setExtra("onclick='javascript:history.back();'");
-            $button_tray->addElement($cancel_button);
-        $form->addElement($button_tray);
-
+        if ($formIsNew) {
+            // Captcha
+            xoops_load('xoopscaptcha');
+            $form->addElement(new XoopsFormCaptcha(), true);
+            // Hidden Fields
+            $form->addElement(new XoopsFormHidden('loc_id', $loc_id));
+            $form->addElement(new XoopsFormHidden('op', 'save_vote'));
+            // Submit button        
+                $button_tray = new XoopsFormElementTray(_XADDRESSES_AM_ACTION, '' ,'');
+                $button_tray->addElement(new XoopsFormButton('', 'submit', _XADDRESSES_AM_LOC_RATE_RATE, 'submit'));
+                $button_tray->addElement(new XoopsFormButton('', 'reset', _RESET, 'reset'));
+                    $cancel_button = new XoopsFormButton('', 'cancel', _CANCEL, 'button');
+                    $cancel_button->setExtra("onclick='javascript:history.back();'");
+                $button_tray->addElement($cancel_button);
+            $form->addElement($button_tray);
+        }
         return $form;
     }
 }

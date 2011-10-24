@@ -42,69 +42,7 @@ function xaddresses_MygetItemIds($permtype = 'in_category_view') {
     $permissions[$permtype] = $categories; // static
     return $categories;
 }
- /*
-/**
-* retourne le nombre de téléchargements dans le catégories enfants d'une catégorie
-*
-* @param   string     $cid    ID da la catégorie dans laquel nous voulons chercher
-* @param   string     $status Etat du téléchargment (0,1 ou 2)
-* @return  integer    $count  nombre de téléchargements
-**/
-/*
-function nombreEntree($cat_id, $status='') {
-    // appel des class
-    $categories_Handler =& xoops_getModuleHandler('category', 'xaddresses');
-    $addresses_Handler =& xoops_getModuleHandler('address', 'xaddresses');
 
-    $categories = xaddresses_MygetItemIds();
-    $criteria = new CriteriaCompo();
-    $criteria->add(new Criteria('cat_id', '(' . implode(',', $categories) . ')','IN'));
-    $xaddressescat_arr = $categories_Handler->getall($criteria);
-    $mytree = new XoopsObjectTree($xaddressescat_arr, 'cid', 'pid');
-    $count = 0;
-    if(in_array($cid, $categories)) {
-        $criteria = new CriteriaCompo();
-        $criteria->add(new Criteria('cid', $cid));
-        $criteria->add(new Criteria('status', $status, '>='));
-        $count = $addresses_Handler->getCount($criteria);
-        
-        $child = $mytree->getAllChild($cid);
-        foreach (array_keys($child) as $i) {
-            $criteria = new CriteriaCompo();
-            $criteria->add(new Criteria('cid', '(' . implode(',', $categories) . ')','IN'));
-            $criteria->add(new Criteria('cid', $child[$i]->getVar('cid')));
-            $criteria->add(new Criteria('status', $status, '>='));
-            $count += $addresses_Handler->getCount($criteria);
-        }
-    }
-    return $count;
-}
-
-function nouveau_image($time, $status) {
-    global $xoopsModuleConfig;
-    $count = 7;
-    $new = '';
-    $startdate = (time()-(86400 * $count));
-    if($xoopsModuleConfig['showupdated'] == 1) {
-        if ($startdate < $time) {
-            if($status==1) {
-                $new = '&nbsp;<img src="' . XOOPS_URL . '/modules/xaddresses/images/newred.gif" alt="' . _MD_XADDRESSES_INDEX_NEWTHISWEEK . '" title="' . _MD_XADDRESSES_INDEX_NEWTHISWEEK . '"/>';
-            } elseif($status==2) {
-                $new = '&nbsp;<img src="' . XOOPS_URL . '/modules/xaddresses/images/update.gif" alt="' . _MD_XADDRESSES_INDEX_UPTHISWEEK . '" title="' . _MD_XADDRESSES_INDEX_UPTHISWEEK . '"/>';
-            }
-        }
-    }
-    return $new;
-}
-
-function populaire_image($hits) {
-    global $xoopsModuleConfig;
-    if ($hits >= $xoopsModuleConfig['popular']) {
-        return '&nbsp;<img src ="' . XOOPS_URL . '/modules/xaddresses/images/pop.gif" alt="' . _MD_XADDRESSES_INDEX_POPULAR . '" title="' . _MD_XADDRESSES_INDEX_POPULAR . '"/>';
-    }
-    return '';
-}
-*/
 
 
 /**

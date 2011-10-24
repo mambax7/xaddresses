@@ -12,20 +12,26 @@ define("_XADDRESSES_MD_LOC_REPORTMODIFY","Suggest location correction/modificati
 define("_XADDRESSES_MD_LOC_TELLAFRIEND","Send to a Friend");
 define("_XADDRESSES_MD_LOC_INTLOCATIONFOUND","Here is an important location %s");
 
-
 // locationbroken.php
-define("_XADDRESSES_MD_LOC_BROKEN_ALREADYREPORTED","You have already submitted an error report for this location.");
-define("_XADDRESSES_MD_LOC_BROKEN_FORSECURITY","For security reasons your user name and IP address will also be temporarily recorded.");
 define("_XADDRESSES_MD_LOC_BROKEN_REPORTBROKEN","Broken Location Report");
 define("_XADDRESSES_MD_LOC_BROKEN_THANKSFORHELP","Thank you for helping to maintain this database's integrity.");
+define("_XADDRESSES_MD_LOC_BROKEN_FORSECURITY","For security reasons your user name and IP address will also be temporarily recorded.");
+define("_XADDRESSES_MD_LOC_BROKEN_ALREADYREPORTED","You have already submitted an error report for this location.");
 define("_XADDRESSES_MD_LOC_BROKEN_THANKSFORINFO","Thanks for the information. We'll look into your request shortly.");
 
 // locationmodify.php
-    define("_XADDRESSES_MD_LOC_MODIFY_ALREADYREPORTED","You have already submitted an error report for this location.");
-    define("_XADDRESSES_MD_LOC_MODIFY_FORSECURITY","For security reasons your user name and IP address will also be temporarily recorded.");
 define("_XADDRESSES_MD_LOC_MODIFY_SUGGESTMODIFY","Suggest Location Correction/modification");
-    define("_XADDRESSES_MD_LOC_MODIFY_THANKSFORHELP","Thank you for helping to maintain this database's integrity.");
-    define("_XADDRESSES_MD_LOC_MODIFY_THANKSFORINFO","Thanks for the information. We'll look into your request shortly.");
+define("_XADDRESSES_MD_LOC_MODIFY_THANKSFORHELP","Thank you for helping to maintain this database's integrity.");
+define("_XADDRESSES_MD_LOC_MODIFY_FORSECURITY","For security reasons your user name and IP address will also be temporarily recorded.");
+define("_XADDRESSES_MD_LOC_MODIFY_CAPTION","<h3>Corrected/Modified data</h3>");
+define("_XADDRESSES_MD_LOC_MODIFY_VALUE",
+"<ul>
+<li>Insert here below your Corrections/Modifications</li>
+<li>This form shows original values in a not modificable line, and 
+</b>
+");
+define("_XADDRESSES_MD_LOC_MODIFY_ALREADYSUGGESTED","You have already submitted an error report for this location.");
+define("_XADDRESSES_MD_LOC_MODIFY_THANKSFORINFO","Thanks for the information. We'll look into your request shortly.");
 
 // locationrate.php
 define("_XADDRESSES_MD_LOC_RATE_BEOBJECTIVE","Please be objective, if everyone receives a 1 or a 10, the ratings aren't very useful.");

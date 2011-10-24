@@ -17,7 +17,7 @@ define("_XADDRESSES_MI_BNAMEDSC4","Display viwed addresses randomly");
 
 // Sub menu
 define("_XADDRESSES_MI_SUBMIT", "Submit Location");
-define("_XADDRESSES_MI_SMNAME2", "Files List");
+define("_XADDRESSES_MI_SEARCH", "Search Locations");
 
 // Menu administration
 define("_XADDRESSES_MI_ADMENU_INDEX", "Index");
@@ -41,61 +41,56 @@ define("_XADDRESSES_MI_ADMENU_IMPORT_DESC", "");
 
 
 // Preferences
-define('_XADDRESSES_MI_POPULAR', 'Number of hits for addresses to be marked as popular');
-define('_XADDRESSES_MI_POPULARDSC', '');
-define('_XADDRESSES_MI_NEWDLS', "Number of new addresses in the Home Page");
-define('_XADDRESSES_MI_NEWDLSDSC', '');
-define('_XADDRESSES_MI_PERPAGE', 'Number of items per page');
-define('_XADDRESSES_MI_PERPAGEDSC', '');
-define('_XADDRESSES_MI_SUBCATPARENT', 'Number of Sub-Categories to display in the main Category');
-define('_XADDRESSES_MI_SUBCATPARENTDSC', '');
-define('_XADDRESSES_MI_BLDATE', 'Display recent addresses in home page and categories (Summary)?');
-define('_XADDRESSES_MI_BLDATEDSC', '');
-define('_XADDRESSES_MI_BLPOP', 'Display popular addresses in home page and categories (Summary)?');
-define('_XADDRESSES_MI_BLPOPDSC', '');
-define('_XADDRESSES_MI_BLRATING', 'Display top rated addresses in home page and categories (Summary)?');
-define('_XADDRESSES_MI_BLRATINGDSC', '');
-define('_XADDRESSES_MI_NBBL', 'Number of addresses to display in summary?');
-define('_XADDRESSES_MI_NBBLDSC', '');
-define('_XADDRESSES_MI_LONGBL', 'Title lenght in Summary');
-define('_XADDRESSES_MI_LONGBLDSC', '');
-define("_XADDRESSES_MI_ANONUPLOADS","Allow anonymous post addresses ?");
-define('_XADDRESSES_MI_USETELLAFRIEND', 'Use Tellafriend module with the link tell a friend"?');
-define('_XADDRESSES_MI_USETELLAFRIENDDSC', 'You have to install Tellafriend module in order to use this option');
-define('_XADDRESSES_MI_AUTOAPPROVE',"Auto approve new addresses without admin intervention ?");
-define('_XADDRESSES_MI_AUTOAPPROVEDSC', '');
-define('_XADDRESSES_MI_USESHOTS', "Use Screenshots ?");
-define('_XADDRESSES_MI_USESHOTSDSC', '');
-define('_XADDRESSES_MI_SHOTWIDTH', "Screenshots height");
-define('_XADDRESSES_MI_SHOTWIDTHDSC', '');
-define('_XADDRESSES_MI_CHECKHOST', "Disallow direct download linking? (leeching) ?");
-define('_XADDRESSES_MI_CHECKHOSTDSC', "");
-define('_XADDRESSES_MI_MAXUPLOAD_SIZE',"Max uploaded files size");
-define('_XADDRESSES_MI_MAXUPLOAD_SIZEDSC',"");
-define("_XADDRESSES_MI_FORM_OPTIONS","Editor");
-define("_XADDRESSES_MI_FORM_OPTIONSDSC","");
-define('_XADDRESSES_MI_TOPORDER',"How to display items on the index page?");
-define('_XADDRESSES_MI_TOPORDER1',"Date (DESC)");
-define('_XADDRESSES_MI_TOPORDER2',"Date (ASC)");
-define('_XADDRESSES_MI_TOPORDER3',"hits (DESC)");
-define('_XADDRESSES_MI_TOPORDER4',"hits (ASC)");
-define('_XADDRESSES_MI_TOPORDER5',"Votes (DESC)");
-define('_XADDRESSES_MI_TOPORDER6',"Votes (ASC)");
-define('_XADDRESSES_MI_TOPORDER7',"Title (DESC)");
-define('_XADDRESSES_MI_TOPORDER8',"Title (ASC)");
-define('_XADDRESSES_MI_TOPORDERDSC','');
-define('_XADDRESSES_MI_SEARCHORDER',"How to display items on the files list?");
-define('_XADDRESSES_MI_SEARCHORDERDSC','');
-define('_XADDRESSES_MI_PERPAGELISTE', 'Downloads displayed on the files list');
-define('_XADDRESSES_MI_PERPAGELISTEDSC', '');
-define('_XADDRESSES_MI_AUTO_SUMMARY',"Automatic Summary ?");
-define('_XADDRESSES_MI_AUTO_SUMMARYDSC',"");
-define('_XADDRESSES_MI_SHOW_UPDATED',"Show the 'updated' and 'new' picture ?");
-define('_XADDRESSES_MI_SHOW_UPDATEDDSC',"");
-define('_XADDRESSES_MI_PERPAGEADMIN', 'Number of items per page in the administration');
-define('_XADDRESSES_MI_PERPAGEADMINDSC', '');
-define('_XADDRESSES_MI_USETAG', 'Use TAG module to generate tags');
-define('_XADDRESSES_MI_USETAGDSC', 'You have to install TAG module in order to use this option');
+    define('_XADDRESSES_MI_GLOBAL_CONFIG', 'Number of hits for addresses to be marked as popular');
+    define('_XADDRESSES_MI_GLOBAL_CONFIG_DESC', 'Number of hits for addresses to be marked as popular');
+
+    define('_XADDRESSES_MI_POPULAR', 'Number of hits for addresses to be marked as popular');
+    define('_XADDRESSES_MI_POPULAR_DESC', '');
+    define('_XADDRESSES_MI_NEWDLS', "Number of new addresses in the Home Page");
+    define('_XADDRESSES_MI_NEWDLS_DESC', '');
+    define('_XADDRESSES_MI_PERPAGE', 'Number of items per page');
+    define('_XADDRESSES_MI_PERPAGE_DESC', '');
+    define('_XADDRESSES_MI_SUBCATPARENT', 'Number of Sub-Categories to display in the main Category');
+    define('_XADDRESSES_MI_SUBCATPARENT_DESC', '');
+define('_XADDRESSES_MI_LIST_RECENT', '[Summary] Display recent addresses in home page and categories');
+define('_XADDRESSES_MI_LIST_RECENT_DESC', '');
+    define('_XADDRESSES_MI_BLPOP', 'Display popular addresses in home page and categories (Summary)');
+    define('_XADDRESSES_MI_BLPOP_DESC', '');
+define('_XADDRESSES_MI_LIST_TOPRATED', '[Summary] Display top rated addresses in home page and categories');
+define('_XADDRESSES_MI_LIST_TOPRATED_DESC', '');
+define('_XADDRESSES_MI_LIST_NUMBER', '[Summary] Number of addresses to display in summary');
+define('_XADDRESSES_MI_LIST_NUMBER_DESC', '');
+define('_XADDRESSES_MI_LIST_TITLELENGHT', '[Summary] Title lenght in Summary');
+define('_XADDRESSES_MI_LIST_TITLELENGHT_DESC', '');
+    define('_XADDRESSES_MI_ANONPOST', 'Allow anonymous post addresses ?');
+    define('_XADDRESSES_MI_ANONPOST_DESC', '');
+
+    define('_XADDRESSES_MI_USETELLAFRIEND', 'Use Tellafriend module with the link tell a friend"?');
+    define('_XADDRESSES_MI_USETELLAFRIEND_DESC', 'You have to install Tellafriend module in order to use this option');
+    define('_XADDRESSES_MI_USETAG', 'Use TAG module to generate tags');
+    define('_XADDRESSES_MI_USETAG_DESC', 'You have to install TAG module in order to use this option');
+
+    define('_XADDRESSES_MI_AUTOAPPROVE',"Auto approve new addresses without admin intervention ?");
+    define('_XADDRESSES_MI_AUTOAPPROVE_DESC', '');
+    define("_XADDRESSES_MI_FORM_OPTIONS","Editor");
+    define("_XADDRESSES_MI_FORM_OPTIONS_DESC","");
+    define('_XADDRESSES_MI_TOPORDER','How to display items on the index page?');
+    define('_XADDRESSES_MI_TOPORDER1','Date (DESC)');
+    define('_XADDRESSES_MI_TOPORDER2','Date (ASC)');
+    define('_XADDRESSES_MI_TOPORDER3','hits (DESC)');
+    define('_XADDRESSES_MI_TOPORDER4','hits (ASC)');
+    define('_XADDRESSES_MI_TOPORDER5','Votes (DESC)');
+    define('_XADDRESSES_MI_TOPORDER6','Votes (ASC)');
+    define('_XADDRESSES_MI_TOPORDER7','Title (DESC)');
+    define('_XADDRESSES_MI_TOPORDER8','Title (ASC)');
+    define('_XADDRESSES_MI_TOPORDER_DESC','');
+    define('_XADDRESSES_MI_SEARCHORDER',"How to display items on the files list?");
+    define('_XADDRESSES_MI_SEARCHORDER_DESC','');
+    define('_XADDRESSES_MI_SHOW_UPDATED',"Show the 'updated' and 'new' picture ?");
+    define('_XADDRESSES_MI_SHOW_UPDATED_DESC',"");
+    define('_XADDRESSES_MI_PERPAGEADMIN', 'Number of items per page in the administration');
+    define('_XADDRESSES_MI_PERPAGEADMIN_DESC', '');
+
 
 // Notifications
 define('_XADDRESSES_MI_GLOBAL_NOTIFY', 'Global');

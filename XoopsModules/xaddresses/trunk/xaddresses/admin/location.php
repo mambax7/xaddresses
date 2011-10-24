@@ -19,11 +19,13 @@ if ($categoryHandler->getCount() == 0) {
 
 // count valid locations
 $criteria = new CriteriaCompo();
-//$criteria->add(new Criteria('loc_status', 0, '!='));
+$criteria->add(new Criteria('loc_suggested', false));
+$criteria->add(new Criteria('loc_status', 0, '!='));
 $countLocations = $locationHandler->getCount($criteria);
 
 // count waiting/not valid locations
 $criteria = new CriteriaCompo();
+$criteria->add(new Criteria('loc_suggested', false));
 $criteria->add(new Criteria('loc_status', 0));
 $countWaitingLocations = $locationHandler->getCount($criteria);
 
@@ -50,7 +52,7 @@ case 'list_locations':
     // render start here
     xoops_cp_header();
     // render main admin menu
-    include (XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->dirname() . '/admin/menu.php');
+    include (XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['xoopsModule']->dirname() . '/admin/menu.php');
     echo moduleAdminTabMenu($adminmenu, $currentFile);
     // render submenu
     $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
@@ -77,6 +79,7 @@ case 'list_locations':
     unset($categories);
 
     $criteria = new CriteriaCompo();
+    $criteria->add(new Criteria('loc_suggested', false));
     // list only active (loc_status == 1) locations
     if (isset($_REQUEST['status_display'])) {
         if ($_REQUEST['status_display'] == 0) {
@@ -153,12 +156,12 @@ case 'list_locations':
 
     // sort by form
     $sortbyform = '<form id="form_sort_by" name="form_sort_by" method="get" action="' . $currentFile . '">';
-    $sortbyform.= _XADDRESSES_AM_SORT_BY . "<select name=\"sort_by\" id=\"sort_by\" onchange=\"location='" . XOOPS_URL . "/modules/" . $xoopsModule->dirname() . "/admin/location.php?status_display=$status_display&sort_order=$sort_order&sort_by='+this.options[this.selectedIndex].value\">";
+    $sortbyform.= _XADDRESSES_AM_SORT_BY . "<select name=\"sort_by\" id=\"sort_by\" onchange=\"location='" . XOOPS_URL . "/modules/" . $GLOBALS['xoopsModule']->dirname() . "/admin/location.php?status_display=$status_display&sort_order=$sort_order&sort_by='+this.options[this.selectedIndex].value\">";
     $sortbyform.= '<option value="loc_date"' . ($sort_by == 'loc_date' ? ' selected="selected"' : '') . '>' . _XADDRESSES_AM_SORT_BY_DATE . '</option>';
     $sortbyform.= '<option value="loc_title"' . ($sort_by == 'loc_title' ? ' selected="selected"' : '') . '>' . _XADDRESSES_AM_SORT_BY_TITLE . '</option>';
     $sortbyform.= '<option value="loc_cat_id"' . ($sort_by == 'loc_cat_id' ? ' selected="selected"' : '') . '>' . _XADDRESSES_AM_SORT_BY_CAT . '</option>';
     $sortbyform.= '</select> ';
-    $sortbyform.= _XADDRESSES_AM_ORDER . "<select name=\"order_tri\" id=\"order_tri\" onchange=\"location='" . XOOPS_URL . "/modules/" . $xoopsModule->dirname() . "/admin/location.php?status_display=$status_display&sort_by=$sort_by&sort_order='+this.options[this.selectedIndex].value\">";
+    $sortbyform.= _XADDRESSES_AM_ORDER . "<select name=\"order_tri\" id=\"order_tri\" onchange=\"location='" . XOOPS_URL . "/modules/" . $GLOBALS['xoopsModule']->dirname() . "/admin/location.php?status_display=$status_display&sort_by=$sort_by&sort_order='+this.options[this.selectedIndex].value\">";
     $sortbyform.= '<option value="DESC"' . ($sort_order == 'DESC' ? ' selected="selected"' : '') . '>' . _XADDRESSES_AM_ORDER_DESC . '</option>';
     $sortbyform.= '<option value="ASC"' . ($sort_order == 'ASC' ? ' selected="selected"' : '') . '>' . _XADDRESSES_AM_ORDER_ASC . '</option>';
     $sortbyform.= '</select> ';
@@ -176,7 +179,7 @@ case 'list_locations':
         $submitableCategories = $groupPermHandler->getItemIds('in_category_submit', $groups, $GLOBALS['xoopsModule']->getVar('mid'));
 
         foreach (array_keys($locations) as $i ) {
-            if ($xoopsUser->isAdmin($GLOBALS['xoopsModule']->mid())) {
+            if ($GLOBALS['xoopsUser']->isAdmin($GLOBALS['xoopsModule']->mid())) {
                 // admin can do everything
                 $locations[$i]['canView'] = true;
                 $locations[$i]['canEdit'] = true;
@@ -209,7 +212,7 @@ case 'list_locations':
 case 'new_location':
     xoops_cp_header();
     // main admin menu
-    include (XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->dirname() . '/admin/menu.php');
+    include (XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['xoopsModule']->dirname() . '/admin/menu.php');
     echo moduleAdminTabMenu($adminmenu, $currentFile);
     // Submenu
     $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
@@ -233,7 +236,7 @@ case 'new_location':
 case 'edit_location':
     xoops_cp_header();
     // main admin menu
-    include (XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->dirname() . '/admin/menu.php');
+    include (XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['xoopsModule']->dirname() . '/admin/menu.php');
     echo moduleAdminTabMenu($adminmenu, $currentFile);
     // Submenu
     $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
@@ -255,11 +258,13 @@ case 'edit_location':
 
 
 case 'save_location':
-    xoops_loadLanguage("main", $GLOBALS['xoopsModule']->getVar('dirname', 'n') );
-//        if ( !$GLOBALS['xoopsSecurity']->check()  ) {
-//            redirect_header('address.php', 3, _US_NOEDITRIGHT . "<br />" . implode('<br />', $GLOBALS['xoopsSecurity']->getErrors() ));
-//            exit;
-//        }
+    if ( !$GLOBALS['xoopsSecurity']->check()  ) {
+        redirect_header($currentFile, 3, _US_NOEDITRIGHT . "<br />" . implode('<br />', $GLOBALS['xoopsSecurity']->getErrors() ));
+        exit;
+    }
+
+    $errorFlag = false;
+    $errorMessage = '';
 
     // Get fields
     $fields = $fieldHandler->loadFields();
@@ -269,6 +274,8 @@ case 'save_location':
     $editableFields = $groupPermHandler->getItemIds('field_edit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );    
 
     $locationFields = $locationHandler->getLocationVars();
+
+
 
     if (!empty($_POST['loc_id'])) {
         $loc_id = (int)$_POST['loc_id'];
@@ -290,19 +297,23 @@ case 'save_location':
             }
         }
     }
-
-    $myts =& MyTextSanitizer::getInstance();
     $location->setVar('loc_title', $_POST['loc_title']);
     $location->setVar('loc_cat_id', $_POST['loc_cat_id']);
     $location->setVar('loc_lat', $_POST['loc_googlemap']['lat']);
     $location->setVar('loc_lng', $_POST['loc_googlemap']['lng']);
     $location->setVar('loc_zoom', $_POST['loc_googlemap']['zoom']);
-    // Set submitter and time
+    // Set submitter
+    if(empty($GLOBALS['xoopsUser'])) {
+        $editUserId = 0; // Anonymous user
+    } else {
+        $editUserId = $GLOBALS['xoopsUser']->getVar('uid');
+    }
     if (isset($_POST['loc_submitter'])) {
         $location->setVar('loc_submitter', $_POST['loc_submitter']);
     } else {
-        $location->setVar('loc_submitter', $xoopsUser->uid());
+        $location->setVar('loc_submitter', $editUserId);
     }
+    // Set creation date
     if (isset($_POST['loc_date'])) {
         $location->setVar('loc_date', strtotime($_POST['loc_date']['date']) + $_POST['loc_date']['time']); // creation date
     } else {
@@ -310,11 +321,7 @@ case 'save_location':
     }
 
     $errors = array();
-// ????????????? COSA SERVE
-//    if ($stop != "") {
-//        $errors[] = $stop;
-//    }
-// ????????????? COSA SERVE
+
     foreach ($fields as $field) {
         $fieldname = $field->getVar('field_name');
         //if ( in_array($field->getVar('field_id'), $editable_fields) && isset($_REQUEST[$fieldname])  ) {
@@ -322,8 +329,6 @@ case 'save_location':
         $location->setVar($fieldname, $value);
        //     }
     }
-
-    $new_groups = isset($_POST['groups']) ? $_POST['groups'] : array();
 
     if (count($errors) == 0) {
         if ($locationHandler->insert($location)) {
@@ -333,15 +338,15 @@ case 'save_location':
             $notificationHandler =& xoops_gethandler('notification');
             $tags = array();
             $tags['LOCATION_NAME'] = $location->getVar('loc_title');
-            $tags['LOCATION_URL'] = XOOPS_URL . '/modules/' . $xoopsModule->getVar('dirname') . '/locationview.php?loc_id=' . $location->getVar('loc_id') . '&cat_id=' . $location->getVar('loc_cat_id');
+            $tags['LOCATION_URL'] = XOOPS_URL . '/modules/' . $GLOBALS['xoopsModule']->getVar('dirname') . '/locationview.php?loc_id=' . $location->getVar('loc_id') . '&cat_id=' . $location->getVar('loc_cat_id');
             $category = $categoryHandler->get($location->getVar('loc_cat_id'));                
             $tags['CATEGORY_NAME'] = $category->getVar('cat_title');
-            $tags['CATEGORY_URL'] = XOOPS_URL . '/modules/' . $xoopsModule->getVar('dirname') . '/locationcategoryview.php?cat_id=' . $category->getVar('cat_id');
+            $tags['CATEGORY_URL'] = XOOPS_URL . '/modules/' . $GLOBALS['xoopsModule']->getVar('dirname') . '/locationcategoryview.php?cat_id=' . $category->getVar('cat_id');
             if ($location->isNew()) {
                 $notificationHandler->triggerEvent('global', 0, 'new_location', $tags);
                 $notificationHandler->triggerEvent('category', $location->getVar('loc_cat_id'), 'new_location', $tags);  
             } else {
-            $tags['WAITINGLOCATIONS_URL'] = XOOPS_URL . '/modules/' . $xoopsModule->getVar('dirname') . '/admin/location.php?op=listlocations';
+            $tags['WAITINGLOCATIONS_URL'] = XOOPS_URL . '/modules/' . $GLOBALS['xoopsModule']->getVar('dirname') . '/admin/location.php?op=listlocations';
             $notificationHandler->triggerEvent('global', 0, 'location_submit', $tags);
             $notificationHandler->triggerEvent('category', $location->getVar('loc_cat_id'), 'file_submit', $tags);
             }
@@ -360,7 +365,7 @@ case 'save_location':
             $user->setErrors($err);
         }
     }
-    //$location->setGroups($new_groups);
+
     echo $location->getHtmlErrors();
 
     $form = xaddresses_getAddressForm($location);
@@ -369,16 +374,7 @@ case 'save_location':
 
 
 
-/*
-	if (!$GLOBALS['xoopsSecurity']->check()) {
-       redirect_header('category.php', 3, implode(',', $GLOBALS['xoopsSecurity']->getErrors()));
-    }
-*/
-
-
-
 case 'delete_location':
-    global $xoopsModule;
     $location =& $locationHandler->get($_REQUEST['loc_id']);
     if (isset($_REQUEST['ok']) && $_REQUEST['ok'] == 1) {
         if (!$GLOBALS['xoopsSecurity']->check()) {

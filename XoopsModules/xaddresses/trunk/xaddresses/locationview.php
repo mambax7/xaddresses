@@ -17,6 +17,7 @@ $loc_id = (int)($_REQUEST['loc_id']);
 // Redirect if id location not exist
 $criteria = new CriteriaCompo();
 $criteria->add(new Criteria('loc_id', $loc_id));
+$criteria->add(new Criteria('loc_suggested', false));
 if ($locationHandler->getCount($criteria) == 0) {
     redirect_header('index.php', 3, _XADDRESSES_MD_SINGLELOC_NONEXISTENT);
     exit();
@@ -190,7 +191,7 @@ if (($xoopsModuleConfig['usetag'] == 1) and (is_dir('../tag'))) {
 // page title
 $title = $location->getVar('loc_title') . '&nbsp;-&nbsp;';
 $title.= $category->getVar('cat_title') . '&nbsp;-&nbsp;';
-$title.= $xoopsModule->name();
+$title.= $GLOBALS['xoopsModule']->name();
 $xoopsTpl->assign('xoops_pagetitle', $title);
 //keywords
 $keywords = substr($keywords, 0, -1);

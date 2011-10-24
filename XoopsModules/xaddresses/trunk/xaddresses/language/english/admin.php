@@ -116,9 +116,10 @@ define("_XADDRESSES_AM_LOC_LOCK","Dectivate");
 define("_XADDRESSES_AM_LOC_CREATED", "Location Created");
 
 //class/broken.php
-define("_XADDRESSES_AM_LOC_BROKEN_NEW","Repport Broken Location");
+define("_XADDRESSES_AM_LOC_BROKEN_NEW","Report Broken Location");
 define("_XADDRESSES_AM_LOC_BROKEN_EDIT","Edit Broken Location");
 define("_XADDRESSES_AM_LOC_BROKEN_DESCRIPTION","Description");
+define("_XADDRESSES_AM_LOC_BROKEN_DESCRIPTION_DESC","// IN PROGRESS");
 define("_XADDRESSES_AM_LOC_BROKEN_SENDER","Repport Author");
 define("_XADDRESSES_AM_LOC_BROKEN_SURDEL","Are you sure you want to delete this repport?");
 
@@ -128,7 +129,11 @@ define("_XADDRESSES_AM_LOC_RATE_EDIT","Edit Location Vote");
 define("_XADDRESSES_AM_LOC_RATE_VOTE","Vote");
 define("_XADDRESSES_AM_LOC_RATE_RATE","Rate it !");
 
-
+//class/modify.php
+define("_XADDRESSES_AM_LOC_MODIFY_NEW","Suggest Location Correction/Modification");
+define("_XADDRESSES_AM_LOC_MODIFY_EDIT","Edit Location Correction/Modification Suggestion");
+define("_XADDRESSES_AM_LOC_MODIFY_DESCRIPTION","Description");
+define("_XADDRESSES_AM_LOC_MODIFY_DESCRIPTION_DESC","// IN PROGRESS");
 
 //admin/itemcategory.php
 //class/locationcategory.php

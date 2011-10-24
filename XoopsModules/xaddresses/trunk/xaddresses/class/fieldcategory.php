@@ -20,20 +20,25 @@ class XaddressesFieldcategory extends XoopsObject
     /**
     * Get {@link XoopsThemeForm} for adding/editing categories
     *
-    * @param mixed $action  URL to submit to or false for $_SERVER['REQUEST_URI']
+    * @param mixed $action URL to submit to - or false for $_SERVER['REQUEST_URI']
+    * @param object $form {@link XoopsThemeForm} object or null
     *
     * @return object
     */
-    function getForm($action = false)
+    function getForm($action = false, &$form = null)
     {
         if ($action === false) {
             $action = $_SERVER['REQUEST_URI'];
         }
-        $title = $this->isNew() ? _XADDRESSES_AM_FIELDCAT_NEW : _XADDRESSES_AM_FIELDCAT_EDIT;
-
+        
         include_once $GLOBALS['xoops']->path('class/xoopsformloader.php');
-
-        $form = new XoopsThemeForm($title, 'form', $action, 'post', true);
+        if (!isset($form) || empty($form) || get_class($form) != 'XoopsThemeForm') {
+            $formIsNew = true;
+            $title = $this->isNew() ? _XADDRESSES_AM_FIELDCAT_NEW : _XADDRESSES_AM_FIELDCAT_EDIT;
+            $form = new XoopsThemeForm($title, 'form', $action, 'post', true);
+        } else {
+            $formIsNew = false;
+        }
         $form->addElement(new XoopsFormText(_XADDRESSES_AM_FIELDCAT_TITLE, 'cat_title', 35, 255, $this->getVar('cat_title')));
         if (!$this->isNew()) {
             //Load groups
@@ -42,17 +47,21 @@ class XaddressesFieldcategory extends XoopsObject
         $form->addElement(new XoopsFormTextArea(_XADDRESSES_AM_FIELDCAT_DESCRIPTION, 'cat_description', $this->getVar('cat_description', 'e')));
         $form->addElement(new XoopsFormText(_XADDRESSES_AM_FIELDCAT_WEIGHT, 'cat_weight', 35, 35, $this->getVar('cat_weight', 'e')));
 
-        $form->addElement(new XoopsFormHidden('op', 'save_fieldcategory') );
-
-        // Submit button		
-            $button_tray = new XoopsFormElementTray(_XADDRESSES_AM_ACTION, '' ,'');
-            $button_tray->addElement(new XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
-            $button_tray->addElement(new XoopsFormButton('', 'reset', _RESET, 'reset'));
-                $cancel_button = new XoopsFormButton('', 'cancel', _CANCEL, 'button');
-                $cancel_button->setExtra("onclick='javascript:history.back();'");
-            $button_tray->addElement($cancel_button);
-        $form->addElement($button_tray);
-
+        if ($formIsNew) {
+            // Captcha
+            xoops_load('xoopscaptcha');
+            $form->addElement(new XoopsFormCaptcha(), true);
+            // Hidden Fields
+            $form->addElement(new XoopsFormHidden('op', 'save_fieldcategory') );
+            // Submit button		
+                $button_tray = new XoopsFormElementTray(_XADDRESSES_AM_ACTION, '' ,'');
+                $button_tray->addElement(new XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
+                $button_tray->addElement(new XoopsFormButton('', 'reset', _RESET, 'reset'));
+                    $cancel_button = new XoopsFormButton('', 'cancel', _CANCEL, 'button');
+                    $cancel_button->setExtra("onclick='javascript:history.back();'");
+                $button_tray->addElement($cancel_button);
+            $form->addElement($button_tray);
+        }
         return $form;
     }
 }

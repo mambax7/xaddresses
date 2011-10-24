@@ -9,7 +9,6 @@ $categoryHandler =& xoops_getModuleHandler('locationcategory', 'xaddresses');
 $locationHandler =& xoops_getModuleHandler('location', 'xaddresses');
 $fieldCategoryHandler =& xoops_getmodulehandler('fieldcategory', 'xaddresses');
 $fieldHandler =& xoops_getModuleHandler('field', 'xaddresses');
-$memberHandler =& xoops_gethandler('member');
 
 $xoopsOption['template_main'] = 'xaddresses_locationedit.html';
 include_once XOOPS_ROOT_PATH . '/header.php';
@@ -46,6 +45,7 @@ case 'edit_location':
     $loc_id = (int)($_REQUEST['loc_id']);
     $criteria = new CriteriaCompo();
     $criteria->add(new Criteria('loc_id', $loc_id));
+    $criteria->add(new Criteria('loc_suggested', false));
     if ($locationHandler->getCount($criteria) == 0) {
         redirect_header('index.php', 3, _XADDRESSES_MD_SINGLELOC_NONEXISTENT);
         exit();
@@ -75,13 +75,13 @@ case 'edit_location':
     $title = _XADDRESSES_MD_LOC_RATELOCATION . '&nbsp;-&nbsp;';
     $title.= $location->getVar('loc_title') . '&nbsp;-&nbsp;';
     $title.= $category->getVar('cat_title') . '&nbsp;-&nbsp;';
-    $title.= $xoopsModule->name();
+    $title.= $GLOBALS['xoopsModule']->name();
     $xoopsTpl->assign('xoops_pagetitle', $title);
     // Set description for template
     $xoTheme->addMeta( 'meta', 'description', strip_tags(_XADDRESSES_MD_LOC_RATELOCATION . ' (' . $location->getVar('loc_title') . ')'));
 
     // Set themeForm for template
-    $form = xaddresses_getLocationForm($location, $currentFile);
+    $form = &xaddresses_getLocationForm($location, $currentFile);
     $xoopsTpl->assign('themeForm', $form->render());  
     break;
 
@@ -97,18 +97,28 @@ case 'new_location':
     unset($breadcrumb, $crumb);
 
     // Set themeForm for template
-    $form = xaddresses_getLocationForm($location);
+    $form = &xaddresses_getLocationForm($location);
     $xoopsTpl->assign('themeForm', $form->render());
     break;
 
 
 
 case 'save_location':
-    xoops_loadLanguage("main", $GLOBALS['xoopsModule']->getVar('dirname', 'n') );
-//        if ( !$GLOBALS['xoopsSecurity']->check()  ) {
-//            redirect_header('address.php', 3, _US_NOEDITRIGHT . "<br />" . implode('<br />', $GLOBALS['xoopsSecurity']->getErrors() ));
-//            exit;
-//        }
+    if ( !$GLOBALS['xoopsSecurity']->check()  ) {
+        redirect_header($currentFile, 3, _US_NOEDITRIGHT . "<br />" . implode('<br />', $GLOBALS['xoopsSecurity']->getErrors() ));
+        exit;
+    }
+
+    $errorFlag = false;
+    $errorMessage = '';
+
+    // Captcha test
+    xoops_load('xoopscaptcha');
+    $xoopsCaptcha = XoopsCaptcha::getInstance();
+    if ( !$xoopsCaptcha->verify() ) {
+        $errorMessage.= $xoopsCaptcha->getMessage() . '<br />';
+        $errorFlag = true;
+    }
 
     // Get fields
     $fields = $fieldHandler->loadFields();
@@ -119,6 +129,8 @@ case 'save_location':
     $editableFields = $groupPermHandler->getItemIds('field_edit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
 
     $locationFields = $locationHandler->getLocationVars();
+
+
 
     if (!empty($_POST['loc_id'])) {
         $loc_id = (int)$_POST['loc_id'];
@@ -140,28 +152,27 @@ case 'save_location':
             }
         }
     }
-
-    $myts =& MyTextSanitizer::getInstance();
     $location->setVar('loc_title', $_POST['loc_title']);
     $location->setVar('loc_cat_id', $_POST['loc_cat_id']);
     $location->setVar('loc_lat', $_POST['loc_googlemap']['lat']);
     $location->setVar('loc_lng', $_POST['loc_googlemap']['lng']);
     $location->setVar('loc_zoom', $_POST['loc_googlemap']['zoom']);
-    // Set submitter and time
+    // Set submitter
+    if(empty($GLOBALS['xoopsUser'])) {
+        $editUserId = 0; // Anonymous user
+    } else {
+        $editUserId = $GLOBALS['xoopsUser']->getVar('uid');
+    }
     if (isset($_POST['loc_submitter'])) {
         $location->setVar('loc_submitter', $_POST['loc_submitter']);
     } else {
-        $location->setVar('loc_submitter', $xoopsUser->uid());
+        $location->setVar('loc_submitter', $editUserId);
     }
+    // Set creation date
     if (isset($_POST['loc_date'])) {
         $location->setVar('loc_date', strtotime($_POST['loc_date']['date']) + $_POST['loc_date']['time']); // creation date
     } else {
-        $location->setVar('loc_date', time()); // creation date
-    }
-
-    $errors = array();
-    if ($stop != "") {
-        $errors[] = $stop;
+        $location->setVar('loc_date', time());
     }
 
     foreach ($fields as $field) {
@@ -174,21 +185,21 @@ case 'save_location':
 
     $new_groups = isset($_POST['groups']) ? $_POST['groups'] : array();
 
-    if (count($errors) == 0) {
+    if ($errorFlag == false) {
         if ($locationHandler->insert($location)) {
             if ($location->isNew()) {
                 redirect_header($currentFile, 2, _XADDRESSES_AM_ADDRESSCREATED, false);
             } else {
                 redirect_header('locationview.php?loc_id=' . $location->getVar('loc_id'), 2, _US_PROFUPDATED, false);
             }
-        }
-    } else {
-        foreach ($errors as $err) {
-            $user->setErrors($err);
+        } else {
+            $errorFlag = true;
         }
     }
-    //$location->setGroups($new_groups);
-    echo $location->getHtmlErrors();
+    
+    // TO DO
+    // TO DO
+    // TO DO
 
     $form = xaddresses_getAddressForm($location);
     $form->display();

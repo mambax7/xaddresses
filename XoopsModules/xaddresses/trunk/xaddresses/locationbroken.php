@@ -26,6 +26,7 @@ $loc_id = (int)($_REQUEST['loc_id']);
 // Redirect if id location not exist
 $criteria = new CriteriaCompo();
 $criteria->add(new Criteria('loc_id', $loc_id));
+$criteria->add(new Criteria('loc_suggested', false));
 if ($locationHandler->getCount($criteria) == 0) {
     redirect_header('index.php', 3, _XADDRESSES_MD_SINGLELOC_NONEXISTENT);
     exit();
@@ -74,7 +75,7 @@ case "new_broken":
     $title = _XADDRESSES_MD_LOC_BROKEN_REPORTBROKEN . '&nbsp;-&nbsp;';
     $title.= $location->getVar('loc_title') . '&nbsp;-&nbsp;';
     $title.= $category->getVar('cat_title') . '&nbsp;-&nbsp;';
-    $title.= $xoopsModule->name();
+    $title.= $GLOBALS['xoopsModule']->name();
     $xoopsTpl->assign('xoops_pagetitle', $title);
     // Set description for template
     $xoTheme->addMeta( 'meta', 'description', strip_tags(_XADDRESSES_MD_LOC_BROKEN_REPORTBROKEN . ' (' . $location->getVar('loc_title') . ')'));
@@ -94,41 +95,55 @@ case "list_broken":
 
 
 case "save_broken":
-    $newReport =& $brokenHandler->create();
-    if(empty($xoopsUser)){
-        $reportingUserId = 0;
-        // si c'est un utilisateur anonyme on vérifie qu'il n'envoie pas 2 fois un rapport
-        $criteria = new CriteriaCompo();
-        $criteria->add(new Criteria('loc_id', $loc_id));
-        $criteria->add(new Criteria('report_sender', 0));
-        $criteria->add(new Criteria('report_ip', getenv("REMOTE_ADDR")));
-        if ($brokenHandler->getCount($criteria) >= 1) {
-            redirect_header('locationview.php?loc_id=' . $loc_id, 2, _MD_XADDRESSES_LOC_BROKEN_ALREADYREPORTED);
-            exit();
-        }
-    } else {
-        $reportingUserId = $xoopsUser->getVar('uid');
-        // si c'est un membre on vérifie qu'il n'envoie pas 2 fois un rapport
-        $criteria = new CriteriaCompo();
-        $criteria->add(new Criteria('loc_id', $loc_id));
-        $brokenReports = $brokenHandler->getall($criteria);
-        foreach ($brokenReports as $brokenReport) {
-            if ($brokenReport->getVar('report_sender') == $reportingUserId) {
-                redirect_header('locationview.php?loc_id=' . $loc_id, 2, _MD_XADDRESSES_LOC_BROKEN_ALREADYREPORTED);
-                exit();
-            }
-        }
-    }
-
     $error = false;
     $errorMessage = '';
-    // Test avant la validation
-    xoops_load("captcha");
+
+    if ( !$GLOBALS['xoopsSecurity']->check()  ) {
+        redirect_header('locationview.php?loc_id=' . $loc_id, 3, _US_NOEDITRIGHT . "<br />" . implode('<br />', $GLOBALS['xoopsSecurity']->getErrors() ));
+        exit;
+    }
+    
+    // Captcha test
+    xoops_load('xoopscaptcha');
     $xoopsCaptcha = XoopsCaptcha::getInstance();
     if ( !$xoopsCaptcha->verify() ) {
         $errorMessage.= $xoopsCaptcha->getMessage() . '<br />';
         $error = true;
     }
+    
+    if(empty($GLOBALS['xoopsUser'])) {
+        $reportingUserId = 0; // Anonymous user
+    } else {
+        $reportingUserId = $GLOBALS['xoopsUser']->getVar('uid');
+    }
+
+    // Check if user has already suggested for this location
+    if($reportingUserId = 0) {
+        // If user is anonymous
+        $criteria = new CriteriaCompo();
+        $criteria->add(new Criteria('loc_id', $loc_id));
+        $criteria->add(new Criteria('report_sender', 0)); // Anonymous user
+        $criteria->add(new Criteria('report_ip', getenv("REMOTE_ADDR")));
+        if ($brokenHandler->getCount($criteria) >= 1) {
+            redirect_header('locationview.php?loc_id=' . $loc_id, 2, _XADDRESSES_MD_LOC_BROKEN_ALREADYREPORTED);
+            exit();
+        }
+    } else {
+        // If user is not anonymous
+        $criteria = new CriteriaCompo();
+        $criteria->add(new Criteria('loc_id', $loc_id));
+        $brokenReports = $brokenHandler->getall($criteria);
+        foreach ($brokenReports as $brokenReport) {
+            if ($brokenReport->getVar('report_sender') == $reportingUserId) {
+                redirect_header('locationview.php?loc_id=' . $loc_id, 2, _XADDRESSES_MD_LOC_BROKEN_ALREADYREPORTED);
+                exit();
+            }
+        }
+    }
+
+
+
+    $newReport =& $brokenHandler->create();
     $newReport->setVar('loc_id', $loc_id);
     $newReport->setVar('report_sender', $reportingUserId);
     $newReport->setVar('report_ip', getenv("REMOTE_ADDR"));
@@ -139,10 +154,10 @@ case "save_broken":
     } else {
         if ($brokenHandler->insert($newReport)) {
             $tags = array();
-            $tags['BROKENREPORTS_URL'] = XOOPS_URL . '/modules/' . $xoopsModule->getVar('dirname') . '/admin/broken.php';
+            $tags['BROKENREPORTS_URL'] = XOOPS_URL . '/modules/' . $GLOBALS['xoopsModule']->getVar('dirname') . '/admin/broken.php';
             $notification_handler =& xoops_gethandler('notification');
             $notification_handler->triggerEvent('global', 0, 'location_broken', $tags);
-            redirect_header('locationview.php?loc_id=' . $loc_id, 2, _MD_XADDRESSES_LOC_BROKEN_THANKSFORINFO);
+            redirect_header('locationview.php?loc_id=' . $loc_id, 2, _XADDRESSES_MD_LOC_BROKEN_THANKSFORINFO);
         }
         echo $obj->getHtmlErrors();
     }

@@ -1,7 +1,7 @@
 <?php
 $currentFile = basename(__FILE__);
 include 'admin_header.php';
-$versionInfo =& $module_handler->get($xoopsModule->getVar('mid'));
+$versionInfo =& $module_handler->get($GLOBALS['xoopsModule']->getVar('mid'));
 
 // load classes
 
@@ -11,7 +11,7 @@ $versionInfo =& $module_handler->get($xoopsModule->getVar('mid'));
 xoops_cp_header();
 
 // main admin menu
-include (XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->dirname() . '/admin/menu.php');
+include (XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['xoopsModule']->dirname() . '/admin/menu.php');
 echo moduleAdminTabMenu($adminmenu, $currentFile);
 
 echo "
@@ -32,9 +32,9 @@ echo "
     </style>
 ";
 
-echo "<fieldset><legend style='font-weight: bold; color: #900;'>" . $xoopsModule->getVar('name'). "</legend>";
+echo "<fieldset><legend style='font-weight: bold; color: #900;'>" . $GLOBALS['xoopsModule']->getVar('name'). "</legend>";
 echo "<div style='padding: 8px;'>";
-echo "<img src='" . XOOPS_URL . "/modules/" . $xoopsModule->getVar('dirname') . "/" . $versionInfo->getInfo('image') . "' alt='' hspace='10' vspace='0' /></a>\n";
+echo "<img src='" . XOOPS_URL . "/modules/" . $GLOBALS['xoopsModule']->getVar('dirname') . "/" . $versionInfo->getInfo('image') . "' alt='' hspace='10' vspace='0' /></a>\n";
 echo "<div style='padding: 5px;'><strong>" . $versionInfo->getInfo('name') . " version " . $versionInfo->getInfo('version') . "</strong></div>\n";
 echo "<label>" . _XADDRESSES_AM_ABOUT_RELEASEDATE . ":</label><text>" . date(_SHORTDATESTRING, $versionInfo->getInfo('release')) . "</text><br />";
 echo "<label>" . _XADDRESSES_AM_ABOUT_AUTHOR . ":</label><text>" . $versionInfo->getInfo('author') . "</text><br />";
@@ -77,10 +77,10 @@ echo "</fieldset>";
 echo "<br clear=\"all\" />";
 
 // get language 'description.html' file 
-if (file_exists(XOOPS_ROOT_PATH . "/modules/" . $xoopsModule->getVar('dirname') . "/language/" . $xoopsConfig['language'] . "/description.html")) {
-    $file = XOOPS_ROOT_PATH . "/modules/" . $xoopsModule->getVar('dirname') . "/language/" . $xoopsConfig['language'] . "/description.html";
+if (file_exists(XOOPS_ROOT_PATH . "/modules/" . $GLOBALS['xoopsModule']->getVar('dirname') . "/language/" . $xoopsConfig['language'] . "/description.html")) {
+    $file = XOOPS_ROOT_PATH . "/modules/" . $GLOBALS['xoopsModule']->getVar('dirname') . "/language/" . $xoopsConfig['language'] . "/description.html";
 } else {
-    $file = XOOPS_ROOT_PATH . "/modules/" . $xoopsModule->getVar('dirname') . "/language/english/description.html";
+    $file = XOOPS_ROOT_PATH . "/modules/" . $GLOBALS['xoopsModule']->getVar('dirname') . "/language/english/description.html";
 }
 if (is_readable($file)) {
     echo "<fieldset><legend style='font-weight: bold; color: #900;'>" . _XADDRESSES_AM_ABOUT_DESCRIPTION . "</legend>";
@@ -92,10 +92,10 @@ if (is_readable($file)) {
 }
 
 // get language 'changelog.txt' file 
-if (file_exists(XOOPS_ROOT_PATH . "/modules/" . $xoopsModule->getVar('dirname') . "/language/" . $xoopsConfig['language'] . "/changelog.txt")) {
-    $file = XOOPS_ROOT_PATH . "/modules/" . $xoopsModule->getVar('dirname') . "/language/" . $xoopsConfig['language'] . "/changelog.txt";
+if (file_exists(XOOPS_ROOT_PATH . "/modules/" . $GLOBALS['xoopsModule']->getVar('dirname') . "/language/" . $xoopsConfig['language'] . "/changelog.txt")) {
+    $file = XOOPS_ROOT_PATH . "/modules/" . $GLOBALS['xoopsModule']->getVar('dirname') . "/language/" . $xoopsConfig['language'] . "/changelog.txt";
 } else {
-    $file = XOOPS_ROOT_PATH . "/modules/" . $xoopsModule->getVar('dirname') . "/language/english/changelog.txt";
+    $file = XOOPS_ROOT_PATH . "/modules/" . $GLOBALS['xoopsModule']->getVar('dirname') . "/language/english/changelog.txt";
 }
 if (is_readable($file)) {
     echo "<fieldset><legend style='font-weight: bold; color: #900;'>" . _XADDRESSES_AM_ABOUT_CHANGELOG . "</legend>";

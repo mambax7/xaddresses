@@ -1,7 +1,7 @@
 <?php
 $currentFile = basename(__FILE__);
 include 'admin_header.php';
-$versionInfo =& $module_handler->get($xoopsModule->getVar('mid'));
+$versionInfo =& $module_handler->get($GLOBALS['xoopsModule']->getVar('mid'));
 
 // load classes
 
@@ -11,7 +11,7 @@ $versionInfo =& $module_handler->get($xoopsModule->getVar('mid'));
 xoops_cp_header();
 
 // main admin menu
-include (XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->dirname() . '/admin/menu.php');
+include (XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['xoopsModule']->dirname() . '/admin/menu.php');
 echo moduleAdminTabMenu($adminmenu, $currentFile);
 
 echo "
@@ -32,10 +32,10 @@ echo "
     </style>
 ";
 
-if (file_exists(XOOPS_ROOT_PATH . "/modules/" . $xoopsModule->getVar('dirname') . "/language/" . $xoopsConfig['language'] . "/help/help.html")) {
-    $file = XOOPS_ROOT_PATH . "/modules/" . $xoopsModule->getVar('dirname') . "/language/" . $xoopsConfig['language'] . "/help/help.html";
+if (file_exists(XOOPS_ROOT_PATH . "/modules/" . $GLOBALS['xoopsModule']->getVar('dirname') . "/language/" . $xoopsConfig['language'] . "/help/help.html")) {
+    $file = XOOPS_ROOT_PATH . "/modules/" . $GLOBALS['xoopsModule']->getVar('dirname') . "/language/" . $xoopsConfig['language'] . "/help/help.html";
 } else {
-    $file = XOOPS_ROOT_PATH . "/modules/" . $xoopsModule->getVar('dirname') . "/language/english/help/help.html";
+    $file = XOOPS_ROOT_PATH . "/modules/" . $GLOBALS['xoopsModule']->getVar('dirname') . "/language/english/help/help.html";
 }
 if (is_readable($file)) {
     echo "<fieldset><legend style='font-weight: bold; color: #900;'>" . _XADDRESSES_AM_ABOUT_HELP . "</legend>";

@@ -1,0 +1,13 @@
+<{* breadcrumb *}>
+<{if ($breadcrumb)}>
+    <{foreach item=bread from=$breadcrumb}>
+        <a href="<{$bread.url}>"><{$bread.title}></a>
+        &gt;
+    <{/foreach}>
+<{/if}>
+
+<{$smarty.const._SEARCH}>
+<br />
+
+<div>( <{$total_locations}> )</div>
+<{includeq file="db:profile_form.html" xoForm=$searchform}>
