@@ -42,18 +42,39 @@ define("_XADDRESSES_MD_LOC_RATE_VOTE","Vote");
 define("_XADDRESSES_MD_LOC_RATE_VOTEOK","Your vote is appreciated.<br />Thank you for taking the time to vote here");
 define("_XADDRESSES_MD_LOC_RATE_VOTEONCE","Please do not vote for the same resource more than once.");
 
-//submit.php
-define("_XADDRESSES_MD_SUBMIT_NEW","IN_PROGRESS");
-define("_XADDRESSES_MD_SUBMIT_EDIT","Edit");
+// submit.php
+//define("_XADDRESSES_MD_SUBMIT_NEW","IN_PROGRESS");
+//define("_XADDRESSES_MD_SUBMIT_EDIT","Edit");
 
 define("_XADDRESSES_MD_SUBMIT_ALLPENDING","All location information are posted pending verification.");
 define("_XADDRESSES_MD_SUBMIT_DONTABUSE","Username and IP are recorded, so please don't abuse the system.");
-define("_XADDRESSES_MD_SUBMIT_ISAPPROVED","Your LOcatione has beeen approved");
-define("_XADDRESSES_MD_SUBMIT_PROPOSER","Submit a location");
-define("_XADDRESSES_MD_SUBMIT_RECEIVED","We have recieved your location info. Thank you !");
+//define("_XADDRESSES_MD_SUBMIT_ISAPPROVED","Your Locatione has beeen approved");
+//define("_XADDRESSES_MD_SUBMIT_PROPOSER","Submit a location");
+//define("_XADDRESSES_MD_SUBMIT_RECEIVED","We have received your location info. Thank you !");
 define("_XADDRESSES_MD_SUBMIT_SUBMITONCE","Submit your location only once.");
 define("_XADDRESSES_MD_SUBMIT_TAKEDAYS","This will take many days to see your location addedd successfully in our database.");
 
+// locationsearch.php
+define("_XADDRESSES_MD_SEARCH","Search");
+define("_XADDRESSES_MD_SEARCH_TITLE", "Filter location title");
+define("_XADDRESSES_MD_SEARCH_TITLE_DESC", "It's possible to choose bewteen various matchs");
+define("_XADDRESSES_MD_SEARCH_MAXDISTANCE", "Filter by distance from");
+define("_XADDRESSES_MD_SEARCH_MAXDISTANCE_DESC", "It's possible to filter by distance from a choosen point");
+define("_XADDRESSES_MD_SEARCH_CAT", "Filter by categories");
+define("_XADDRESSES_MD_SEARCH_CAT_DESC", "It's possible to select more categories");
+define("_XADDRESSES_MD_SEARCH_PERPAGE", "Locations per page");
+//define("_XADDRESSES_MD_SEARCH","Filter in the modules list");
+//define("_XADDRESSES_MD_SEARCH_ALL1","All");
+//define("_XADDRESSES_MD_SEARCH_ALL2","All");
+//define("_XADDRESSES_MD_SEARCH_BT","Search");
+//define("_XADDRESSES_MD_SEARCH_CATEGORIES","Categories");
+//define("_XADDRESSES_MD_SEARCH_DATE","Date");
+//define("_XADDRESSES_MD_SEARCH_DOWNLOAD","Address ");
+//define("_XADDRESSES_MD_SEARCH_HITS","Hits");
+//define("_XADDRESSES_MD_SEARCH_NOTE","Rate");
+//define("_XADDRESSES_MD_SEARCH_PAGETITLE","File List");
+//define("_XADDRESSES_MD_SEARCH_THEREARE","There are<b>%s</b> locations(s)");
+//define("_XADDRESSES_MD_SEARCH_TITLE","Name");
 
 
 // -------------------------------- IN PROGRESS

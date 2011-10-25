@@ -35,6 +35,7 @@ function xaddresses_getFieldForm(&$field, $action = false, &$form = null)
     } else {
         $formIsNew = false;
     }
+    $form->setExtra('enctype="multipart/form-data"');
 
     // Get user groups
     if (is_object($GLOBALS['xoopsUser'])) {
@@ -393,6 +394,7 @@ function xaddresses_getLocationForm(&$location, $action = false, &$form = null)
     } else {
         $formIsNew = false;
     }
+    $form->setExtra('enctype="multipart/form-data"');
 
     // Get user groups
     if (is_object($GLOBALS['xoopsUser'])) {
@@ -421,6 +423,7 @@ function xaddresses_getLocationForm(&$location, $action = false, &$form = null)
     $value = array(
         'lat'=>$location->getVar('loc_lat'), 
         'lng'=>$location->getVar('loc_lng'), 
+        'elevation'=>$location->getVar('loc_elevation'), 
         'zoom'=>$location->getVar('loc_zoom')
         );
         $formGoogleMap = new FormGoogleMap(_XADDRESSES_AM_LOC_COORDINATES, 'loc_googlemap', $value);
@@ -573,6 +576,8 @@ function xaddresses_getModifyForm(&$location, $action = false, &$form = null)
     } else {
         $formIsNew = false;
     }
+    $form->setExtra('enctype="multipart/form-data"');
+    
     // Get user groups
     if (is_object($GLOBALS['xoopsUser'])) {
         $groups = $GLOBALS['xoopsUser']->getGroups();
@@ -616,6 +621,7 @@ function xaddresses_getModifyForm(&$location, $action = false, &$form = null)
     $value = array(
         'lat'=>$location->getVar('loc_lat'), 
         'lng'=>$location->getVar('loc_lng'), 
+        'elevation'=>$location->getVar('loc_elevation'), 
         'zoom'=>$location->getVar('loc_zoom')
         );
     $formGoogleMap_element_tray = new XoopsFormElementTray(_XADDRESSES_AM_LOC_COORDINATES, '<br />');

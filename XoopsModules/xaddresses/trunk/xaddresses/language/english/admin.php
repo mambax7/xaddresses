@@ -75,6 +75,7 @@ define("_XADDRESSES_AM_LOC_MODIFIED","Modified locations");
 define("_XADDRESSES_AM_LOC_SEARCH","Search");
 
 define("_XADDRESSES_AM_SORT_BY","sorted by: ");
+define("_XADDRESSES_AM_SORT_BY_NONE","");
 define("_XADDRESSES_AM_SORT_BY_DATE","date");
 define("_XADDRESSES_AM_SORT_BY_TITLE","title");
 define("_XADDRESSES_AM_SORT_BY_CAT","category");

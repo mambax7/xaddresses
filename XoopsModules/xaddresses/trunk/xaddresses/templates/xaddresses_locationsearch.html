@@ -4,10 +4,17 @@
         <a href="<{$bread.url}>"><{$bread.title}></a>
         &gt;
     <{/foreach}>
+<{$smarty.const._XADDRESSES_MD_SEARCH}>
+<br />
 <{/if}>
 
-<{$smarty.const._SEARCH}>
+<ul>
+    <li><{$total_locations}></li>
+</ul>
+
 <br />
 
-<div>( <{$total_locations}> )</div>
-<{includeq file="db:profile_form.html" xoForm=$searchform}>
+<{if $errorMessage!= ''}>
+	<div class="errorMsg"><{$errorMessage}></div>   
+<{/if}>
+<{$themeForm}>

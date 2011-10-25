@@ -26,6 +26,7 @@ CREATE TABLE `xaddresses_location` (
   `loc_title`           varchar(255)            NOT NULL default '',
   `loc_lat`             varchar(255)            NOT NULL default '',
   `loc_lng`             varchar(255)            NOT NULL default '',
+  `loc_elevation`       varchar(255)            NOT NULL default '',
   `loc_zoom`            varchar(255)            NOT NULL default '',
   `loc_submitter`       int(11)                 NOT NULL default '0',
   `loc_date`            int(12)                 NOT NULL default '0',

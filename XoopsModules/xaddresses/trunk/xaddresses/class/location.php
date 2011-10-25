@@ -11,6 +11,7 @@ class XaddressesLocation extends XoopsObject
         $this->initVar('loc_title', XOBJ_DTYPE_TXTBOX);
         $this->initVar('loc_lat', XOBJ_DTYPE_DECIMAL);
         $this->initVar('loc_lng', XOBJ_DTYPE_DECIMAL);
+        $this->initVar('loc_elevation', XOBJ_DTYPE_DECIMAL);
         $this->initVar('loc_zoom', XOBJ_DTYPE_INT);
         $this->initVar('loc_submitter', XOBJ_DTYPE_INT, null, true); // sumbmitter id
         $this->initVar('loc_date', XOBJ_DTYPE_INT, 0);
