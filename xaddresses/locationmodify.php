@@ -81,7 +81,6 @@ case "new_modify":
     // Set description for template
     $xoTheme->addMeta( 'meta', 'description', strip_tags(_XADDRESSES_MD_LOC_MODIFY_SUGGESTMODIFY . ' (' . $location->getVar('loc_title') . ')'));
 
-    // IN PROGRESS
     $newSuggest =& $modifyHandler->create();
     $title = $newSuggest->isNew() ? _XADDRESSES_AM_LOC_MODIFY_NEW : _XADDRESSES_AM_LOC_MODIFY_EDIT;
     $form = new XoopsThemeForm($title, 'modifyform', $currentFile, 'post', true);
@@ -195,6 +194,7 @@ case "save_modify":
     $location->setVar('loc_cat_id', $_POST['loc_cat_id_modify']);
     $location->setVar('loc_lat', $_POST['loc_googlemap_modify']['lat']);
     $location->setVar('loc_lng', $_POST['loc_googlemap_modify']['lng']);
+    $location->setVar('loc_elevation', $_POST['loc_googlemap_modify']['elevation']);
     $location->setVar('loc_zoom', $_POST['loc_googlemap_modify']['zoom']);
     // Set submitter
     $location->setVar('loc_submitter', $suggestingUserId);

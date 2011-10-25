@@ -1,9 +1,9 @@
 <{* breadcrumb *}>
 <{if ($breadcrumb)}>
-<{foreach item=bread from=$breadcrumb}>
-    <a href="<{$bread.url}>"><{$bread.title}></a>
-    &gt;
-<{/foreach}>
+    <{foreach item=bread from=$breadcrumb}>
+        <a href="<{$bread.url}>"><{$bread.title}></a>
+        &gt;
+    <{/foreach}>
 <{$smarty.const._XADDRESSES_MD_LOC_BROKEN_REPORTBROKEN}>
 <br />
 <{/if}>

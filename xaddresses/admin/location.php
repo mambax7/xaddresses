@@ -301,6 +301,7 @@ case 'save_location':
     $location->setVar('loc_cat_id', $_POST['loc_cat_id']);
     $location->setVar('loc_lat', $_POST['loc_googlemap']['lat']);
     $location->setVar('loc_lng', $_POST['loc_googlemap']['lng']);
+    $location->setVar('loc_elevation', $_POST['loc_googlemap']['elevation']);
     $location->setVar('loc_zoom', $_POST['loc_googlemap']['zoom']);
     // Set submitter
     if(empty($GLOBALS['xoopsUser'])) {

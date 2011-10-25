@@ -12,7 +12,7 @@ class FormGoogleMap extends XoopsFormElementTray
      *
      * @param mixed $caption
      * @param mixed $name
-     * @param array('lat'=> ,'lng' =>, 'zoom'=>) $value
+     * @param array('lat'=> , 'lng'=> , 'elevation'=> , 'zoom'=>) $value
      * @param array('option name'=>'option_value') $configs
      */
     function __construct($caption, $name, $value = NULL, $config=array())
@@ -25,6 +25,7 @@ class FormGoogleMap extends XoopsFormElementTray
 
         $this->lat = (is_array($value) && isset($value['lat'])) ? $value['lat'] : 0; // default lat
         $this->lng = (is_array($value) && isset($value['lng'])) ? $value['lng'] : 0; // default lng
+        $this->elevation = (is_array($value) && isset($value['elevation'])) ? $value['elevation'] : 0; // default elevation
         $this->zoom = (is_array($value) && isset($value['zoom'])) ? $value['zoom'] : 8; // default lat
         $this->search = '';
         //$kml = (is_array($value) && isset($value['kml'])) ? $value['kml'] : ''; // default kml
@@ -69,6 +70,8 @@ class FormGoogleMap extends XoopsFormElementTray
         $class = "
             function xoopsFormGoogleMap(formId, mapId, lat, lng, zoom, draggable) {
                 var _geocoder = new google.maps.Geocoder();
+                var _elevator = new google.maps.ElevationService(); // Create an ElevationService
+
                 var _map = null;
                 var _formId = formId;
                 var _mapId = mapId;
@@ -90,6 +93,30 @@ class FormGoogleMap extends XoopsFormElementTray
                     } else {
                     _initLatLng = new google.maps.LatLng(parseFloat(lat), parseFloat(lng));
                 }
+
+                function getElevation(map, markerLatLng) {
+                    var locations = [];
+                    // Create a LocationElevationRequest object using the array's one value
+                    locations.push(markerLatLng);
+                    var positionalRequest = {
+                        'locations': locations
+                    }
+                    // Initiate the location request
+                    _elevator.getElevationForLocations(positionalRequest, function(results, status) {
+                        if (status == google.maps.ElevationStatus.OK) {
+                            // Retrieve the first result
+                            if (results[0]) {
+                                // Open an info window indicating the elevation at the clicked position
+                                document.getElementById(formId + '[elevation]').value = results[0].elevation;
+                                //alert('The elevation at this point <br/>is ' + results[0].elevation + ' meters.');
+                            } else {
+                                //alert('No results found');
+                            }
+                        } else {
+                            alert('Elevation service failed due to: ' + status);
+                        }
+                    });
+                }
                 
                 function addMarker(map, formId, markerLatLng, draggable) {
                     if (draggable) {
@@ -102,6 +129,7 @@ class FormGoogleMap extends XoopsFormElementTray
                         google.maps.event.addListener(marker, 'dragend', function() {
                             document.getElementById(formId + '[lat]').value = marker.getPosition().lat();
                             document.getElementById(formId + '[lng]').value = marker.getPosition().lng();
+                            getElevation(map, marker.getPosition());
                             });
                     } else {
                         var marker = new google.maps.Marker({
@@ -131,7 +159,8 @@ class FormGoogleMap extends XoopsFormElementTray
                     document.getElementById(_formId + '[zoom]').value = _map.getZoom();
                 });
                 _marker = addMarker(_map, _formId, _initLatLng, _draggable);
-
+                getElevation(_map, _initLatLng);
+                
                 function goInitControl(map, marker, formId, initLatLng, initZoomLevel, controlDiv) {
                     // Set CSS styles for the DIV containing the control
                     // Setting padding to 5 px will offset the control from the edge of the map
@@ -160,6 +189,7 @@ class FormGoogleMap extends XoopsFormElementTray
                         map.setZoom(initZoomLevel);
                         document.getElementById(formId + '[lat]').value = initLatLng.lat();
                         document.getElementById(formId + '[lng]').value = initLatLng.lng();
+                        getElevation(_map, initLatLng);
                         document.getElementById(formId + '[zoom]').value = initZoomLevel;
                     });
                 }
@@ -212,6 +242,7 @@ class FormGoogleMap extends XoopsFormElementTray
                             _map.setCenter(searchLatLng);
                             document.getElementById(formId + '[lat]').value = searchLatLng.lat();
                             document.getElementById(formId + '[lng]').value = searchLatLng.lng();
+                            getElevation(_map, searchLatLng);
                         } else {
                             alert('" . _FORMGOOGLEMAP_SEARCHERROR . "' + status);
                         }
@@ -226,6 +257,7 @@ class FormGoogleMap extends XoopsFormElementTray
                     _marker.setPosition(formLatLng);
                     _map.setCenter(formLatLng);
                     _map.setZoom(formZoomLevel);
+                    getElevation(_map, formLatLng);
                 }
             }
         ";
@@ -282,6 +314,11 @@ class FormGoogleMap extends XoopsFormElementTray
             $ret.= "&nbsp;";
             $ret.= "<input id='{$this->name}[lng]' type='text' value='{$this->lng}' maxlength='255' size='18' title='Longitude' name='{$this->name}[lng]' onchange='xoopsFormGoogleMap_{$this->name}.setMapPositionByForm();'>";
             $ret.= "&nbsp;";
+            $ret.= _FORMGOOGLEMAP_ELEVATION;
+            $ret.= "&nbsp;";
+            $ret.= "<input id='{$this->name}[elevation]' type='text' value='{$this->elevation}' maxlength='255' size='18' title='Longitude' name='{$this->name}[elevation]'>";
+            $ret.= "&nbsp;";
+            $ret.= "<br />";
             $ret.= _FORMGOOGLEMAP_ZOOM;
             $ret.= "&nbsp;";
             $ret.= "<input id='{$this->name}[zoom]' type='text' value='{$this->zoom}' maxlength='255' size='2' title='Zoom level' name='{$this->name}[zoom]' onchange='xoopsFormGoogleMap_{$this->name}.setMapPositionByForm();'>";
@@ -301,6 +338,11 @@ class FormGoogleMap extends XoopsFormElementTray
             $ret.= "&nbsp;";
             $ret.= "<span id='{$this->name}[lng]'>{$this->lng}</span>";
             $ret.= "&nbsp;";
+            $ret.= _FORMGOOGLEMAP_ELEVATION;
+            $ret.= "&nbsp;";
+            $ret.= "<span id='{$this->name}[elevation]'>{$this->elevation}</span>";
+            $ret.= "&nbsp;";
+            $ret.= "<br />";
             $ret.= _FORMGOOGLEMAP_ZOOM;
             $ret.= "&nbsp;";
             $ret.= "<span id='{$this->name}[zoom]'>{$this->zoom}</span>";

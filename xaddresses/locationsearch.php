@@ -74,42 +74,26 @@ case "search":
     unset($breadcrumb, $crumb);
 */
 
-/*
-$R = 6371; // km: is the earth’s radius (mean radius = 6,371km)
-$point1 = array('lat' => 0, 'lng' => 0);
-$point2 = array('lat' => 0, 'lng' => 0);
-$dLat = toRad($point2['lat'] - $point1['lat']);
-$dLon = toRad($point2['lng'] - $point1['lng']);
-$dLat1 = toRad($point1['lat']);
-$dLat2 = toRad($point2['lat']);
-$a = sin($dLat/2) * sin($dLat/2) + cos($dLat1) * cos($dLat1) * sin($dLon/2) * sin($dLon/2);
-$c = 2 * atan2(sqrt($a), sqrt(1-$a));
-$distance = $R * $c; // km
 
-MORE INFO HERE
-http://www.movable-type.co.uk/scripts/latlong.html
-
-$distance = abs(acos(sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(lon2 - lon1))) * 6371;
-*/
 
     include_once $GLOBALS['xoops']->path('class/xoopsformloader.php');
-    $searchform = new XoopsThemeForm("", "searchform", $currentFile, "post");
+    $searchform = new XoopsThemeForm(_XADDRESSES_MD_SEARCH, 'searchform', $currentFile, 'post');
+    $searchform->setExtra('enctype="multipart/form-data"');
 
     // location title
-        $formLocTitle = new XoopsFormElementTray(_XADDRESSES_AM_LOC_TITLE);
-        $formLocTitle->setDescription(_XADDRESSES_AM_LOC_TITLE_DESC);
+        $formLocTitle = new XoopsFormElementTray(_XADDRESSES_MD_SEARCH_TITLE);
+        $formLocTitle->setDescription(_XADDRESSES_MD_SEARCH_TITLE_DESC);
         $formLocTitle->addElement(new XoopsFormSelectMatchOption('', 'loc_title_match'));
         $formLocTitle->addElement(new XoopsFormText('', 'loc_title', 35, 255));
     $searchform->addElement($formLocTitle);
 
     // location coordinates
-        $formGoogleMap = new FormGoogleMap(_XADDRESSES_AM_LOC_COORDINATES, 'loc_googlemap', null);
-        $formGoogleMap->setDescription(_XADDRESSES_AM_LOC_COORDINATES_DESC);
-    //$searchform->addElement($formGoogleMap);
-        $formMaxDistance = new XoopsFormElementTray(_XADDRESSES_AM_LOC_MAXDISTANCE, '<br />');
-        $formMaxDistance->setDescription(_XADDRESSES_AM_LOC_MAXDISTANCE_DESC);
-        //$formMaxDistance->addElement(new XoopsFormSelectMatchOption('', 'loc_maxdistance_match'));
-        $formMaxDistance->addElement(new XoopsFormText('', 'loc_maxdistance', 35, 255));
+        $formMaxDistance = new XoopsFormElementTray(_XADDRESSES_MD_SEARCH_MAXDISTANCE, '<br />');
+        $formMaxDistance->setDescription(_XADDRESSES_MD_SEARCH_MAXDISTANCE_DESC);
+            $formMaxDistanceSelect = new XoopsFormSelect('', 'loc_maxdistance');
+            $formMaxDistanceText = new XoopsFormText('', 'loc_maxdistance', 35, 255);
+        $formMaxDistance->addElement($formMaxDistanceText);
+            $formGoogleMap = new FormGoogleMap('', 'loc_googlemap', null);
         $formMaxDistance->addElement($formGoogleMap);
     $searchform->addElement($formMaxDistance);
     // TO DO
@@ -129,17 +113,18 @@ $distance = abs(acos(sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(lon2 - 
         $categoriesTree = new XoopsObjectTree($categoriesArray, 'cat_id', 'cat_pid');
         $formSelectCategoryMaxLines = 5; // Max lines in groups select
         $countCategory = count($categoriesArray);
-        $FormSelectCategoryLines = ($countGroups < $formSelectCategoryMaxLines) ? $countCategory : $formSelectCategoryMaxLines;
+        $FormSelectCategoryLines = ($countCategory < $formSelectCategoryMaxLines) ? $countCategory : $formSelectCategoryMaxLines;
         $htmlSelBox = $categoriesTree->makeSelBox('loc_cat_id', 'cat_title', '--', 0, false, 0, "multiple='multiple' size='{formSelectCategoryMaxLines}'");
+        $htmlSelBox = str_replace('name="loc_cat_id"', 'name="loc_cat_id[]"', $htmlSelBox);
         //$htmlSelBox = str_replace("<select ", "<select multiple='multiple' size='5' ", $htmlSelBox);
-        $formLocCategory = new XoopsFormLabel(_XADDRESSES_AM_LOC_CAT, $htmlSelBox);
-        $formLocCategory->setDescription(_XADDRESSES_AM_LOC_CAT_DESC);
+        $formLocCategory = new XoopsFormLabel(_XADDRESSES_MD_SEARCH_CAT, $htmlSelBox);
+        $formLocCategory->setDescription(_XADDRESSES_MD_SEARCH_CAT_DESC);
     $searchform->addElement($formLocCategory);
 
     
     // Get fields
     $fields = $locationHandler->loadFields();
-
+    $sortby_arr = array();
     foreach (array_keys($fields) as $i) {
         if (!in_array($fields[$i]->getVar('field_id'), $searchableFields) || !in_array($fields[$i]->getVar('field_type'), $searchableTypes)) {
             continue;
@@ -198,79 +183,63 @@ $distance = abs(acos(sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(lon2 - 
     $searchform->addElement(new XoopsFormLabel('// IN PROGRESS', '// IN PROGRESS'));
 
     asort($sortby_arr);
-        $sortby_arr = array_merge(array("" => _NONE, "title" =>_US_NICKNAME, "email" => _US_EMAIL), $sortby_arr);
-        $sortby_select = new XoopsFormSelect(_PROFILE_MA_SORTBY, 'sortby');
+        $sortby_arr = array_merge(array("" => _XADDRESSES_AM_SORT_BY_NONE, "loc_date" => _XADDRESSES_AM_SORT_BY_DATE, "loc_title" =>_XADDRESSES_AM_SORT_BY_TITLE, "loc_cat_id" =>_XADDRESSES_AM_SORT_BY_CAT), $sortby_arr);
+        $sortby_select = new XoopsFormSelect(_XADDRESSES_AM_SORT_BY, 'sortby');
         $sortby_select->addOptionArray($sortby_arr);
     $searchform->addElement($sortby_select);
 
-        $order_select = new XoopsFormRadio(_PROFILE_MA_ORDER, 'order', 0);
-        $order_select->addOption(0, _ASCENDING);
-        $order_select->addOption(1, _DESCENDING);
+        $order_select = new XoopsFormRadio(_XADDRESSES_AM_ORDER, 'order', 0);
+        $order_select->addOption(0, _XADDRESSES_AM_ORDER_ASC);
+        $order_select->addOption(1, _XADDRESSES_AM_ORDER_DESC);
     $searchform->addElement($order_select);
 
-        $limit_text = new XoopsFormText(_PROFILE_MA_PERPAGE, 'limit', 15, 10, $limit_default);
+        $limit_text = new XoopsFormText(_XADDRESSES_MD_SEARCH_PERPAGE, 'limit', 15, 10, $limit_default);
         $searchform->addElement($limit_text);
         $searchform->addElement(new XoopsFormHidden('op', 'results'));
     $searchform->addElement(new XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
 
-    $searchform->assign($GLOBALS['xoopsTpl']);
-    $GLOBALS['xoopsTpl']->assign('page_title', _PROFILE_MA_SEARCH);
-
+    $GLOBALS['xoopsTpl']->assign('page_title', _XADDRESSES_MD_SEARCH);
+    $GLOBALS['xoopsTpl']->assign('themeForm', $searchform->render());
     break;
 
 case "results":
-    $xoopsOption['template_main'] = "xaddresses_locationsearchresults.html";
-    include_once XOOPS_ROOT_PATH . '/header.php';
+    $searchvars = array();
 
-    $GLOBALS['xoopsTpl']->assign('page_title', _PROFILE_MA_RESULTS);
-    $xoBreadcrumbs[] = array('link' => XOOPS_URL . "/modules/" . $GLOBALS['xoopsModule']->getVar('dirname', 'n') . '/search.php', 'title' => _SEARCH);
-    $xoBreadcrumbs[] = array('title' => _PROFILE_MA_RESULTS);
+    $criteria = new CriteriaCompo();
+    $criteria->add(new Criteria('loc_status', 0, '!='));
+    $criteria->add(new Criteria('loc_cat_id', '(' . implode(',', $viewableCategories) . ')','IN'));
+    //$criteria->setSort('loc_date');
+    //$criteria->setOrder('DESC');
+    $criteria->setLimit($xoopsModuleConfig['index_list_number']);
 
+    // location title
+    if (isset($_REQUEST['loc_title']) && $_REQUEST['loc_title'] != '') {
+        $string = $myts->addSlashes(trim($_REQUEST['loc_title']));
+        switch ($_REQUEST['loc_title_match']) {
+            case XOOPS_MATCH_START:
+                $string .= "%";
+                break;
+            case XOOPS_MATCH_END:
+                $string = "%" . $string;
+                break;
+            case XOOPS_MATCH_CONTAIN:
+                $string = "%" . $string . "%";
+                break;
+        }
+        $criteria->add(new Criteria('loc_title', $string, "LIKE"));
+        $searchvars[] = "loc_title";
+    }
 
+    // location category
+    if (isset($_REQUEST['loc_cat_id']) && !empty($_REQUEST['loc_cat_id']) && is_array($_REQUEST['loc_cat_id'])) {
+        $criteria->add(new Criteria('loc_cat_id', '(' . implode(',', $_REQUEST['loc_cat_id']) . ')','IN'));
+        $searchvars[] = "loc_cat_id";
+    }
+    
     // Get fields
     $fields = $locationHandler->loadFields();
     // Get ids of fields that can be searched
-    $searchvars = array();
-
-    $criteria = new CriteriaCompo(new Criteria('level', 0, '>'));
-    if (isset($_REQUEST['uname']) && $_REQUEST['uname'] != '') {
-        $string = $myts->addSlashes(trim($_REQUEST['uname']));
-        switch ($_REQUEST['uname_match']) {
-            case XOOPS_MATCH_START:
-                $string .= "%";
-                break;
-
-            case XOOPS_MATCH_END:
-                $string = "%" . $string;
-                break;
-
-            case XOOPS_MATCH_CONTAIN:
-                $string = "%" . $string . "%";
-                break;
-        }
-        $criteria->add(new Criteria('uname', $string, "LIKE"));
-        $searchvars[] = "uname";
-    }
-    if (isset($_REQUEST['email']) && $_REQUEST['email'] != '') {
-        $string = $myts->addSlashes(trim($_REQUEST['email']));
-        switch ($_REQUEST['email_match']) {
-            case XOOPS_MATCH_START:
-                $string .= "%";
-                break;
-
-            case XOOPS_MATCH_END:
-                $string = "%" . $string;
-                break;
-
-            case XOOPS_MATCH_CONTAIN:
-                $string = "%" . $string . "%";
-                break;
-        }
-        $searchvars[] = "email";
-        $criteria->add(new Criteria('email', $string, "LIKE"));
-        $criteria->add(new Criteria('user_viewemail', 1) );
-    }
-
+    
     $search_url = array();
     foreach (array_keys($fields) as $i ) {
         if (!in_array($fields[$i]->getVar('field_id'), $searchableFields) || !in_array($fields[$i]->getVar('field_type'), $searchableTypes)) {
@@ -388,33 +357,103 @@ case "results":
         }
     }
 
+    if ($_REQUEST['sortby'] == "loc_title") {
+        $criteria->setSort("loc_title");
+    } else if ($_REQUEST['sortby'] == "loc_date") {
+        $criteria->setSort("loc_date");
+    } else if ($_REQUEST['sortby'] == "loc_cat_id") {
+        $criteria->setSort("loc_cat_id");
+    } else if (isset($fields[$_REQUEST['sortby']])) {
+        $criteria->setSort($fields[$_REQUEST['sortby']]->getVar('loc_title'));
+    }
+
+    $order = $_REQUEST['order'] == 0 ? "ASC" : "DESC";
+    $criteria->setOrder($order);
+
+    $limit = empty($_REQUEST['limit']) ? $limit_default : (int)$_REQUEST['limit'];
+    $criteria->setLimit($limit);
+
+    $start = isset($_REQUEST['start']) ? (int)$_REQUEST['start'] : 0;
+    $criteria->setStart($start);
+
+    $locations = $locationHandler->getall($criteria);
+
+    // MORE INFO HERE
+    // http://www.movable-type.co.uk/scripts/latlong.html
+    // This calculate the great-circle distance between two points
+    //  – that is, the shortest distance over the earth’s surface – 
+    // giving an ‘as-the-crow-flies’ distance between the points 
+    // (ignoring any hills, of course!).
+    function distanceHaversine($lat1, $lng1, $lat2, $lng2) {
+    // http://en.wikipedia.org/wiki/Haversine_formula
+        // Conversions from degrees to radian
+        $lat1 = ($lat1) * pi()/180;
+        $lng1 = ($lng1) * pi()/180;
+        $lat2 = ($lat2) * pi()/180;
+        $lng2 = ($lng2) * pi()/180;
+        // earth's mean radius in km
+        $R = 6371;
+        $dLat = ($lat2 - $lat1);
+        $dLng = ($lng2 - $lng1);
+        $a = sin($dLat/2) * sin($dLat/2) + cos($lat1) * cos($lat2) * sin($dLng/2) * sin($dLng/2);
+        $c = 2 * atan2(sqrt($a), sqrt(1-$a));
+        // distance in km
+        $d = $R * $c;
+        return $d;
+    }
+
+    function distanceSphericalLawofCosines($lat1, $lng1, $lat2, $lng2) {
+        // http://en.wikipedia.org/wiki/Spherical_law_of_cosines
+        // Conversions from degrees to radian
+        $lat1 = ($lat1) * pi()/180;
+        $lng1 = ($lng1) * pi()/180;
+        $lat2 = ($lat2) * pi()/180;
+        $lng2 = ($lng2) * pi()/180;
+        // earth's mean radius in km
+        $R = 6371;
+        $c = acos(sin($lat1) * sin($lat2) + cos($lat1) * cos($lat2) * cos($lng2 - $lng1));
+        // distance in km
+        $d = $R * $c;
+        return $d;
+    }
+
+    echo "DISTANCE<br />";
+    $loc_googlemap = $_REQUEST['loc_googlemap'];
+    echo $loc_googlemap['lat'] . "<br />";
+    echo $loc_googlemap['lng'] . "<br />";
+    foreach ($locations as $location) {
+        echo $location->getVar('loc_title') . "<br />";
+        echo $location->getVar('loc_lat') . "<br />";
+        echo $location->getVar('loc_lng') . "<br />";
+        $distance = distanceHaversine($location->getVar('loc_lat'), $location->getVar('loc_lng'), $loc_googlemap['lat'], $loc_googlemap['lng']);
+        echo $distance . "km<br />";
+        $distance = distanceSphericalLawofCosines($location->getVar('loc_lat'), $location->getVar('loc_lng'), $loc_googlemap['lat'], $loc_googlemap['lng']);
+        echo $distance . "km<br />";
+    }
+    exit();
+    
+    $xoopsOption['template_main'] = "xaddresses_locationsearchresults.html";
+    include_once XOOPS_ROOT_PATH . '/header.php';
+
+    //$GLOBALS['xoopsTpl']->assign('page_title', _PROFILE_MA_RESULTS);
+    //$xoBreadcrumbs[] = array('link' => XOOPS_URL . "/modules/" . $GLOBALS['xoopsModule']->getVar('dirname', 'n') . '/search.php', 'title' => _SEARCH);
+    //$xoBreadcrumbs[] = array('title' => _PROFILE_MA_RESULTS);
+
+
+    
+
+
     // Why break? What if admin does a search for groups with no name? Don't we need results?
     /*
     if ( $searchvars == array()  ) {
         break;
     }
     */
-    if ($_REQUEST['sortby'] == "name") {
-        $criteria->setSort("name");
-    } else if ($_REQUEST['sortby'] == "email") {
-        $criteria->setSort("email");
-    } else if ($_REQUEST['sortby'] == "uname") {
-        $criteria->setSort("uname");
-    } else if (isset($fields[$_REQUEST['sortby']])) {
-        $criteria->setSort($fields[$_REQUEST['sortby']]->getVar('field_name'));
-    }
+
+
     // add search groups , only for Webmasters
     $searchgroups = empty($_POST['selgroups']) ? array() : array_map("intval", $_POST['selgroups']);
-
-    $order = $_REQUEST['order'] == 0 ? "ASC" : "DESC";
-    $criteria->setOrder($order);
-
-    $limit = empty($_REQUEST['limit']) ? $limit_default : intval($_REQUEST['limit']);
-    $criteria->setLimit($limit);
-
-    $start = isset($_REQUEST['start']) ? intval($_REQUEST['start']) : 0;
-    $criteria->setStart($start);
-
+    
     list($users, $profiles, $total_users) = $profile_handler->search($criteria, $searchvars,$searchgroups);
 
     $total =sprintf(_PROFILE_MA_FOUNDUSER, "<span class='red'>{$total_users}</span>")." ";
