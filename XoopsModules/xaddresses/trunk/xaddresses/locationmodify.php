@@ -38,12 +38,12 @@ if ($locationHandler->getCount($criteria) == 0) {
 // Get location and category object
 $location = $locationHandler->get($loc_id);
 $category = $categoryHandler->get($location->getVar('loc_cat_id'));
-$categories = xaddresses_MygetItemIds();
+$viewableCategoriesIds = xaddresses_getMyItemIds('in_category_view');
 // IN PROGRESS
 // IN PROGRESS
 // IN PROGRESS
 // Check rights
-if(!in_array($location->getVar('loc_cat_id'), $categories)) {
+if(!in_array($location->getVar('loc_cat_id'), $viewableCategoriesIds)) {
     redirect_header('index.php', 2, _NOPERM);
     exit();
 }
@@ -60,6 +60,11 @@ while ($category->getVar('cat_pid') != 0) {
     $category = $categoryHandler->get($category->getVar('cat_pid'));
     $crumb['title'] = $category->getVar('cat_title');
     $crumb['url'] = 'locationcategoryview.php?cat_id=' . $category->getVar('cat_id');
+    $breadcrumb[] = $crumb;
+}
+if ($xoopsModuleConfig['show_home_in_breadcrumb']) {
+    $crumb['title'] = _XADDRESSES_MD_BREADCRUMB_HOME;
+    $crumb['url'] = 'index.php';
     $breadcrumb[] = $crumb;
 }
 // Set breadcrumb array for tamplate

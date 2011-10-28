@@ -1,3 +1,4 @@
+<{* used in: locationview.php *}>
 <{* breadcrumb *}>
 <{if ($breadcrumb)}>
 <{foreach item=bread from=$breadcrumb}>
@@ -36,7 +37,7 @@
 <{/foreach}>
 
 <{* operations *}>
-<a href='locationedit.php?loc_id=<{$location.loc_id}>'><{$smarty.const._XADDRESSES_MD_LOC_MODIFY}></a>
+<a href='locationedit.php?loc_id=<{$location.loc_id}>'><{$smarty.const._XADDRESSES_MD_LOC_EDIT}></a>
 <{if $perm_report_broken}>
 &nbsp;|&nbsp;
 <a href='locationbroken.php?loc_id=<{$location.loc_id}>'><{$smarty.const._XADDRESSES_MD_LOC_REPORTBROKEN}></a>

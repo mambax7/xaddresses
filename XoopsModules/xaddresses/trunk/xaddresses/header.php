@@ -13,6 +13,16 @@ include_once XOOPS_ROOT_PATH . '/class/xoopsform/grouppermform.php';
 
 $myts =& MyTextSanitizer::getInstance();
 
+// Include language files
+xoops_loadLanguage('admin', 'system');
+xoops_loadLanguage('modinfo', $GLOBALS['xoopsModule']->getVar('dirname'));
+xoops_loadLanguage('admin', $GLOBALS['xoopsModule']->getVar('dirname'));
+xoops_loadLanguage('main', $GLOBALS['xoopsModule']->getVar('dirname'));
+
+// Include module functions
+include_once XOOPS_ROOT_PATH . '/modules/'. $GLOBALS['xoopsModule']->getVar('dirname') .'/include/functions.php'; // admin functions
+include_once XOOPS_ROOT_PATH . '/modules/'. $GLOBALS['xoopsModule']->getVar('dirname') .'/include/forms.php';
+
 // Get user groups
 $groupPermHandler =& xoops_gethandler('groupperm');
 if (is_object($GLOBALS['xoopsUser'])) {
@@ -22,9 +32,9 @@ if (is_object($GLOBALS['xoopsUser'])) {
 }
 
 // Permission
-$viewableCategories = $groupPermHandler->getItemIds('in_category_view', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
-$editableCategories = $groupPermHandler->getItemIds('in_category_edit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
-$submitableCategories = $groupPermHandler->getItemIds('in_category_submit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
+//$viewableCategories = $groupPermHandler->getItemIds('in_category_view', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
+//$editableCategories = $groupPermHandler->getItemIds('in_category_edit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
+//$submitableCategories = $groupPermHandler->getItemIds('in_category_submit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
 // Get extra permissions
 $permModifySubmitter = ($groupPermHandler->checkRight('others', 1, $groups, $GLOBALS['xoopsModule']->getVar('mid'))) ? true : false ;
 $permModifyDate = ($groupPermHandler->checkRight('others', 2, $groups, $GLOBALS['xoopsModule']->getVar('mid'))) ? true : false ;
@@ -40,14 +50,4 @@ if ( !isset($GLOBALS['xoopsTpl']) || !is_object($GLOBALS['xoopsTpl'])  ) {
     include_once $GLOBALS['xoops']->path( '/class/template.php' );
     $GLOBALS['xoopsTpl'] = new XoopsTpl();
 }
-
-// include language files
-xoops_loadLanguage('admin', 'system');
-xoops_loadLanguage('modinfo', $GLOBALS['xoopsModule']->getVar('dirname'));
-xoops_loadLanguage('admin', $GLOBALS['xoopsModule']->getVar('dirname'));
-xoops_loadLanguage('main', $GLOBALS['xoopsModule']->getVar('dirname'));
-
-// Include module functions
-include_once XOOPS_ROOT_PATH . '/modules/'. $GLOBALS['xoopsModule']->getVar('dirname') .'/include/functions.php'; // admin functions
-include_once XOOPS_ROOT_PATH . '/modules/'. $GLOBALS['xoopsModule']->getVar('dirname') .'/include/forms.php';
 ?>

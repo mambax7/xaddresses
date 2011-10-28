@@ -403,9 +403,9 @@ function xaddresses_getLocationForm(&$location, $action = false, &$form = null)
     	$groups = XOOPS_GROUP_ANONYMOUS;
     }
     // Get ids of categories in which locations can be viewed/edited/submitted
-    $viewableCategories = $groupPermHandler->getItemIds('in_category_view', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
-    $editableCategories = $groupPermHandler->getItemIds('in_category_edit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
-    $submitableCategories = $groupPermHandler->getItemIds('in_category_submit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
+    $viewableCategoriesIds = $groupPermHandler->getItemIds('in_category_view', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
+    $editableCategoriesIds = $groupPermHandler->getItemIds('in_category_edit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
+    $submitableCategoriesIds = $groupPermHandler->getItemIds('in_category_submit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
     // Get ids of fields that can be edited
     $editableFields = $groupPermHandler->getItemIds('field_edit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
     // Get other permissions
@@ -435,7 +435,7 @@ function xaddresses_getLocationForm(&$location, $action = false, &$form = null)
     $criteria = new CriteriaCompo();
     $criteria->setSort('cat_weight ASC, cat_title');
     $criteria->setOrder('ASC');
-    $criteria->add(new Criteria('cat_id', ' (' . implode(',', $editableCategories) . ')', 'IN'));
+    $criteria->add(new Criteria('cat_id', ' (' . implode(',', $editableCategoriesIds) . ')', 'IN'));
     $criteria->setOrder('ASC');
     $categoriesArray = $categoryHandler->getall($criteria);
     $categoriesTree = new XoopsObjectTree($categoriesArray, 'cat_id', 'cat_pid');
@@ -585,9 +585,9 @@ function xaddresses_getModifyForm(&$location, $action = false, &$form = null)
     	$groups = XOOPS_GROUP_ANONYMOUS;
     }
     // Get ids of categories in which locations can be viewed/edited/submitted
-    $viewableCategories = $groupPermHandler->getItemIds('in_category_view', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
-    $editableCategories = $groupPermHandler->getItemIds('in_category_edit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
-    $submitableCategories = $groupPermHandler->getItemIds('in_category_submit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
+    $viewableCategoriesIds = $groupPermHandler->getItemIds('in_category_view', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
+    $editableCategoriesIds = $groupPermHandler->getItemIds('in_category_edit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
+    $submitableCategoriesIds = $groupPermHandler->getItemIds('in_category_submit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
     // Get ids of fields that can be edited
     $editableFields = $groupPermHandler->getItemIds('field_edit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
     // Get other permissions
@@ -639,7 +639,7 @@ function xaddresses_getModifyForm(&$location, $action = false, &$form = null)
     $criteria = new CriteriaCompo();
     $criteria->setSort('cat_weight ASC, cat_title');
     $criteria->setOrder('ASC');
-    $criteria->add(new Criteria('cat_id', ' (' . implode(',', $editableCategories) . ')', 'IN'));
+    $criteria->add(new Criteria('cat_id', ' (' . implode(',', $editableCategoriesIds) . ')', 'IN'));
     $criteria->setOrder('ASC');
     $categoriesArray = $categoryHandler->getall($criteria);
     $categoriesTree = new XoopsObjectTree($categoriesArray, 'cat_id', 'cat_pid');

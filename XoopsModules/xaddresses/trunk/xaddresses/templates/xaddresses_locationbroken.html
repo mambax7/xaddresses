@@ -1,10 +1,11 @@
+<{* used in: locationbroken.php *}>
 <{* breadcrumb *}>
 <{if ($breadcrumb)}>
     <{foreach item=bread from=$breadcrumb}>
         <a href="<{$bread.url}>"><{$bread.title}></a>
         &gt;
     <{/foreach}>
-<{$smarty.const._XADDRESSES_MD_LOC_BROKEN_REPORTBROKEN}>
+<{$smarty.const._XADDRESSES_MD_LOC_REPORTBROKEN}>
 <br />
 <{/if}>
 

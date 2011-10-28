@@ -22,13 +22,13 @@ $criteria->setSort('cat_weight ASC, cat_title');
 $criteria->setOrder('ASC');
 $mainCategories = $categoryHandler->getAll($criteria);
 
-$viewableCategoriesId = xaddresses_MygetItemIds();
+$viewableCategoriesIds = xaddresses_getMyItemIds();
 //print_r($myCategories);
 //affichage des catégories:
 $criteria = new CriteriaCompo();
 $criteria->setSort('cat_weight ASC, cat_title');
 $criteria->setOrder('ASC');
-$criteria->add(new Criteria('cat_id', '(' . implode(',', $viewableCategoriesId) . ')','IN'));
+$criteria->add(new Criteria('cat_id', '(' . implode(',', $viewableCategoriesIds) . ')','IN'));
 $myCategories = $categoryHandler->getall($criteria);
 //print_r($myCategories_array);
 $myTree = new XoopsObjectTree($myCategories, 'cat_id', 'cat_pid');
@@ -47,13 +47,13 @@ foreach ($mainCategories as $mainCategory) {
 }
 */
 
-$viewableCategoriesId = xaddresses_MygetItemIds('in_category_view');
+$viewableCategoriesIds = xaddresses_getMyItemIds('in_category_view');
 
 $criteria = new CriteriaCompo();
 $criteria->add(new Criteria('cat_pid', 0));
 $criteria->setSort('cat_weight ASC, cat_title');
 $criteria->setOrder('ASC');
-$criteria->add(new Criteria('cat_id', '(' . implode(',', $viewableCategoriesId) . ')','IN'));
+$criteria->add(new Criteria('cat_id', '(' . implode(',', $viewableCategoriesIds) . ')','IN'));
 $mainCategories = $categoryHandler->getAll($criteria);
 
 $prefix = '';
@@ -68,10 +68,10 @@ foreach ($mainCategories as $mainCategory) {
     $criteria->add(new Criteria('cat_pid', $mainCategory->getVar('cat_id')));
     $criteria->setSort('cat_weight ASC, cat_title');
     $criteria->setOrder('ASC');
-    $criteria->add(new Criteria('cat_id', '(' . implode(',', $viewableCategoriesId) . ')','IN'));
+    $criteria->add(new Criteria('cat_id', '(' . implode(',', $viewableCategoriesIds) . ')','IN'));
     $subCategories = $categoryHandler->getall($criteria);
     if (count($subCategories) != 0) {
-        $categoriesList = array_merge ($categoriesList, getChildrenTree($mainCategory->getVar('cat_id'), $subCategories, $prefix, $sufix, $order));
+        $categoriesList = array_merge ($categoriesList, xaddresses_getChildrenTree($mainCategory->getVar('cat_id'), $subCategories, $prefix, $sufix, $order));
     }
 }
 
@@ -79,6 +79,18 @@ foreach ($mainCategories as $mainCategory) {
 // Load template
 $xoopsOption['template_main'] = 'xaddresses_index.html';
 include_once XOOPS_ROOT_PATH . '/header.php';
+
+// Breadcrumb
+$breadcrumb = array();
+if ($xoopsModuleConfig['show_home_in_breadcrumb']) {
+    $crumb['title'] = _XADDRESSES_MD_BREADCRUMB_HOME;
+    $crumb['url'] = 'index.php';
+    $breadcrumb[] = $crumb;
+}
+// Set breadcrumb array for tamplate
+$breadcrumb = array_reverse($breadcrumb);
+$xoopsTpl->assign('breadcrumb', $breadcrumb);
+unset($breadcrumb, $crumb);
 
 $GLOBALS['xoopsTpl']->assign('categoriesList', $categoriesList);
 
@@ -90,7 +102,7 @@ $GLOBALS['xoopsTpl']->assign('categoriesList', $categoriesList);
 $criteria = new CriteriaCompo();
 $criteria->setSort('weight ASC, cat_title');
 $criteria->setOrder('ASC');
-$criteria->add(new Criteria('loc_cat_id', '(' . implode(',', $viewableCategoriesId) . ')','IN'));
+$criteria->add(new Criteria('loc_cat_id', '(' . implode(',', $viewableCategoriesIds) . ')','IN'));
 $downloadscat_arr = $categoryHandler->getall($criteria);
 $mytree = new XoopsObjectTree($downloadscat_arr, 'cat_id', 'cat_pid');
 
@@ -98,7 +110,7 @@ $criteria = new CriteriaCompo();
 $criteria->setSort('cat_weight ASC, cat_title');
 $criteria->setOrder('ASC');
 $criteria->add(new Criteria('cat_pid', 0));
-$criteria->add(new Criteria('cat_id', '(' . implode(',', $viewableCategoriesId) . ')','IN'));
+$criteria->add(new Criteria('cat_id', '(' . implode(',', $viewableCategoriesIds) . ')','IN'));
 $downloadscat_arr = $categoryHandler->getall($criteria);
 
 $count = 1;
@@ -128,22 +140,22 @@ foreach (array_keys($downloadscat_arr) as $i) {
 if($xoopsModuleConfig['index_list_recent'] == true) {
     $criteria = new CriteriaCompo();
     $criteria->add(new Criteria('loc_status', 0, '!='));
-    $criteria->add(new Criteria('loc_cat_id', '(' . implode(',', $viewableCategoriesId) . ')','IN'));
+    $criteria->add(new Criteria('loc_cat_id', '(' . implode(',', $viewableCategoriesIds) . ')','IN'));
     $criteria->setSort('loc_date');
     $criteria->setOrder('DESC');
     $criteria->setLimit($xoopsModuleConfig['index_list_number']);
     $locations = $locationHandler->getall($criteria);
-    foreach (array_keys($locations) as $i) {
-        $title = $locations[$i]->getVar('loc_title');
+    foreach ($locations as $location) {
+        $title = $location->getVar('loc_title');
         if (strlen($title) >= $xoopsModuleConfig['index_list_titlelenght']) {
             $title = substr($title, 0, ($xoopsModuleConfig['index_list_titlelenght'])) . '...';
         }
-        $date = formatTimestamp($locations[$i]->getVar('loc_date'), 's');
+        $date = formatTimestamp($location->getVar('loc_date'), 's');
         $xoopsTpl->append('index_list_recent', array(
-            'loc_id' => $locations[$i]->getVar('loc_id'), 
-            'loc_cat_id' => $locations[$i]->getVar('loc_cat_id'), 
+            'loc_id' => $location->getVar('loc_id'), 
+            'loc_cat_id' => $location->getVar('loc_cat_id'), 
             'loc_date' => $date, 
-            'title' => $title
+            'loc_title' => $title
         ));
     }
     unset($locations);
@@ -153,20 +165,20 @@ if($xoopsModuleConfig['index_list_recent'] == true) {
 if($xoopsModuleConfig['index_list_toprated'] == true) {
     $criteria = new CriteriaCompo();
     $criteria->add(new Criteria('loc_status', 0, '!='));
-    $criteria->add(new Criteria('loc_cat_id', '(' . implode(',', $viewableCategoriesId) . ')','IN'));
-    $criteria->setSort('loc_rate');
+    $criteria->add(new Criteria('loc_cat_id', '(' . implode(',', $viewableCategoriesIds) . ')','IN'));
+    $criteria->setSort('loc_rating');
     $criteria->setOrder('DESC');
     $criteria->setLimit($xoopsModuleConfig['index_list_number']);
     $locations = $locationHandler->getall($criteria);
-    foreach (array_keys($locations) as $i) {
-        $title = $locations[$i]->getVar('loc_title');
+    foreach ($locations as $location) {
+        $title = $location->getVar('loc_title');
         if (strlen($title) >= $xoopsModuleConfig['index_list_titlelenght']) {
             $title = substr($title,0,($xoopsModuleConfig['index_list_titlelenght'])) . '...';
         }
-        $rating = number_format($locations[$i]->getVar('rating'), 1);
+        $rating = number_format($location->getVar('rating'), 1);
         $xoopsTpl->append('index_list_toprated', array(
-            'loc_id' => $locations[$i]->getVar('loc_id'), 
-            'loc_cat_id' => $locations[$i]->getVar('loc_cat_id'), 
+            'loc_id' => $location->getVar('loc_id'), 
+            'loc_cat_id' => $location->getVar('loc_cat_id'), 
             'loc_rating' => $rating, 
             'loc_title' => $title
         ));
@@ -179,7 +191,7 @@ if($xoopsModuleConfig['index_list_toprated'] == true) {
 if($xoopsModuleConfig['blpop']==1){
     $criteria = new CriteriaCompo();
     $criteria->add(new Criteria('status', 0, '!='));
-    $criteria->add(new Criteria('loc_cat_id', '(' . implode(',', $viewableCategoriesId) . ')','IN'));
+    $criteria->add(new Criteria('loc_cat_id', '(' . implode(',', $viewableCategoriesIds) . ')','IN'));
     $criteria->setSort('hits');
     $criteria->setOrder('DESC');
     $criteria->setLimit($xoopsModuleConfig['index_show_number']);
@@ -203,7 +215,7 @@ if($xoopsModuleConfig['blpop']==1){
 
 $criteria = new CriteriaCompo();
 $criteria->add(new Criteria('status', 0, '!='));
-$criteria->add(new Criteria('loc_cat_id', '(' . implode(',', $viewableCategoriesId) . ')','IN'));
+$criteria->add(new Criteria('loc_cat_id', '(' . implode(',', $viewableCategoriesIds) . ')','IN'));
 $numrows = $locationHandler->getCount($criteria);
 $xoopsTpl->assign('lang_thereare', sprintf(_MD_XADDRESSES_INDEX_THEREARE,$numrows));
 $criteria->setLimit($xoopsModuleConfig['newdownloads']);

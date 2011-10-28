@@ -62,8 +62,8 @@ class FormXoopsImage extends XoopsFormElement
     {
         $this->setCaption($caption);
         $this->setName($name);
-        $this->_size = intval($size);
-        $this->_maxlength = intval($maxlength);
+        $this->_size = (int)$size;
+        $this->_maxlength = (int)$maxlength;
         $this->setValue($value);
         $this->_previewformat = (is_null($previewformat) ? "<div style='height:100px;'><img src='%s' style='height:100px;' alt='" . _FORMXOOPSIMAGE_IMAGENOTFOUND . "' /></div>" : $previewformat);
     }
