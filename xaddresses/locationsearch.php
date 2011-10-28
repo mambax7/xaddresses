@@ -13,8 +13,11 @@ $gpermHandler =& xoops_gethandler('groupperm');
 $memberHandler =& xoops_gethandler('member');
 xoops_load('formgooglemap', 'xaddresses');
 
+// Get ids of categories in which locations can be viewed
+$viewableCategoriesIds = xaddresses_getMyItemIds('in_category_view');
 // Get ids of fields that can be searched
-$searchableFields = $gpermHandler->getItemIds('field_search', $groups, $GLOBALS['xoopsModule']->getVar('mid'));
+$searchableFieldsIds = $gpermHandler->getItemIds('field_search', $groups, $GLOBALS['xoopsModule']->getVar('mid'));
+
 // Fields types that can be searched
 $searchableTypes = array(
     'textbox',
@@ -34,14 +37,6 @@ $op = isset($_REQUEST['op']) ? $_REQUEST['op'] : "search";
 switch ($op ) {
 default:
 case "search":
-    // Get ids of categories in which locations can be viewed/edited/submitted
-    $viewableCategories = $groupPermHandler->getItemIds('in_category_view', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
-    $editableCategories = $groupPermHandler->getItemIds('in_category_edit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
-    $submitableCategories = $groupPermHandler->getItemIds('in_category_submit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
-    // Get ids of fields that can be edited
-    $editableFields = $groupPermHandler->getItemIds('field_edit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
-    $searchableFields = $groupPermHandler->getItemIds('field_search', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
-
     $xoopsOption['template_main'] = "xaddresses_locationsearch.html";
     include_once XOOPS_ROOT_PATH . '/header.php';
     
@@ -53,28 +48,17 @@ case "search":
     unset($criteria);
     $GLOBALS['xoopsTpl']->assign('total_locations', sprintf(_XADDRESSES_AM_INDEX_COUNTLOCATIONS, $countLocations));
 
-    /*
     // Breadcrumb
     $breadcrumb = array();
-    $crumb['title'] = $location->getVar('loc_title');
-    $crumb['url'] = 'locationview.php?loc_id=' . $location->getVar('loc_id');
-    $breadcrumb[] = $crumb;
-    $crumb['title'] = $category->getVar('cat_title');
-    $crumb['url'] = 'locationcategoryview.php?cat_id=' . $category->getVar('cat_id');
-    $breadcrumb[] = $crumb;
-    while ($category->getVar('cat_pid') != 0) {
-        $category = $categoryHandler->get($category->getVar('cat_pid'));
-        $crumb['title'] = $category->getVar('cat_title');
-        $crumb['url'] = 'locationcategoryview.php?cat_id=' . $category->getVar('cat_id');
+    if ($xoopsModuleConfig['show_home_in_breadcrumb']) {
+        $crumb['title'] = _XADDRESSES_MD_BREADCRUMB_HOME;
+        $crumb['url'] = 'index.php';
         $breadcrumb[] = $crumb;
     }
     // Set breadcrumb array for tamplate
     $breadcrumb = array_reverse($breadcrumb);
     $xoopsTpl->assign('breadcrumb', $breadcrumb);
     unset($breadcrumb, $crumb);
-*/
-
-
 
     include_once $GLOBALS['xoops']->path('class/xoopsformloader.php');
     $searchform = new XoopsThemeForm(_XADDRESSES_MD_SEARCH, 'searchform', $currentFile, 'post');
@@ -107,7 +91,7 @@ case "search":
         $criteria = new CriteriaCompo();
         $criteria->setSort('cat_weight ASC, cat_title');
         $criteria->setOrder('ASC');
-        $criteria->add(new Criteria('cat_id', ' (' . implode(',', $viewableCategories) . ')', 'IN'));
+        $criteria->add(new Criteria('cat_id', ' (' . implode(',', $viewableCategoriesIds) . ')', 'IN'));
         $criteria->setOrder('ASC');
         $categoriesArray = $categoryHandler->getall($criteria);
         $categoriesTree = new XoopsObjectTree($categoriesArray, 'cat_id', 'cat_pid');
@@ -126,7 +110,7 @@ case "search":
     $fields = $locationHandler->loadFields();
     $sortby_arr = array();
     foreach (array_keys($fields) as $i) {
-        if (!in_array($fields[$i]->getVar('field_id'), $searchableFields) || !in_array($fields[$i]->getVar('field_type'), $searchableTypes)) {
+        if (!in_array($fields[$i]->getVar('field_id'), $searchableFieldsIds) || !in_array($fields[$i]->getVar('field_type'), $searchableTypes)) {
             continue;
         }
         $sortby_arr[$i] = $fields[$i]->getVar('field_title');
@@ -207,7 +191,7 @@ case "results":
 
     $criteria = new CriteriaCompo();
     $criteria->add(new Criteria('loc_status', 0, '!='));
-    $criteria->add(new Criteria('loc_cat_id', '(' . implode(',', $viewableCategories) . ')','IN'));
+    $criteria->add(new Criteria('loc_cat_id', '(' . implode(',', $viewableCategoriesIds) . ')','IN'));
     //$criteria->setSort('loc_date');
     //$criteria->setOrder('DESC');
     $criteria->setLimit($xoopsModuleConfig['index_list_number']);
@@ -242,7 +226,7 @@ case "results":
     
     $search_url = array();
     foreach (array_keys($fields) as $i ) {
-        if (!in_array($fields[$i]->getVar('field_id'), $searchableFields) || !in_array($fields[$i]->getVar('field_type'), $searchableTypes)) {
+        if (!in_array($fields[$i]->getVar('field_id'), $searchableFieldsIds) || !in_array($fields[$i]->getVar('field_type'), $searchableTypes)) {
             continue;
         }
         $fieldname = $fields[$i]->getVar('field_name');

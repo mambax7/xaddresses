@@ -1,5 +1,8 @@
 <?php
-include 'header.php';
+$currentFile = basename(__FILE__);
+
+// include module header
+include_once 'header.php';
 
 // We verify that the user can post comments **********************************
 if(!isset($xoopsModuleConfig)) die();
@@ -17,9 +20,9 @@ if ($com_itemid > 0) {
     $sql.= ' WHERE loc_id=' . $com_itemid;
     $result = $xoopsDB->query($sql);
     if ($result) {
-        $categories = xaddresses_MygetItemIds('in_category_view');
+        $viewableCategoriesIds = xaddresses_getMyItemIds('in_category_view');
         $row = $xoopsDB->fetchArray($result);
-        if(!in_array($row['loc_cat_id'], $categories)) {
+        if(!in_array($row['loc_cat_id'], $viewableCategoriesIds)) {
             redirect_header(XOOPS_URL, 2, "PIPPO" . _NOPERM);
             exit();
         }

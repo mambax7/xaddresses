@@ -49,6 +49,11 @@ while ($category->getVar('cat_pid') != 0) {
     $crumb['url'] = 'locationcategoryview.php?cat_id=' . $category->getVar('cat_id');
     $breadcrumb[] = $crumb;
 }
+if ($xoopsModuleConfig['show_home_in_breadcrumb']) {
+    $crumb['title'] = _XADDRESSES_MD_BREADCRUMB_HOME;
+    $crumb['url'] = 'index.php';
+    $breadcrumb[] = $crumb;
+}
 // Set breadcrumb array for tamplate
 $breadcrumb = array_reverse($breadcrumb);
 $xoopsTpl->assign('breadcrumb', $breadcrumb);

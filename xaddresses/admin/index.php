@@ -16,7 +16,7 @@ $countCategories = $categoryHandler->getCount();
 // count valid locations
 $criteria = new CriteriaCompo();
 $criteria->add(new Criteria('loc_suggested', false));
-$criteria->add(new Criteria('loc_status', 0, '!='));
+$criteria->add(new Criteria('loc_status', 0, '!=')); // valid location
 $countLocations = $locationHandler->getCount($criteria);
 unset($criteria);
 

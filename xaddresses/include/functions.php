@@ -1,6 +1,6 @@
 <?php
 // list category children
-function getChildrenTree ($cat_id = 0, $categories, $prefix = '', $sufix = '', $order = '') {
+function xaddresses_getChildrenTree ($cat_id = 0, $categories, $prefix = '', $sufix = '', $order = '') {
     $prefix = $prefix . '--';
     $sufix = $sufix . '';
     //load classes
@@ -15,7 +15,7 @@ function getChildrenTree ($cat_id = 0, $categories, $prefix = '', $sufix = '', $
         $criteria->setOrder('ASC');
         $subcategories = $categoryHandler->getall($criteria);
         if (count($subcategories) != 0){
-            $return = array_merge ($return, getChildrenTree($category->getVar('cat_id'), $subcategories, $prefix, $sufix, $order));
+            $return = array_merge ($return, xaddresses_getChildrenTree($category->getVar('cat_id'), $subcategories, $prefix, $sufix, $order));
         }
     }
     return $return;
@@ -30,7 +30,7 @@ function getChildrenTree ($cat_id = 0, $categories, $prefix = '', $sufix = '', $
  * @return array Permitted categories Ids
  */
 
-function xaddresses_MygetItemIds($permtype = 'in_category_view') {
+function xaddresses_getMyItemIds($permtype = 'in_category_view') {
     static $permissions = array();
     $gpermHandler =& xoops_gethandler('groupperm');
 

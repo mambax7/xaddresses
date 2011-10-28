@@ -1,8 +1,8 @@
 <?php
-include 'admin_header.php';
 $currentFile = basename(__FILE__);
 
-$op = isset($_REQUEST['op']) ? $_REQUEST['op'] : (isset($_REQUEST['cat_id']) ? "edit_locationcategory" : 'list_locationcategories');
+// include module admin header
+include_once 'admin_header.php';
 
 // load classes
 $categoryHandler =& xoops_getModuleHandler('locationcategory', 'xaddresses');
@@ -11,9 +11,9 @@ $fieldHandler =& xoops_getModuleHandler('field', 'xaddresses');
 $brokenHandler =& xoops_getModuleHandler('broken', 'xaddresses');
 $votedataHandler =& xoops_getModuleHandler('votedata', 'xaddresses');
 
-$memberHandler =& xoops_gethandler('member');
-$groupPermHandler =& xoops_gethandler('groupperm');
 
+
+$op = isset($_REQUEST['op']) ? $_REQUEST['op'] : (isset($_REQUEST['cat_id']) ? "edit_locationcategory" : 'list_locationcategories');
 
 switch ($op) {
 default:
@@ -49,15 +49,15 @@ case 'list_locationcategories':
         $criteria->setOrder('ASC');
         $subCategories = $categoryHandler->getall($criteria);
         if (count($subCategories) != 0){
-            $categoriesList = array_merge ($categoriesList, getChildrenTree($mainCategory->getVar('cat_id'), $subCategories, $prefix, $sufix, $order));
+            $categoriesList = array_merge ($categoriesList, xaddresses_getChildrenTree($mainCategory->getVar('cat_id'), $subCategories, $prefix, $sufix, $order));
         }
     }
 
-    // Get ids of categories in which locations can be viewed/edited/submitted
-    $groupPermHandler =& xoops_gethandler('groupperm');
-    $viewableCategories = $groupPermHandler->getItemIds('in_category_view', $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid') );
-    $editableCategories = $groupPermHandler->getItemIds('in_category_edit', $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid') );
-    $submitableCategories = $groupPermHandler->getItemIds('in_category_submit', $GLOBALS['xoopsUser']->getGroups(), $GLOBALS['xoopsModule']->getVar('mid') );
+    // Get ids of categories in which locations can be viewed/edited/deleted/submitted
+    $viewableCategoriesIds = xaddresses_getMyItemIds('in_category_view');
+    $editableCategoriesIds = xaddresses_getMyItemIds('in_category_edit');
+    $deletableCategoriesIds = xaddresses_getMyItemIds('in_category_delete');
+    $submitableCategoriesIds = xaddresses_getMyItemIds('in_category_submit');
 
     foreach ($categoriesList as $key=>$categoriesListItem) {
         $category = $categoriesListItem['category'];
@@ -78,9 +78,9 @@ case 'list_locationcategories':
             $categoriesList[$key]['canEdit'] = true;
             $categoriesList[$key]['canDelete'] = true;
         } else {
-            $categoriesList[$key]['canView'] = (in_array($category->getVar('cat_id'), $viewableCategories)); // IN PROGRESS
-            $categoriesList[$key]['canEdit'] = (in_array($category->getVar('cat_id'), $editableCategories)); // IN PROGRESS
-            $categoriesList[$key]['canDelete'] = (in_array($category->getVar('cat_id'), $editableCategories)); // IN PROGRESS
+            $categoriesList[$key]['canView'] = (in_array($category->getVar('cat_id'), $viewableCategoriesIds)); // IN PROGRESS
+            $categoriesList[$key]['canEdit'] = (in_array($category->getVar('cat_id'), $editableCategoriesIds)); // IN PROGRESS
+            $categoriesList[$key]['canDelete'] = (in_array($category->getVar('cat_id'), $deletableCategoriesIds)); // IN PROGRESS
         }
         unset($category);
         }

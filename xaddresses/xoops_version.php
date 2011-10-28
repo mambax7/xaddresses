@@ -72,6 +72,7 @@ $modversion['tables'][7] = "xaddresses_marker";
 // Menu
 $modversion['hasMain'] = true;
 if (is_object($GLOBALS['xoopsModule']) && $GLOBALS['xoopsModule']->getVar('dirname') == $modversion['dirname']) {
+    $i = 0;
     $isAdmin = false;
     if (!empty($GLOBALS['xoopsUser'])) {
         //$modversion['sub'][0]['name'] = _XADDRESSES_MI_TODO;
@@ -84,10 +85,17 @@ if (is_object($GLOBALS['xoopsModule']) && $GLOBALS['xoopsModule']->getVar('dirna
         $GLOBALS['xoopsModuleConfig']['allowsubmit'] == true &&
             (is_object($GLOBALS['xoopsUser']) ||
             (isset($GLOBALS['xoopsModuleConfig']['anonpost']) && $GLOBALS['xoopsModuleConfig']['anonpost'] == 1)))) {
-        $modversion['sub'][1]['name'] = _XADDRESSES_MI_SUBMIT;
-        $modversion['sub'][1]['url'] = "locationedit.php?op=new_location";
-        $modversion['sub'][2]['name'] = _XADDRESSES_MI_SEARCH;
-        $modversion['sub'][2]['url'] = "locationsearch.php";
+        $i++;
+        $modversion['sub'][$i]['name'] = _XADDRESSES_MI_SUBMIT;
+        $modversion['sub'][$i]['url'] = "locationedit.php?op=new_location";
+    }
+        $i++;
+        $modversion['sub'][$i]['name'] = _XADDRESSES_MI_SEARCH;
+        $modversion['sub'][$i]['url'] = "locationsearch.php";
+    if ($isAdmin) {
+        $i++;
+        $modversion['sub'][$i]['name'] = _XADDRESSES_MI_ADMIN;
+        $modversion['sub'][$i]['url'] = "admin/index.php";
     }
 }
 
@@ -123,6 +131,8 @@ $modversion['blocks'][4]['show_func'] = "b_xaddresses_top_show";
 $modversion['blocks'][4]['edit_func'] = "b_xaddresses_top_edit";
 $modversion['blocks'][4]['options'] = "random|10|19|0";
 $modversion['blocks'][4]['template'] = 'xaddresses_block_random.html';
+
+
 
 // Search
 $modversion['hasSearch'] = true;
@@ -284,7 +294,14 @@ $modversion['config'][$i]['formtype']       = 'textbox';
 $modversion['config'][$i]['valuetype']      = 'int';
 $modversion['config'][$i]['default']        = 20;
 $modversion["config"][$i]["category"]       = "global";
-
+$i++;
+$modversion['config'][$i]['name']           = 'show_home_in_breadcrumb';
+$modversion['config'][$i]['title']          = '_XADDRESSES_MI_SHOWHOMEINBREADCRUMB';
+$modversion['config'][$i]['description']    = '_XADDRESSES_MI_SHOWHOMEINBREADCRUMB_DESC';
+$modversion['config'][$i]['formtype']       = 'yesno';
+$modversion['config'][$i]['valuetype']      = 'int';
+$modversion['config'][$i]['default']        = 1; // true
+$modversion["config"][$i]["category"]       = "global";
 $i++;
 $modversion['config'][$i]['name']           = 'usetellafriend';
 $modversion['config'][$i]['title']          = '_XADDRESSES_MI_USETELLAFRIEND';

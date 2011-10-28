@@ -1,4 +1,13 @@
 <{* used in: index.php *}>
+<{* breadcrumb *}>
+<{if ($breadcrumb)}>
+    <{foreach item=bread from=$breadcrumb}>
+        <a href="<{$bread.url}>"><{$bread.title}></a>
+        &gt;
+    <{/foreach}>
+<br />
+<{/if}>
+
 <table>
     <tr>
         <th><{$smarty.const._XADDRESSES_AM_CAT_ID}></th>
@@ -25,5 +34,25 @@
     </tr>
 <{/foreach}>
 </table>
+
+
+
+<{if ($index_list_recent)}>
+<h1>IN PROGRESS LIST RECENT</h1>
+<{foreach from=$index_list_recent item='location'}>
+    -<{$location.loc_title}><br />
+<{/foreach}>
+<{/if}>
+
+
+
+<{if ($index_list_toprated)}>
+<h1>IN PROGRESS LIST TOP RATED</h1>
+<{foreach from=$index_list_toprated item='location'}>
+    -<{$location.loc_title}><br />
+<{/foreach}>
+<{/if}>
+
+
 
 <{include file="db:system_notification_select.html"}>

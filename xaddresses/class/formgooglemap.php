@@ -79,9 +79,24 @@ class FormGoogleMap extends XoopsFormElementTray
                 var _initZoomLevel = parseInt(zoom);
                 var _draggable = draggable;
                 
-                // IN PROGRESS
-                // IN PROGRESS
-                // IN PROGRESS
+                // Check to see if this browser supports geolocation
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        // function successCallback(position)
+                        function(position) {
+                            lat = position.coords.latitude;
+                            lng = position.coords.longitude;
+                            alert('[' + lat + ',' + lng + ']');
+                            setMapPosition(lat, lng);
+                        }, 
+                        // function errorCallback(error)
+                        function(error) {
+                            alert('error code:' + error.code + ' error:' + error.message);
+                        }, 
+                        {maximumAge:600000, timeout:0}
+                    );
+                }
+                
                 if(google.loader.ClientLocation) {
                     lat = google.loader.ClientLocation.latitude;
                     lng = google.loader.ClientLocation.longitude;
@@ -90,8 +105,8 @@ class FormGoogleMap extends XoopsFormElementTray
                     document.getElementById(formId + '[lng]').value = lng;
                     document.getElementById(formId + '[search]').value = search;
                     _initLatLng = new google.maps.LatLng(parseFloat(lat), parseFloat(lng));
-                    } else {
-                    _initLatLng = new google.maps.LatLng(parseFloat(lat), parseFloat(lng));
+                } else {
+                    _initLatLng = new google.maps.LatLng(parseFloat(lat), parseFloat(lng)); 
                 }
 
                 function getElevation(map, markerLatLng) {
@@ -258,6 +273,15 @@ class FormGoogleMap extends XoopsFormElementTray
                     _map.setCenter(formLatLng);
                     _map.setZoom(formZoomLevel);
                     getElevation(_map, formLatLng);
+                }
+
+                this.setMapPosition = function(lat, lng) {
+                    lat = parseFloat(lat);
+                    lng = parseFloat(lng);
+                    _initLatLng = new google.maps.LatLng(lat, lng);
+                    _marker.setPosition(_initLatLng);
+                    _map.setCenter(_initLatLng);
+                    getElevation(_map, _initLatLng);
                 }
             }
         ";

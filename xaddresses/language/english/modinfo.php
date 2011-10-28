@@ -18,6 +18,7 @@ define("_XADDRESSES_MI_BNAMEDSC4","Display viwed addresses randomly");
 // Sub menu
 define("_XADDRESSES_MI_SUBMIT", "Submit Location");
 define("_XADDRESSES_MI_SEARCH", "Search Locations");
+define("_XADDRESSES_MI_ADMIN", "Admin module");
 
 // Menu administration
 define("_XADDRESSES_MI_ADMENU_INDEX", "Index");
@@ -64,7 +65,8 @@ define('_XADDRESSES_MI_LIST_TITLELENGHT', '[Summary] Title lenght in Summary');
 define('_XADDRESSES_MI_LIST_TITLELENGHT_DESC', '');
     define('_XADDRESSES_MI_ANONPOST', 'Allow anonymous post addresses ?');
     define('_XADDRESSES_MI_ANONPOST_DESC', '');
-
+define('_XADDRESSES_MI_SHOWHOMEINBREADCRUMB', '[Breadcrumb] Show home in breadcrumb');
+define('_XADDRESSES_MI_SHOWHOMEINBREADCRUMB_DESC', '');
     define('_XADDRESSES_MI_USETELLAFRIEND', 'Use Tellafriend module with the link tell a friend"?');
     define('_XADDRESSES_MI_USETELLAFRIEND_DESC', 'You have to install Tellafriend module in order to use this option');
     define('_XADDRESSES_MI_USETAG', 'Use TAG module to generate tags');

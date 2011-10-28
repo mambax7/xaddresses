@@ -1,11 +1,13 @@
 <?php
+define("_XADDRESSES_MD_BREADCRUMB_HOME", "HOME");
+
 // locationview.php:
 define("_XADDRESSES_MD_LOC_COMMENTS","Comments (%s)");
 //define("_XADDRESSES_MD_LOC_NBTELECH","Viewed %s time");
 //define("_XADDRESSES_MD_LOC_NONEXISTENT","this download does not exist in our database");
 define("_XADDRESSES_MD_LOC_RATING","Rate");
 define("_XADDRESSES_MD_LOC_VOTES","(%s votes)");
-define("_XADDRESSES_MD_LOC_MODIFY","Modify");
+define("_XADDRESSES_MD_LOC_EDIT","Edit location");
 define("_XADDRESSES_MD_LOC_RATELOCATION","Rate location");
 define("_XADDRESSES_MD_LOC_REPORTBROKEN","Repport broken location");
 define("_XADDRESSES_MD_LOC_REPORTMODIFY","Suggest location correction/modification");
@@ -42,17 +44,17 @@ define("_XADDRESSES_MD_LOC_RATE_VOTE","Vote");
 define("_XADDRESSES_MD_LOC_RATE_VOTEOK","Your vote is appreciated.<br />Thank you for taking the time to vote here");
 define("_XADDRESSES_MD_LOC_RATE_VOTEONCE","Please do not vote for the same resource more than once.");
 
-// submit.php
-//define("_XADDRESSES_MD_SUBMIT_NEW","IN_PROGRESS");
-//define("_XADDRESSES_MD_SUBMIT_EDIT","Edit");
+// locationedit.php
+define("_XADDRESSES_MD_LOC_SUBMIT_NEW","Submit new location");
+define("_XADDRESSES_MD_LOC_SUBMIT_EDIT","Edit location");
+define("_XADDRESSES_MD_LOC_SUBMIT_ALLPENDING","All location information are posted pending verification.");
+define("_XADDRESSES_MD_LOC_SUBMIT_DONTABUSE","Username and IP are recorded, so please don't abuse the system.");
+define("_XADDRESSES_MD_LOC_SUBMIT_SUBMITONCE","Submit your location only once.");
+define("_XADDRESSES_MD_LOC_SUBMIT_TAKEDAYS","This will take many days to see your location addedd successfully in our database.");
+//define("_XADDRESSES_MD_LOC_SUBMIT_ISAPPROVED","Your Locatione has beeen approved");
+//define("_XADDRESSES_MD_LOC_SUBMIT_PROPOSER","Submit a location");
+//define("_XADDRESSES_MD_LOC_SUBMIT_RECEIVED","We have received your location info. Thank you !");
 
-define("_XADDRESSES_MD_SUBMIT_ALLPENDING","All location information are posted pending verification.");
-define("_XADDRESSES_MD_SUBMIT_DONTABUSE","Username and IP are recorded, so please don't abuse the system.");
-//define("_XADDRESSES_MD_SUBMIT_ISAPPROVED","Your Locatione has beeen approved");
-//define("_XADDRESSES_MD_SUBMIT_PROPOSER","Submit a location");
-//define("_XADDRESSES_MD_SUBMIT_RECEIVED","We have received your location info. Thank you !");
-define("_XADDRESSES_MD_SUBMIT_SUBMITONCE","Submit your location only once.");
-define("_XADDRESSES_MD_SUBMIT_TAKEDAYS","This will take many days to see your location addedd successfully in our database.");
 
 // locationsearch.php
 define("_XADDRESSES_MD_SEARCH","Search");
@@ -75,7 +77,6 @@ define("_XADDRESSES_MD_SEARCH_PERPAGE", "Locations per page");
 //define("_XADDRESSES_MD_SEARCH_PAGETITLE","File List");
 //define("_XADDRESSES_MD_SEARCH_THEREARE","There are<b>%s</b> locations(s)");
 //define("_XADDRESSES_MD_SEARCH_TITLE","Name");
-
 
 // -------------------------------- IN PROGRESS
 

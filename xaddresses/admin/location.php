@@ -1,16 +1,19 @@
 <?php
 $currentFile = basename(__FILE__);
-include_once 'admin_header.php';
 
-$op = isset($_REQUEST['op']) ? $_REQUEST['op'] : 'list_locations';
+// include module admin header
+include_once 'admin_header.php';
 
 // load classes
 $categoryHandler =& xoops_getModuleHandler('locationcategory', 'xaddresses');
 $locationHandler =& xoops_getModuleHandler('location', 'xaddresses');
 $fieldHandler =& xoops_getModuleHandler('field', 'xaddresses');
-$memberHandler =& xoops_gethandler('member');
 $brokenHandler =& xoops_getModuleHandler('broken', 'xaddresses');
 $votedataHandler =& xoops_getModuleHandler('votedata', 'xaddresses');
+
+$memberHandler =& xoops_gethandler('member');
+
+
 
 // redirection if no categories
 if ($categoryHandler->getCount() == 0) {
@@ -45,6 +48,8 @@ $criteria->add(new Criteria('loc_status', 0));
 $countModifyLocations = 1;
 
 
+
+$op = isset($_REQUEST['op']) ? $_REQUEST['op'] : 'list_locations';
 
 switch ($op) {
 default:
@@ -172,11 +177,11 @@ case 'list_locations':
         $locations = $locationHandler->getObjects($criteria, true, false); // get an array of arrays
         unset($criteria);
 
-        // Get ids of categories in which locations can be viewed/edited/submitted
-        $groupPermHandler =& xoops_gethandler('groupperm');
-        $viewableCategories = $groupPermHandler->getItemIds('in_category_view', $groups, $GLOBALS['xoopsModule']->getVar('mid'));
-        $editableCategories = $groupPermHandler->getItemIds('in_category_edit', $groups, $GLOBALS['xoopsModule']->getVar('mid'));
-        $submitableCategories = $groupPermHandler->getItemIds('in_category_submit', $groups, $GLOBALS['xoopsModule']->getVar('mid'));
+        // Get ids of categories in which locations can be viewed/edited/deleted/submitted
+        $viewableCategoriesIds = xaddresses_getMyItemIds('in_category_view');
+        $editableCategoriesIds = xaddresses_getMyItemIds('in_category_edit');
+        $deletableCategoriesIds = xaddresses_getMyItemIds('in_category_delete');
+        $submitableCategoriesIds = xaddresses_getMyItemIds('in_category_submit');
 
         foreach (array_keys($locations) as $i ) {
             if ($GLOBALS['xoopsUser']->isAdmin($GLOBALS['xoopsModule']->mid())) {
@@ -185,9 +190,9 @@ case 'list_locations':
                 $locations[$i]['canEdit'] = true;
                 $locations[$i]['canDelete'] = true;
             } else {
-                $locations[$i]['canView'] = (in_array($i, $viewableCategories)); // IN PROGRESS
-                $locations[$i]['canEdit'] = (in_array($i, $editableCategories)); // IN PROGRESS
-                $locations[$i]['canDelete'] = (in_array($i, $editableCategories)); // IN PROGRESS
+                $locations[$i]['canView'] = (in_array($i, $viewableCategoriesIds)); // IN PROGRESS
+                $locations[$i]['canEdit'] = (in_array($i, $editableCategoriesIds)); // IN PROGRESS
+                $locations[$i]['canDelete'] = (in_array($i, $deletableCategoriesIds)); // IN PROGRESS
             }
             $submitter =& $memberHandler->getUser($locations[$i]['loc_submitter']);
             $locations[$i]['loc_submitter_uname'] = $submitter->getVar('uname');
