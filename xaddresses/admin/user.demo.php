@@ -15,7 +15,7 @@
  * @since           2.3.0
  * @author          Jan Pedersen
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
- * @version         $Id: user.php 3700 2009-10-04 23:01:00Z wishcraft $
+ * @version         $Id$
  */
 include 'header.php';
 xoops_cp_header();
