@@ -11,15 +11,16 @@ $fieldCategoryHandler =& xoops_getmodulehandler('fieldcategory', 'xaddresses');
 $fieldHandler =& xoops_getModuleHandler('field', 'xaddresses');
 $memberHandler =& xoops_gethandler('member');
 
+xoops_load('xoopsuserutility');
 
 
-$loc_id = (int)($_REQUEST['loc_id']);
+$loc_id = (int)$_REQUEST['loc_id'];
 // Redirect if id location not exist
 $criteria = new CriteriaCompo();
 $criteria->add(new Criteria('loc_id', $loc_id));
 $criteria->add(new Criteria('loc_suggested', false));
 if ($locationHandler->getCount($criteria) == 0) {
-    redirect_header('index.php', 3, _XADDRESSES_MD_SINGLELOC_NONEXISTENT);
+    redirect_header('index.php', 3, _MA_XADDRESSES_SINGLELOC_NONEXISTENT);
     exit();
 }
 
@@ -50,7 +51,7 @@ while ($category->getVar('cat_pid') != 0) {
     $breadcrumb[] = $crumb;
 }
 if ($xoopsModuleConfig['show_home_in_breadcrumb']) {
-    $crumb['title'] = _XADDRESSES_MD_BREADCRUMB_HOME;
+    $crumb['title'] = _MA_XADDRESSES_BREADCRUMB_HOME;
     $crumb['url'] = 'index.php';
     $breadcrumb[] = $crumb;
 }
@@ -63,8 +64,10 @@ unset($breadcrumb, $crumb);
 $locationAsArray = $location->toArray();
 $submitter =& $memberHandler->getUser($locationAsArray['loc_submitter']);
 $locationAsArray['loc_submitter_uname'] = $submitter->getVar('uname');
-$locationAsArray['loc_submitter_linkeduname'] = xoops_getLinkedUnameFromId($submitter->getVar('uid'));
+//$locationAsArray['loc_submitter_linkeduname'] = xoops_getLinkedUnameFromId($submitter->getVar('uid')); // DEPRECATED
+$locationAsArray['loc_submitter_linkeduname'] = XoopsUserUtility::getUnameFromId($submitter->getVar('uid'), false, true);
 $locationAsArray['loc_submitter_uid'] = $submitter->getVar('uid');
+
 unset($submitter);
 $locationAsArray['loc_date'] = formatTimeStamp($locationAsArray['loc_date'], _DATESTRING);
 
@@ -75,8 +78,8 @@ $xoopsTpl->assign('location', $locationAsArray);
 $fieldsCategoriesArray = array();
 $fieldsCategoriesArray[0]= array(
     'cat_id' => 0,
-    'cat_title' => _XADDRESSES_AM_FIELD_CATEGORY_DEFAULT,
-    'cat_description' => _XADDRESSES_AM_FIELD_CATEGORY_DEFAULT_DESC,
+    'cat_title' => _AM_XADDRESSES_FIELD_CATEGORY_DEFAULT,
+    'cat_description' => _AM_XADDRESSES_FIELD_CATEGORY_DEFAULT_DESC,
     'cat_weight' => 0);
 $criteria = new CriteriaCompo();
 $criteria->setSort('cat_weight ASC, cat_title');
@@ -167,8 +170,8 @@ $xoopsTpl->assign('perm_tell_a_friend', $permTellAFriend);
 if (($xoopsModuleConfig['usetellafriend'] == 1) and (is_dir('../tellafriend'))) {
     // Tell a Friend Module for template
     // http://xoops.peak.ne.jp/md/mydownloads/singlefile.php?lid=48&easiestml_lang=xlang%3Aen
-    $string = sprintf(_XADDRESSES_MD_LOC_INTLOCATIONFOUND, $xoopsConfig['sitename'] . ':' . XOOPS_URL . '/modules/xaddresses/locationview.php?loc_id=' . $_REQUEST['loc_id']);
-    $subject = sprintf(_XADDRESSES_MD_LOC_INTLOCATIONFOUND, $xoopsConfig['sitename']);
+    $string = sprintf(_MA_XADDRESSES_LOC_INTLOCATIONFOUND, $xoopsConfig['sitename'] . ':' . XOOPS_URL . '/modules/xaddresses/locationview.php?loc_id=' . $_REQUEST['loc_id']);
+    $subject = sprintf(_MA_XADDRESSES_LOC_INTLOCATIONFOUND, $xoopsConfig['sitename']);
     if( stristr( $subject , '%' ) ) $subject = rawurldecode( $subject ) ;
     if( stristr( $string , '%3F' ) ) $string = rawurldecode( $string ) ;
     if( preg_match( '/('.preg_quote(XOOPS_URL,'/').'.*)$/i' , $string , $matches ) ) {
@@ -178,7 +181,7 @@ if (($xoopsModuleConfig['usetellafriend'] == 1) and (is_dir('../tellafriend'))) 
     }
     $tellAFriendHref = XOOPS_URL . '/modules/tellafriend/index.php?target_uri=' . rawurlencode( $target_uri ) . '&amp;subject='.rawurlencode( $subject );
 } else {
-    $tellAFriendHref = 'mailto:?subject=' . rawurlencode(sprintf(_XADDRESSES_MD_LOC_INTLOCATIONFOUND, $xoopsConfig['sitename'])) . '&amp;body=' . rawurlencode(sprintf(_XADDRESSES_MD_LOC_INTLOCATIONFOUND, $xoopsConfig['sitename']) . ':  ' . XOOPS_URL . '/modules/xaddresses/locationview.php?loc_id=' . $_REQUEST['loc_id']);
+    $tellAFriendHref = 'mailto:?subject=' . rawurlencode(sprintf(_MA_XADDRESSES_LOC_INTLOCATIONFOUND, $xoopsConfig['sitename'])) . '&amp;body=' . rawurlencode(sprintf(_MA_XADDRESSES_LOC_INTLOCATIONFOUND, $xoopsConfig['sitename']) . ':  ' . XOOPS_URL . '/modules/xaddresses/locationview.php?loc_id=' . $_REQUEST['loc_id']);
 }
 $xoopsTpl->assign('tell_a_friend_href', $tellAFriendHref);
 

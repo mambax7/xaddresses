@@ -1,13 +1,13 @@
 <form action="field.php" method="post" id="fieldform">
 <table>
     <tr>
-        <th><{$smarty.const._XADDRESSES_AM_FIELD_NAME}></th>
-        <th><{$smarty.const._XADDRESSES_AM_FIELD_TITLE}></th>
-        <th><{$smarty.const._XADDRESSES_AM_FIELD_DESCRIPTION}></th>
-        <th><{$smarty.const._XADDRESSES_AM_FIELD_TYPE}></th>
-        <th><{$smarty.const._XADDRESSES_AM_FIELD_CATEGORY}></th>
-        <th><{$smarty.const._XADDRESSES_AM_FIELD_WEIGHT}></th>
-        <th><{$smarty.const._XADDRESSES_AM_ACTION}></th>
+        <th><{$smarty.const._AM_XADDRESSES_FIELD_NAME}></th>
+        <th><{$smarty.const._AM_XADDRESSES_FIELD_TITLE}></th>
+        <th><{$smarty.const._AM_XADDRESSES_FIELD_DESCRIPTION}></th>
+        <th><{$smarty.const._AM_XADDRESSES_FIELD_TYPE}></th>
+        <th><{$smarty.const._AM_XADDRESSES_FIELD_CATEGORY}></th>
+        <th><{$smarty.const._AM_XADDRESSES_FIELD_WEIGHT}></th>
+        <th><{$smarty.const._AM_XADDRESSES_ACTION}></th>
     </tr>
 <{foreach item=category from=$fieldcategories}>
     <{foreach item=field from=$category}>
@@ -16,8 +16,10 @@
         <td><{$field.field_title}></td>
         <td><{$field.field_description}></td>
         <td><{$field.field_type}></td>
-        <td>
-            <select name="category[<{$field.field_id}>]"><{html_options options=$categories selected=$field.cat_id}></select>
+        <td>pippo
+            <select name="category[<{$field.field_id}>]">
+                <{html_options options=$categories selected=$field.cat_id}>
+            </select>
         </td>
         <td>
             <input type="text" name="weight[<{$field.field_id}>]" size="5" maxlength="5" value="<{$field.field_weight}>" />

@@ -37,7 +37,7 @@ class XaddressesVotedata extends XoopsObject
         include_once $GLOBALS['xoops']->path('class/xoopsformloader.php');
         if (!isset($form) || empty($form) || get_class($form) != 'XoopsThemeForm') {
             $formIsNew = true;
-            $title = $this->isNew() ? _XADDRESSES_AM_LOC_RATE_NEW : _XADDRESSES_AM_LOC_RATE_EDIT;
+            $title = $this->isNew() ? _AM_XADDRESSES_LOC_RATE_NEW : _AM_XADDRESSES_LOC_RATE_EDIT;
             $form = new XoopsThemeForm($title, 'rateform', $action, 'post');
         } else {
             $formIsNew = false;
@@ -59,7 +59,7 @@ class XaddressesVotedata extends XoopsObject
                 '2'  => '2', 
                 '1'  => '1', 
                 '0'  => '0');
-            $rating_select = new XoopsFormSelect(_XADDRESSES_AM_LOC_RATE_VOTE, 'rating');
+            $rating_select = new XoopsFormSelect(_AM_XADDRESSES_LOC_RATE_VOTE, 'rating');
             $rating_select->addOptionArray($options);
         $form->addElement($rating_select, true);
 
@@ -76,8 +76,8 @@ class XaddressesVotedata extends XoopsObject
             $form->addElement(new XoopsFormHidden('loc_id', $loc_id));
             $form->addElement(new XoopsFormHidden('op', 'save_vote'));
             // Submit button        
-                $button_tray = new XoopsFormElementTray(_XADDRESSES_AM_ACTION, '' ,'');
-                $button_tray->addElement(new XoopsFormButton('', 'submit', _XADDRESSES_AM_LOC_RATE_RATE, 'submit'));
+                $button_tray = new XoopsFormElementTray(_AM_XADDRESSES_ACTION, '' ,'');
+                $button_tray->addElement(new XoopsFormButton('', 'submit', _AM_XADDRESSES_LOC_RATE_RATE, 'submit'));
                 $button_tray->addElement(new XoopsFormButton('', 'reset', _RESET, 'reset'));
                     $cancel_button = new XoopsFormButton('', 'cancel', _CANCEL, 'button');
                     $cancel_button->setExtra("onclick='javascript:history.back();'");

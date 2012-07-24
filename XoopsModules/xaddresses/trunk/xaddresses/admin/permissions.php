@@ -1,5 +1,7 @@
 <?php
 $currentFile = basename(__FILE__);
+
+// include module admin header
 include_once 'admin_header.php';
 
 //load classes
@@ -12,7 +14,7 @@ $memberHandler =& xoops_gethandler('member');
 $countCategories = $categoryHandler->getCount();
 // redirection if no categories
 if ($categoryHandler->getCount() == 0) {
-    redirect_header('index.php', 2, _XADDRESSES_AM_PERM_NOCAT);
+    redirect_header('index.php', 2, _AM_XADDRESSES_PERM_NOCAT);
 }
 
 // get/check parameters/post
@@ -20,9 +22,6 @@ $op = isset($_REQUEST['op']) ? $_REQUEST['op'] : 'in_category_view';
 
 // render start here
 xoops_cp_header();
-// main admin menu
-include (XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['xoopsModule']->dirname() . '/admin/menu.php');
-echo moduleAdminTabMenu($adminmenu, $currentFile);
 
 switch ($op) {
 default:
@@ -31,19 +30,19 @@ case 'in_category_submit':
 case 'in_category_edit':
 case 'in_category_delete':
     // submenu
-    $submenuItem[] = _XADDRESSES_AM_PERM_ITEM_PERMISSIONS ;
-    $submenuItem[] = '<a href="' . $currentFile . '?op=field_view">' . _XADDRESSES_AM_PERM_FIELD_PERMISSIONS . '</a>';
-    $submenuItem[] = '<a href="' . $currentFile . '?op=extra">' . _XADDRESSES_AM_PERM_EXTRA_PERMISSIONS . '</a>';
+    $submenuItem[] = _AM_XADDRESSES_PERM_ITEM_PERMISSIONS ;
+    $submenuItem[] = '<a href="' . $currentFile . '?op=field_view">' . _AM_XADDRESSES_PERM_FIELD_PERMISSIONS . '</a>';
+    $submenuItem[] = '<a href="' . $currentFile . '?op=extra">' . _AM_XADDRESSES_PERM_EXTRA_PERMISSIONS . '</a>';
     xaddressesAdminSubmenu ($submenuItem);
     // permissions selector
     include_once $GLOBALS['xoops']->path( '/class/xoopsformloader.php' );
     $opForm = new XoopsSimpleForm('', 'opform', $currentFile, 'get');
     $opSelect = new XoopsFormSelect("", 'op', $op);
     $opSelect->setExtra('onchange="document.forms.opform.submit()"');
-    $opSelect->addOption('in_category_view', _XADDRESSES_AM_PERM_VIEW);
-    $opSelect->addOption('in_category_submit', _XADDRESSES_AM_PERM_SUBMIT);
-    $opSelect->addOption('in_category_edit', _XADDRESSES_AM_PERM_EDIT);
-    $opSelect->addOption('in_category_delete', _XADDRESSES_AM_PERM_DELETE); // IN PROGRESS ha senso questo permesso?
+    $opSelect->addOption('in_category_view', _AM_XADDRESSES_PERM_VIEW);
+    $opSelect->addOption('in_category_submit', _AM_XADDRESSES_PERM_SUBMIT);
+    $opSelect->addOption('in_category_edit', _AM_XADDRESSES_PERM_EDIT);
+    $opSelect->addOption('in_category_delete', _AM_XADDRESSES_PERM_DELETE); // IN PROGRESS ha senso questo permesso?
     $opForm->addElement($opSelect);
     $opForm->display();
     break;
@@ -52,34 +51,34 @@ case 'field_edit':
 case 'field_search':
 case 'field_export': // IN PROGRESS
     // submenu
-    $submenuItem[] = '<a href="' . $currentFile . '?op=in_category_view">' . _XADDRESSES_AM_PERM_ITEM_PERMISSIONS . '</a>';
-    $submenuItem[] = _XADDRESSES_AM_PERM_FIELD_PERMISSIONS ;
-    $submenuItem[] = '<a href="' . $currentFile . '?op=extra">' . _XADDRESSES_AM_PERM_EXTRA_PERMISSIONS . '</a>';
+    $submenuItem[] = '<a href="' . $currentFile . '?op=in_category_view">' . _AM_XADDRESSES_PERM_ITEM_PERMISSIONS . '</a>';
+    $submenuItem[] = _AM_XADDRESSES_PERM_FIELD_PERMISSIONS ;
+    $submenuItem[] = '<a href="' . $currentFile . '?op=extra">' . _AM_XADDRESSES_PERM_EXTRA_PERMISSIONS . '</a>';
     xaddressesAdminSubmenu ($submenuItem);
     // permissions selector
     include_once $GLOBALS['xoops']->path( '/class/xoopsformloader.php' );
     $opForm = new XoopsSimpleForm('', 'opform', $currentFile, 'get');
     $opSelect = new XoopsFormSelect("", 'op', $op);
     $opSelect->setExtra('onchange="document.forms.opform.submit()"');
-    $opSelect->addOption('field_view', _XADDRESSES_AM_PERM_VIEWFIELD);
-    $opSelect->addOption('field_edit', _XADDRESSES_AM_PERM_EDITFIELD);
-    $opSelect->addOption('field_export', _XADDRESSES_AM_PERM_EXPORTFIELD); // IN PROGRESS
-    $opSelect->addOption('field_search', _XADDRESSES_AM_PERM_SEARCHFIELD); // IN PROGRESS
+    $opSelect->addOption('field_view', _AM_XADDRESSES_PERM_VIEWFIELD);
+    $opSelect->addOption('field_edit', _AM_XADDRESSES_PERM_EDITFIELD);
+    $opSelect->addOption('field_export', _AM_XADDRESSES_PERM_EXPORTFIELD); // IN PROGRESS
+    $opSelect->addOption('field_search', _AM_XADDRESSES_PERM_SEARCHFIELD); // IN PROGRESS
     $opForm->addElement($opSelect);
     $opForm->display();
     break;
 case 'extra':
     // submenu
-    $submenuItem[] = '<a href="' . $currentFile . '?op=in_category_view">' . _XADDRESSES_AM_PERM_ITEM_PERMISSIONS . '</a>';
-    $submenuItem[] = '<a href="' . $currentFile . '?op=field_view">' . _XADDRESSES_AM_PERM_FIELD_PERMISSIONS . '</a>';
-    $submenuItem[] = _XADDRESSES_AM_PERM_EXTRA_PERMISSIONS ;
+    $submenuItem[] = '<a href="' . $currentFile . '?op=in_category_view">' . _AM_XADDRESSES_PERM_ITEM_PERMISSIONS . '</a>';
+    $submenuItem[] = '<a href="' . $currentFile . '?op=field_view">' . _AM_XADDRESSES_PERM_FIELD_PERMISSIONS . '</a>';
+    $submenuItem[] = _AM_XADDRESSES_PERM_EXTRA_PERMISSIONS ;
     xaddressesAdminSubmenu ($submenuItem);
     // permissions selector
     include_once $GLOBALS['xoops']->path( '/class/xoopsformloader.php' );
     $opForm = new XoopsSimpleForm('', 'opform', $currentFile, 'get');
     $opSelect = new XoopsFormSelect("", 'op', $op);
     $opSelect->setExtra('onchange="document.forms.opform.submit()"');
-    $opSelect->addOption('extra', _XADDRESSES_AM_PERM_OTHERS); // IN_PROGRESS
+    $opSelect->addOption('extra', _AM_XADDRESSES_PERM_OTHERS); // IN_PROGRESS
     $opForm->addElement($opSelect);
     $opForm->display();
     break;
@@ -88,72 +87,72 @@ case 'extra':
 switch($op) {
 default:
 case 'in_category_view': // view permission
-    $titleOfForm = _XADDRESSES_AM_PERM_VIEW;
+    $titleOfForm = _AM_XADDRESSES_PERM_VIEW;
     $permName = 'in_category_view';
-    $permDesc = _XADDRESSES_AM_PERM_VIEW_DESC;
+    $permDesc = _AM_XADDRESSES_PERM_VIEW_DESC;
     $anonymous = true;
     break;
 case 'in_category_submit': // submit permission
-    $titleOfForm = _XADDRESSES_AM_PERM_SUBMIT;
+    $titleOfForm = _AM_XADDRESSES_PERM_SUBMIT;
     $permName = 'in_category_submit';
-    $permDesc = _XADDRESSES_AM_PERM_SUBMIT_DESC;
+    $permDesc = _AM_XADDRESSES_PERM_SUBMIT_DESC;
     $anonymous = true;
     break;
 case 'in_category_edit': // edit permission
-    $titleOfForm = _XADDRESSES_AM_PERM_EDIT;
+    $titleOfForm = _AM_XADDRESSES_PERM_EDIT;
     $permName = 'in_category_edit';
-    $permDesc = _XADDRESSES_AM_PERM_EDIT_DESC;
+    $permDesc = _AM_XADDRESSES_PERM_EDIT_DESC;
     $anonymous = true;
     break;
 case 'in_category_delete': // edit permission
-    $titleOfForm = _XADDRESSES_AM_PERM_DELETE;
+    $titleOfForm = _AM_XADDRESSES_PERM_DELETE;
     $permName = 'in_category_delete';
-    $permDesc = _XADDRESSES_AM_PERM_DELETE_DESC;
+    $permDesc = _AM_XADDRESSES_PERM_DELETE_DESC;
     $anonymous = true;
     break;
 case 'field_view': // view field permission
-    $titleOfForm = _XADDRESSES_AM_PERM_VIEWFIELD;
+    $titleOfForm = _AM_XADDRESSES_PERM_VIEWFIELD;
     $permName = 'field_view';
-    $permDesc = _XADDRESSES_AM_PERM_VIEWFIELD_DESC;
+    $permDesc = _AM_XADDRESSES_PERM_VIEWFIELD_DESC;
     $restriction = 'field_edit';
     $anonymous = true;
     break;
 case 'field_edit': // edit field permission
-    $titleOfForm = _XADDRESSES_AM_PERM_EDITFIELD;
+    $titleOfForm = _AM_XADDRESSES_PERM_EDITFIELD;
     $permName = 'field_edit';
-    $permDesc = _XADDRESSES_AM_PERM_EDITFIELD_DESC;
+    $permDesc = _AM_XADDRESSES_PERM_EDITFIELD_DESC;
     $restriction = '';
     $anonymous = true;
     break;
 case 'field_search': // search field permission
-    $titleOfForm = _XADDRESSES_AM_PERM_SEARCHFIELD;
+    $titleOfForm = _AM_XADDRESSES_PERM_SEARCHFIELD;
     $permName = 'field_search';
-    $permDesc = _XADDRESSES_AM_PERM_SEARCHFIELD_DESC;
+    $permDesc = _AM_XADDRESSES_PERM_SEARCHFIELD_DESC;
     $restriction = '';
     $anonymous = true;
     break;
 case 'field_export': // export field permission // IN PROGRESS
-    $titleOfForm = _XADDRESSES_AM_PERM_EXPORTFIELD;
+    $titleOfForm = _AM_XADDRESSES_PERM_EXPORTFIELD;
     $permName = 'field_export';
-    $permDesc = _XADDRESSES_AM_PERM_EXPORTFIELD_DESC;
+    $permDesc = _AM_XADDRESSES_PERM_EXPORTFIELD_DESC;
     $restriction = '';
     $anonymous = true;
     break;
 case 'extra': // IN_PROGRESS
-    $titleOfForm = _XADDRESSES_AM_PERM_OTHERS;
+    $titleOfForm = _AM_XADDRESSES_PERM_OTHERS;
     $permName = "others";
-    $permDesc = _XADDRESSES_AM_PERM_OTHERS_DESC;
+    $permDesc = _AM_XADDRESSES_PERM_OTHERS_DESC;
     $anonymous = true;
     $globalPermsArray = array(
-        '1'     => _XADDRESSES_AM_PERMISSIONS_1 ,   // Modify location submitter
-        '2'     => _XADDRESSES_AM_PERMISSIONS_2 ,   // Modify location date
-        //'4'     => _XADDRESSES_AM_PERMISSIONS_4 ,   // Submit a location
-        '8'     => _XADDRESSES_AM_PERMISSIONS_8 ,   // Suggest location correction/modification
-        '16'    => _XADDRESSES_AM_PERMISSIONS_16 ,  // Send to a Friend
-        '32'    => _XADDRESSES_AM_PERMISSIONS_32,   // Rate location
-        '64'    => _XADDRESSES_AM_PERMISSIONS_64,   // Report broken location
-        //'128'   => _XADDRESSES_AM_PERMISSIONS_128,
-        //'256'   => _XADDRESSES_AM_PERMISSIONS_256,
+        '1'     => _AM_XADDRESSES_PERMISSIONS_1 ,   // Modify location submitter
+        '2'     => _AM_XADDRESSES_PERMISSIONS_2 ,   // Modify location date
+        //'4'     => _AM_XADDRESSES_PERMISSIONS_4 ,   // Submit a location
+        '8'     => _AM_XADDRESSES_PERMISSIONS_8 ,   // Suggest location correction/modification
+        '16'    => _AM_XADDRESSES_PERMISSIONS_16 ,  // Send to a Friend
+        '32'    => _AM_XADDRESSES_PERMISSIONS_32,   // Rate location
+        '64'    => _AM_XADDRESSES_PERMISSIONS_64,   // Report broken location
+        //'128'   => _AM_XADDRESSES_PERMISSIONS_128,
+        //'256'   => _AM_XADDRESSES_PERMISSIONS_256,
          );
     break;
 }
@@ -213,5 +212,5 @@ case 'extra': // IN_PROGRESS
 $permissionsForm->display();
 unset ($permissionsForm);
 
-xoops_cp_footer();
+include "admin_footer.php";
 ?>

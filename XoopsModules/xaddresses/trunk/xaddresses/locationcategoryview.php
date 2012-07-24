@@ -15,7 +15,7 @@ $cat_id = (int)($_REQUEST['cat_id']);
 $criteria = new CriteriaCompo();
 $criteria->add(new Criteria('cat_id', $cat_id));
 if ($categoryHandler->getCount($criteria) == 0) {
-    redirect_header('index.php', 3, _XADDRESSES_MD_SINGLECAT_NONEXISTENT);
+    redirect_header('index.php', 3, _MA_XADDRESSES_SINGLECAT_NONEXISTENT);
     exit();
 }
 
@@ -26,11 +26,13 @@ include_once XOOPS_ROOT_PATH . '/header.php';
 
 
 
-
 // Get category object
 $category = $categoryHandler->get($cat_id);
-// Set category object for tamplate
-$xoopsTpl->assign('category', $category);
+$criteria = new CriteriaCompo();
+$criteria->add(new Criteria('cat_id', $cat_id));
+$categoryAsArray = $categoryHandler->getObjects ($criteria, false, false);
+// Set category as array for tamplate
+$xoopsTpl->assign('category', $categoryAsArray[0]);
 
 
 // Breadcrumb
@@ -45,7 +47,7 @@ while ($category->getVar('cat_pid') != 0) {
     $breadcrumb[] = $crumb;
 }
 if ($xoopsModuleConfig['show_home_in_breadcrumb']) {
-    $crumb['title'] = _XADDRESSES_MD_BREADCRUMB_HOME;
+    $crumb['title'] = _MA_XADDRESSES_BREADCRUMB_HOME;
     $crumb['url'] = 'index.php';
     $breadcrumb[] = $crumb;
 }
@@ -55,7 +57,7 @@ $xoopsTpl->assign('breadcrumb', $breadcrumb);
 unset($breadcrumb, $crumb);
 
 
-//echo $category->getVar('cat_title');
+
 // get locations in this category
 $criteria = new CriteriaCompo();
 $criteria->add(new Criteria('loc_cat_id', $cat_id));
@@ -63,11 +65,11 @@ $criteria->add(new Criteria('loc_suggested', false));
 $criteria->add(new Criteria('loc_status', 0, '!=')); // show only active locations
 $criteria->setSort('loc_date ASC, loc_title');
 $criteria->setOrder('ASC');
-$locationsArray = $locationHandler->getAll($criteria);
-// Set locations object array for tamplate
-$xoopsTpl->assign('locations', $locationsArray);
+$locations = $locationHandler->getAll($criteria); // get locations as object
+$locationsAsArray = $locationHandler->getAll($criteria, null, false); // get locations as array
+// Set array of locations as array for tamplate
+$xoopsTpl->assign('locations', $locationsAsArray);
 
-//echo '<h1>IN_PROGRESS</h1>';
 
 // get all subcategories
 $criteria = new CriteriaCompo();
@@ -75,17 +77,9 @@ $criteria->setSort('cat_weight ASC, cat_title');
 $criteria->setOrder('ASC');
 $criteria->add(new Criteria('cat_pid', (int)$_REQUEST['cat_id']));
 //$criteria->add(new Criteria('cid', '(' . implode(',', $categories) . ')','IN'));
-$subcategoriesArray = $categoryHandler->getall($criteria);
-// Set subcategory object array for tamplate
-$xoopsTpl->assign('subcategories', $subcategoriesArray);
-
-
-
-
-
-
-
-
+$subcategoriesAsArray = $categoryHandler->getAll($criteria, null, false); // get subcategories as array
+// Set array of subcategories as array for tamplate
+$xoopsTpl->assign('subcategories', $subcategoriesAsArray);
 
 
 
@@ -112,7 +106,7 @@ $map->showStreetViewControl(true);
 $map->setInfoWindowBehaviour('SINGLE_CLOSE_ON_MAPCLICK');
 $map->setInfoWindowTrigger('CLICK');
 
-foreach($locationsArray as $location) {
+foreach($locations as $location) {
     $html = '<a href="locationview.php?loc_id=' . $location->getVar('loc_id') . '">' . $location->getVar('loc_title') . '</a>';
     $map->addMarker($location->getVar('loc_lat'), $location->getVar('loc_lng'), $location->getVar('loc_title'), $html);
 }

@@ -6,13 +6,17 @@
 <{/foreach}>
 <{/if}>
 
-<h1><{$category->getVar('cat_title')}></h1>
+<h1><{$category.cat_title}></h1>
+<{if ($category.cat_imgurl != '')}>
+    <img src="<{$category.cat_imgurl}>" />
+<{/if}>
+<{$category.cat_description}>
 
 <h2>SUBCATEGORIES</h2>
 <!-- Start category loop -->
 <ul>
 <{foreach item=subcategory from=$subcategories}>
-    <li><a href="locationcategoryview.php?cat_id=<{$subcategory->getVar('cat_id')}>"><{$subcategory->getVar('cat_title')}></a></li>
+    <li><a href="locationcategoryview.php?cat_id=<{$subcategory.cat_id}>"><{$subcategory.cat_title}></a></li>
 <{/foreach}>
 </ul>
 <!-- End category loop -->
@@ -24,7 +28,7 @@
 <!-- Start category loop -->
 <ul>
 <{foreach item=location from=$locations}>
-    <li><a href="locationview.php?loc_id=<{$location->getVar('loc_id')}>"><{$location->getVar('loc_title')}></a></li>
+    <li><a href="locationview.php?loc_id=<{$location.loc_id}>"><{$location.loc_title}></a></li>
 <{/foreach}>
 </ul>
 <!-- End category loop -->

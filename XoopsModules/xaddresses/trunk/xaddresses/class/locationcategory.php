@@ -40,7 +40,7 @@ class XaddressesLocationcategory extends XoopsObject
         include_once $GLOBALS['xoops']->path('class/xoopsformloader.php');
         if (!isset($form) || empty($form) || get_class($form) != 'XoopsThemeForm') {
             $formIsNew = true;
-            $form_title = $this->isNew() ? _XADDRESSES_AM_CAT_ADD : _XADDRESSES_AM_CAT_EDIT;
+            $form_title = $this->isNew() ? _AM_XADDRESSES_CAT_ADD : _AM_XADDRESSES_CAT_EDIT;
             $form = new XoopsThemeForm($form_title, 'locationcategoryform', $action, 'post', true);
         } else {
             $formIsNew = false;
@@ -48,7 +48,7 @@ class XaddressesLocationcategory extends XoopsObject
 
         $form->setExtra('enctype="multipart/form-data"');
 
-        $form->addElement(new XoopsFormText(_XADDRESSES_AM_CAT_TITLE, 'cat_title', 35, 255, $this->getVar('cat_title')), true);
+        $form->addElement(new XoopsFormText(_AM_XADDRESSES_CAT_TITLE, 'cat_title', 35, 255, $this->getVar('cat_title')), true);
         if (!$this->isNew()) {
             //Load groups
             $form->addElement(new XoopsFormHidden('cat_id', $this->getVar('cat_id')));
@@ -64,11 +64,11 @@ class XaddressesLocationcategory extends XoopsObject
         $editor_configs['width'] = '100%';
         $editor_configs['height'] = '400px';
         $editor_configs['editor'] = $xoopsModuleConfig['editor'];
-        $form->addElement( new XoopsFormEditor(_XADDRESSES_AM_CAT_DESCRIPTION, 'cat_description', $editor_configs), false);
-        //$form->addElement(new XoopsFormTextArea(_XADDRESSES_AM_DESCRIPTION, 'cat_description', $this->getVar('cat_description', 'e')));
+        $form->addElement( new XoopsFormEditor(_AM_XADDRESSES_CAT_DESCRIPTION, 'cat_description', $editor_configs), false);
+        //$form->addElement(new XoopsFormTextArea(_AM_XADDRESSES_DESCRIPTION, 'cat_description', $this->getVar('cat_description', 'e')));
 
         // Image
-        $form->addElement(new FormXoopsImage (_XADDRESSES_AM_CAT_IMG, 'cat_imgurl', 40, 255, $this->getVar('cat_imgurl'))); // custom form class
+        $form->addElement(new FormXoopsImage (_AM_XADDRESSES_CAT_IMG, 'cat_imgurl', 40, 255, $this->getVar('cat_imgurl'))); // custom form class
 
         // Parent category
         $xaddressescat_Handler =& xoops_getModuleHandler('locationcategory', 'xaddresses');
@@ -77,24 +77,24 @@ class XaddressesLocationcategory extends XoopsObject
         $criteria->setOrder('ASC');
 		$xaddressescat_arr = $xaddressescat_Handler->getall($criteria);
 		$mytree = new XoopsObjectTree($xaddressescat_arr, 'cat_id', 'cat_pid');
-		$form->addElement(new XoopsFormLabel(_XADDRESSES_AM_CAT_PARENT, $mytree->makeSelBox('cat_pid', 'cat_title','--',$this->getVar('cat_pid'), true)));
+		$form->addElement(new XoopsFormLabel(_AM_XADDRESSES_CAT_PARENT, $mytree->makeSelBox('cat_pid', 'cat_title','--',$this->getVar('cat_pid'), true)));
 
         // Weight
-        $form->addElement(new XoopsFormText(_XADDRESSES_AM_CAT_WEIGHT, 'cat_weight', 35, 35, $this->getVar('cat_weight', 'e')), true);
+        $form->addElement(new XoopsFormText(_AM_XADDRESSES_CAT_WEIGHT, 'cat_weight', 35, 35, $this->getVar('cat_weight', 'e')), true);
 
         // Map Setting
-        $form->addElement(new XoopsFormLabel (_XADDRESSES_AM_CAT_MAP_SETTING, _XADDRESSES_AM_CAT_MAP_SETTING, ''));
+        $form->addElement(new XoopsFormLabel (_AM_XADDRESSES_CAT_MAP_SETTING, _AM_XADDRESSES_CAT_MAP_SETTING, ''));
         // Maptype
-            $select_map_type = new XoopsFormSelect (_XADDRESSES_AM_CAT_MAP_TYPE, 'cat_map_type', $this->getVar('cat_map_type'), 1, false);
+            $select_map_type = new XoopsFormSelect (_AM_XADDRESSES_CAT_MAP_TYPE, 'cat_map_type', $this->getVar('cat_map_type'), 1, false);
             $select_map_type->addOption('ROADMAP', 'ROADMAP');
             $select_map_type->addOption('SATELLITE', 'SATELLITE');
             $select_map_type->addOption('HYBRID', 'HYBRID');
             $select_map_type->addOption('TERRAIN', 'TERRAIN');
-            $select_map_type->setDescription(_XADDRESSES_AM_CAT_MAP_TYPE_DESC);
+            $select_map_type->setDescription(_AM_XADDRESSES_CAT_MAP_TYPE_DESC);
         $form->addElement($select_map_type);
 
         // Permissions
-        $form->addElement(new XoopsFormLabel (_XADDRESSES_AM_CAT_PERMISSIONS, _XADDRESSES_AM_CAT_PERMISSIONS, ''));
+        $form->addElement(new XoopsFormLabel (_AM_XADDRESSES_CAT_PERMISSIONS, _AM_XADDRESSES_CAT_PERMISSIONS, ''));
  
         $memberHandler = & xoops_gethandler('member');
         $groupPermHandler =& xoops_gethandler('groupperm');
@@ -117,22 +117,22 @@ class XaddressesLocationcategory extends XoopsObject
         $FormSelectGroupLines = ($countGroups < $formSelectGroupMaxLines) ? $countGroups : $formSelectGroupMaxLines;
         $form->setExtra('enctype="multipart/form-data"');
         // XoopsFormSelectGroup ($caption, $name, $include_anon=false, $value=null, $size=1, $multiple=false)
-            $groups_can_view_select = new XoopsFormSelectGroup(_XADDRESSES_AM_PERM_VIEW, 'in_category_view', $anonymous, $groupsViewIds, $FormSelectGroupLines, true);
-            $groups_can_view_select->setDescription(_XADDRESSES_AM_PERM_VIEW_DESC);
+            $groups_can_view_select = new XoopsFormSelectGroup(_AM_XADDRESSES_PERM_VIEW, 'in_category_view', $anonymous, $groupsViewIds, $FormSelectGroupLines, true);
+            $groups_can_view_select->setDescription(_AM_XADDRESSES_PERM_VIEW_DESC);
         $form->addElement($groups_can_view_select);
-            $groups_can_submit_select = new XoopsFormSelectGroup(_XADDRESSES_AM_PERM_SUBMIT, 'in_category_submit', $anonymous, $groupsSubmitIds, $FormSelectGroupLines, true);
-            $groups_can_submit_select->setDescription(_XADDRESSES_AM_PERM_SUBMIT_DESC);
+            $groups_can_submit_select = new XoopsFormSelectGroup(_AM_XADDRESSES_PERM_SUBMIT, 'in_category_submit', $anonymous, $groupsSubmitIds, $FormSelectGroupLines, true);
+            $groups_can_submit_select->setDescription(_AM_XADDRESSES_PERM_SUBMIT_DESC);
         $form->addElement($groups_can_submit_select);
-            $groups_can_edit_select = new XoopsFormSelectGroup(_XADDRESSES_AM_PERM_EDIT, 'in_category_edit', $anonymous, $groupsEditIds, $FormSelectGroupLines, true);
-            $groups_can_edit_select->setDescription(_XADDRESSES_AM_PERM_EDIT_DESC);
+            $groups_can_edit_select = new XoopsFormSelectGroup(_AM_XADDRESSES_PERM_EDIT, 'in_category_edit', $anonymous, $groupsEditIds, $FormSelectGroupLines, true);
+            $groups_can_edit_select->setDescription(_AM_XADDRESSES_PERM_EDIT_DESC);
         $form->addElement($groups_can_edit_select);
-            $groups_can_delete_select = new XoopsFormSelectGroup(_XADDRESSES_AM_PERM_DELETE, 'in_category_delete', $anonymous, $groupsDeleteIds, $FormSelectGroupLines, true);
-            $groups_can_delete_select->setDescription(_XADDRESSES_AM_PERM_DELETE_DESC);
+            $groups_can_delete_select = new XoopsFormSelectGroup(_AM_XADDRESSES_PERM_DELETE, 'in_category_delete', $anonymous, $groupsDeleteIds, $FormSelectGroupLines, true);
+            $groups_can_delete_select->setDescription(_AM_XADDRESSES_PERM_DELETE_DESC);
         $form->addElement($groups_can_delete_select);
         
 
         /*
-        $permissions_element_try = new XoopsFormElementTray (_XADDRESSES_AM_CAT_PERMISSIONS,  "<br />", "");
+        $permissions_element_try = new XoopsFormElementTray (_AM_XADDRESSES_CAT_PERMISSIONS,  "<br />", "");
         $permissions_element_try->addElement($groups_can_view_select);
         $permissions_element_try->addElement($groups_can_submit_select);
         $permissions_element_try->addElement($groups_can_edit_select);
@@ -150,7 +150,7 @@ class XaddressesLocationcategory extends XoopsObject
             // Hidden Fields
             $form->addElement(new XoopsFormHidden('op', 'save_locationcategory') );
             // Submit button		
-                $button_tray = new XoopsFormElementTray(_XADDRESSES_AM_ACTION, '' ,'');
+                $button_tray = new XoopsFormElementTray(_AM_XADDRESSES_ACTION, '' ,'');
                 $button_tray->addElement(new XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
                 $button_tray->addElement(new XoopsFormButton('', 'reset', _RESET, 'reset'));
                     $cancel_button = new XoopsFormButton('', 'cancel', _CANCEL, 'button');

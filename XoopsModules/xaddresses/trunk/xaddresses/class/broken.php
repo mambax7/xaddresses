@@ -37,7 +37,7 @@ class XaddressesBroken extends XoopsObject
         include_once $GLOBALS['xoops']->path('class/xoopsformloader.php');
         if (!isset($form) || empty($form) || get_class($form) != 'XoopsThemeForm') {
             $formIsNew = true;
-            $title = $this->isNew() ? _XADDRESSES_AM_LOC_BROKEN_NEW : _XADDRESSES_AM_LOC_BROKEN_EDIT;
+            $title = $this->isNew() ? _AM_XADDRESSES_LOC_BROKEN_NEW : _AM_XADDRESSES_LOC_BROKEN_EDIT;
             $form = new XoopsThemeForm($title, 'brokenform', $action, 'post', true);
         } else {
             $formIsNew = false;
@@ -54,8 +54,8 @@ class XaddressesBroken extends XoopsObject
         $editor_configs['width'] = '100%';
         $editor_configs['height'] = '400px';
         $editor_configs['editor'] = $xoopsModuleConfig['editor'];
-            $brokenDescriptionTextarea = new XoopsFormEditor(_XADDRESSES_AM_LOC_BROKEN_DESCRIPTION, 'report_description', $editor_configs);
-            $brokenDescriptionTextarea->setDescription(_XADDRESSES_AM_LOC_BROKEN_DESCRIPTION_DESC);
+            $brokenDescriptionTextarea = new XoopsFormEditor(_AM_XADDRESSES_LOC_BROKEN_DESCRIPTION, 'report_description', $editor_configs);
+            $brokenDescriptionTextarea->setDescription(_AM_XADDRESSES_LOC_BROKEN_DESCRIPTION_DESC);
         $form->addElement($brokenDescriptionTextarea, false);
 
         $form->addElement(new XoopsFormCaptcha(), true);        
@@ -68,7 +68,7 @@ class XaddressesBroken extends XoopsObject
             $form->addElement(new XoopsFormHidden('loc_id', $loc_id));
             $form->addElement(new XoopsFormHidden('op', 'save_broken'));
             // Submit button		
-                $button_tray = new XoopsFormElementTray(_XADDRESSES_AM_ACTION, '' ,'');
+                $button_tray = new XoopsFormElementTray(_AM_XADDRESSES_ACTION, '' ,'');
                 $button_tray->addElement(new XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
                 $button_tray->addElement(new XoopsFormButton('', 'reset', _RESET, 'reset'));
                     $cancel_button = new XoopsFormButton('', 'cancel', _CANCEL, 'button');

@@ -1,27 +1,7 @@
 <?php
-/**
- * Ajax File Manager
- *
- * You may not change or alter any portion of this comment or credits
- * of supporting developers from this source code or any supporting source code
- * which is considered copyrighted (c) material of the original comment or credit authors.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- *
- * @copyright       The XOOPS Project http://sourceforge.net/projects/xoops/
- * @license         http://www.fsf.org/copyleft/gpl.html& ...  public license
- * @package         ajaxfilemanager
- * @since           0.1
- * @author          luciorota <lucio.rota@gmail.com>
- * @version         $Id$
- */
-
 defined('XOOPS_ROOT_PATH') or die('Restricted access');
-xoops_loadLanguage('formxoopsimage', 'ajaxfilemanager');
-/**
- * A simple text field
- */
+xoops_loadLanguage('formxoopsimage', 'xaddresses');
+
 class FormXoopsImage extends XoopsFormElement
 {
     /**
@@ -62,8 +42,8 @@ class FormXoopsImage extends XoopsFormElement
     {
         $this->setCaption($caption);
         $this->setName($name);
-        $this->_size = (int)$size;
-        $this->_maxlength = (int)$maxlength;
+        $this->_size = intval($size);
+        $this->_maxlength = intval($maxlength);
         $this->setValue($value);
         $this->_previewformat = (is_null($previewformat) ? "<div style='height:100px;'><img src='%s' style='height:100px;' alt='" . _FORMXOOPSIMAGE_IMAGENOTFOUND . "' /></div>" : $previewformat);
     }

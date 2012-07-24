@@ -6,6 +6,9 @@ class FormGoogleMap extends XoopsFormElementTray
 {
     var $config = array();
     var $setting = array();
+    var $_caption;
+    var $_name;
+    var $_value;
 
     /**
      * FormGoogleMap::FormGoogleMap()
@@ -17,16 +20,19 @@ class FormGoogleMap extends XoopsFormElementTray
      */
     function __construct($caption, $name, $value = NULL, $config=array())
     {
-        $this->caption = $caption;
-        $this->name = $name;
+        $this->setCaption($caption);
+        $this->setName($name);
+        $this->_caption = $caption;
+        $this->_name = $name;
+        $this->_value = $value;
         $this->config['style'] = 'width:100%;height:200px;border:1px solid black;';
         $this->config['readonly'] = false;
         $this->config = array_merge($this->config, $config);
 
-        $this->lat = (is_array($value) && isset($value['lat'])) ? $value['lat'] : 0; // default lat
-        $this->lng = (is_array($value) && isset($value['lng'])) ? $value['lng'] : 0; // default lng
-        $this->elevation = (is_array($value) && isset($value['elevation'])) ? $value['elevation'] : 0; // default elevation
-        $this->zoom = (is_array($value) && isset($value['zoom'])) ? $value['zoom'] : 8; // default lat
+        $this->lat = (is_array($value) && isset($value['lat'])) ? $value['lat'] : '0'; // default lat
+        $this->lng = (is_array($value) && isset($value['lng'])) ? $value['lng'] : '0'; // default lng
+        $this->elevation = (is_array($value) && isset($value['elevation'])) ? $value['elevation'] : ''; // default elevation
+        $this->zoom = (is_array($value) && isset($value['zoom'])) ? $value['zoom'] : 8; // default zoom level
         $this->search = '';
         //$kml = (is_array($value) && isset($value['kml'])) ? $value['kml'] : ''; // default kml
     }
@@ -76,35 +82,48 @@ class FormGoogleMap extends XoopsFormElementTray
                 var _formId = formId;
                 var _mapId = mapId;
                 var _initLatLng = null;
-                var _initZoomLevel = parseInt(zoom);
+                var _initZoomLevel = null;
                 var _draggable = draggable;
                 
-                // Check to see if this browser supports geolocation
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(
-                        // function successCallback(position)
-                        function(position) {
-                            lat = position.coords.latitude;
-                            lng = position.coords.longitude;
-                            alert('[' + lat + ',' + lng + ']');
-                            setMapPosition(lat, lng);
-                        }, 
-                        // function errorCallback(error)
-                        function(error) {
-                            alert('error code:' + error.code + ' error:' + error.message);
-                        }, 
-                        {maximumAge:600000, timeout:0}
-                    );
+                if (!zoom) {
+                    _initZoomLevel = 8; // default zoom level
+                } else {
+                    _initZoomLevel = parseInt(zoom);
                 }
                 
-                if(google.loader.ClientLocation) {
-                    lat = google.loader.ClientLocation.latitude;
-                    lng = google.loader.ClientLocation.longitude;
-                    search = google.loader.ClientLocation.address.city + ', ' + google.loader.ClientLocation.address.country;
-                    document.getElementById(formId + '[lat]').value = lat;
-                    document.getElementById(formId + '[lng]').value = lng;
-                    document.getElementById(formId + '[search]').value = search;
-                    _initLatLng = new google.maps.LatLng(parseFloat(lat), parseFloat(lng));
+                if (!lat && !lng) {
+                    _initLatLng = new google.maps.LatLng(0, 0);
+                    // Experimental: try to find browser location
+                    // Check to see if this browser supports geolocation
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(
+                            // function successCallback(position)
+                            function(position) {
+                                lat = position.coords.latitude;
+                                lng = position.coords.longitude;
+                                document.getElementById(formId + '[lat]').value = lat;
+                                document.getElementById(formId + '[lng]').value = lng;
+                                _initLatLng = new google.maps.LatLng(parseFloat(lat), parseFloat(lng));
+                            }, 
+                            // function errorCallback(error)
+                            function(error) {
+                                //alert('error code:' + error.code + ' error:' + error.message);
+                            }, 
+                            {maximumAge:600000, timeout:0}
+                        );
+                    }
+                    // Use Google ClientLocation to find browser position
+                    if(google.loader.ClientLocation) {
+                        lat = google.loader.ClientLocation.latitude;
+                        lng = google.loader.ClientLocation.longitude;
+                        search = google.loader.ClientLocation.address.city + ', ' + google.loader.ClientLocation.address.country;
+                        document.getElementById(formId + '[lat]').value = lat;
+                        document.getElementById(formId + '[lng]').value = lng;
+                        if (document.getElementById(formId + '[search]')) {
+                            document.getElementById(formId + '[search]').value = search;
+                        }
+                        _initLatLng = new google.maps.LatLng(parseFloat(lat), parseFloat(lng));
+                    }
                 } else {
                     _initLatLng = new google.maps.LatLng(parseFloat(lat), parseFloat(lng)); 
                 }
@@ -278,10 +297,10 @@ class FormGoogleMap extends XoopsFormElementTray
                 this.setMapPosition = function(lat, lng) {
                     lat = parseFloat(lat);
                     lng = parseFloat(lng);
-                    _initLatLng = new google.maps.LatLng(lat, lng);
-                    _marker.setPosition(_initLatLng);
-                    _map.setCenter(_initLatLng);
-                    getElevation(_map, _initLatLng);
+                    newLatLng = new google.maps.LatLng(lat, lng);
+                    _marker.setPosition(newLatLng);
+                    _map.setCenter(newLatLng);
+                    getElevation(_map, newLatLng);
                 }
             }
         ";
@@ -305,22 +324,22 @@ class FormGoogleMap extends XoopsFormElementTray
         }
 
         $js.= "<script type='text/javascript'>\n";
-        $js.= "var xoopsFormGoogleMap_{$this->name} = null;\n";
+        $js.= "var xoopsFormGoogleMap_{$this->_name} = null;\n";
         if ($this->config['readonly'] == false) {
             $js.= "xoopsOnloadEvent(
                     function() {
-                        xoopsFormGoogleMap_{$this->name} = new xoopsFormGoogleMap('{$this->name}', '{$this->name}_GoogleMap', {$this->lat}, {$this->lng}, {$this->zoom}, true);
+                        xoopsFormGoogleMap_{$this->_name} = new xoopsFormGoogleMap('{$this->_name}', '{$this->_name}_GoogleMap', {$this->lat}, {$this->lng}, {$this->zoom}, true);
                     });";
         } else {
             $js.= "xoopsOnloadEvent(
                     function() {
-                        xoopsFormGoogleMap_{$this->name} = new xoopsFormGoogleMap('{$this->name}', '{$this->name}_GoogleMap', {$this->lat}, {$this->lng}, {$this->zoom}, false);
+                        xoopsFormGoogleMap_{$this->_name} = new xoopsFormGoogleMap('{$this->_name}', '{$this->_name}_GoogleMap', {$this->lat}, {$this->lng}, {$this->zoom}, false);
                     });";
         }
         $js.= "</script>\n";
         $ret.= $js . "\n";
 
-        $html.= "<div id='{$this->name}_GoogleMap' style='{$this->config['style']}'>";
+        $html.= "<div id='{$this->_name}_GoogleMap' style='{$this->config['style']}'>";
         $html.= _FORMGOOGLEMAP_GOOGLEMAPHERE;
         $html.= "<br />";
         $html.= _FORMGOOGLEMAP_GOOGLEMAPHERE_DESC;
@@ -332,27 +351,27 @@ class FormGoogleMap extends XoopsFormElementTray
             $ret.= "<br />";
             $ret.= _FORMGOOGLEMAP_LAT;
             $ret.= "&nbsp;";
-            $ret.= "<input id='{$this->name}[lat]' type='text' value='{$this->lat}' maxlength='255' size='18' title='Latitude' name='{$this->name}[lat]' onchange='xoopsFormGoogleMap_{$this->name}.setMapPositionByForm();'>";
+            $ret.= "<input id='{$this->_name}[lat]' type='text' value='{$this->lat}' maxlength='255' size='18' title='Latitude' name='{$this->_name}[lat]' onchange='xoopsFormGoogleMap_{$this->_name}.setMapPositionByForm();'>";
             $ret.= "&nbsp;";
             $ret.= _FORMGOOGLEMAP_LNG;
             $ret.= "&nbsp;";
-            $ret.= "<input id='{$this->name}[lng]' type='text' value='{$this->lng}' maxlength='255' size='18' title='Longitude' name='{$this->name}[lng]' onchange='xoopsFormGoogleMap_{$this->name}.setMapPositionByForm();'>";
+            $ret.= "<input id='{$this->_name}[lng]' type='text' value='{$this->lng}' maxlength='255' size='18' title='Longitude' name='{$this->_name}[lng]' onchange='xoopsFormGoogleMap_{$this->_name}.setMapPositionByForm();'>";
             $ret.= "&nbsp;";
             $ret.= _FORMGOOGLEMAP_ELEVATION;
             $ret.= "&nbsp;";
-            $ret.= "<input id='{$this->name}[elevation]' type='text' value='{$this->elevation}' maxlength='255' size='18' title='Longitude' name='{$this->name}[elevation]'>";
+            $ret.= "<input id='{$this->_name}[elevation]' type='text' value='{$this->elevation}' maxlength='255' size='18' title='Longitude' name='{$this->_name}[elevation]'>";
             $ret.= "&nbsp;";
             $ret.= "<br />";
             $ret.= _FORMGOOGLEMAP_ZOOM;
             $ret.= "&nbsp;";
-            $ret.= "<input id='{$this->name}[zoom]' type='text' value='{$this->zoom}' maxlength='255' size='2' title='Zoom level' name='{$this->name}[zoom]' onchange='xoopsFormGoogleMap_{$this->name}.setMapPositionByForm();'>";
+            $ret.= "<input id='{$this->_name}[zoom]' type='text' value='{$this->zoom}' maxlength='255' size='2' title='Zoom level' name='{$this->_name}[zoom]' onchange='xoopsFormGoogleMap_{$this->_name}.setMapPositionByForm();'>";
             $ret.= "<br />";
             $ret.= _FORMGOOGLEMAP_SEARCH_DESC;
             $ret.= "<br />";
             $ret.= _FORMGOOGLEMAP_SEARCH;
             $ret.= "<br />";
-            $ret.= "<input id='{$this->name}[search]' type='text' value='' maxlength='255' size='80' title='Search location' name='{$this->name}[search]'>";
-            $ret.= "<input id='{$this->name}button' class='formButton' type='button' onclick='xoopsFormGoogleMap_{$this->name}.geocodeAddress();' title='Search' value='Search' name='{$this->name}button'>";
+            $ret.= "<input id='{$this->_name}[search]' type='text' value='' maxlength='255' size='80' title='Search location' name='{$this->_name}[search]'>";
+            $ret.= "<input id='{$this->_name}button' class='formButton' type='button' onclick='xoopsFormGoogleMap_{$this->_name}.geocodeAddress();' title='Search' value='Search' name='{$this->_name}button'>";
         } else {
             $ret.= _FORMGOOGLEMAP_LAT;
             $ret.= "&nbsp;";

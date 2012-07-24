@@ -18,7 +18,7 @@
  */
 
 defined('XOOPS_ROOT_PATH') or die('Restricted access');
-xoops_loadLanguage('formmultiplexoopsimage', 'ajaxfilemanager');
+xoops_loadLanguage('formmultiplexoopsimage', 'xaddresses');
 xoops_load ('formxoopsimage', 'ajaxfilemanager'); // load custom form class
 
 class FormMultipleXoopsImage extends XoopsFormElementTray

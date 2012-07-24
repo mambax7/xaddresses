@@ -16,13 +16,10 @@ default:
     case 'list_fieldcategories':
     // render start here
     xoops_cp_header();
-    // render main admin menu
-    include (XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['xoopsModule']->dirname() . '/admin/menu.php');
-    echo moduleAdminTabMenu($adminmenu, $currentFile);
     // render submenu
     $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
-    $submenuItem[] = ($op == 'new_fieldcategory' ? _XADDRESSES_AM_FIELDCAT_NEW : '<a href="' . $currentFile . '?op=new_fieldcategory">' . _XADDRESSES_AM_FIELDCAT_NEW . '</a>');
-    $submenuItem[] = ($op == 'list_fieldcategories' ? _XADDRESSES_AM_FIELDCAT_LIST : '<a href="' . $currentFile . '?op=list_fieldcategories">' . _XADDRESSES_AM_FIELDCAT_LIST . '</a>');
+    $submenuItem[] = ($op == 'new_fieldcategory' ? _AM_XADDRESSES_FIELDCAT_NEW : '<a href="' . $currentFile . '?op=new_fieldcategory">' . _AM_XADDRESSES_FIELDCAT_NEW . '</a>');
+    $submenuItem[] = ($op == 'list_fieldcategories' ? _AM_XADDRESSES_FIELDCAT_LIST : '<a href="' . $currentFile . '?op=list_fieldcategories">' . _AM_XADDRESSES_FIELDCAT_LIST . '</a>');
     xaddressesAdminSubmenu ($submenuItem);
 
     $criteria = new CriteriaCompo();
@@ -37,7 +34,7 @@ default:
     $GLOBALS['xoopsTpl']->assign('token', $GLOBALS['xoopsSecurity']->getTokenHTML() );
     $GLOBALS['xoopsTpl']->display("db:xaddresses_admin_fieldcategorylist.html");
     
-    xoops_cp_footer();
+    include "admin_footer.php";
     break;
 
 
@@ -68,7 +65,7 @@ case 'reorder_fieldcategories':
             }
             if (count($errors) == 0) {
                 //no errors
-                redirect_header($currentFile, 2, sprintf(_XADDRESSES_AM_SAVEDSUCCESS, _XADDRESSES_AM_CATEGORIES));
+                redirect_header($currentFile, 2, sprintf(_AM_XADDRESSES_SAVEDSUCCESS, _AM_XADDRESSES_CATEGORIES));
             } else {
                 redirect_header($currentFile, 3, implode('<br />', $errors));
             }
@@ -81,13 +78,10 @@ case 'reorder_fieldcategories':
 case 'new_fieldcategory':
     // render start here
     xoops_cp_header();
-    // render main admin menu
-    include (XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['xoopsModule']->dirname() . '/admin/menu.php');
-    echo moduleAdminTabMenu($adminmenu, $currentFile);
     // render submenu
     $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
-    $submenuItem[] = ($op == 'new_fieldcategory' ? _XADDRESSES_AM_FIELDCAT_NEW : '<a href="' . $currentFile . '?op=new_fieldcategory">' . _XADDRESSES_AM_FIELDCAT_NEW . '</a>');
-    $submenuItem[] = ($op == 'list_fieldcategories' ? _XADDRESSES_AM_FIELDCAT_LIST : '<a href="' . $currentFile . '?op=list_fieldcategories">' . _XADDRESSES_AM_FIELDCAT_LIST . '</a>');
+    $submenuItem[] = ($op == 'new_fieldcategory' ? _AM_XADDRESSES_FIELDCAT_NEW : '<a href="' . $currentFile . '?op=new_fieldcategory">' . _AM_XADDRESSES_FIELDCAT_NEW . '</a>');
+    $submenuItem[] = ($op == 'list_fieldcategories' ? _AM_XADDRESSES_FIELDCAT_LIST : '<a href="' . $currentFile . '?op=list_fieldcategories">' . _AM_XADDRESSES_FIELDCAT_LIST . '</a>');
     xaddressesAdminSubmenu ($submenuItem);
 
     include_once '../include/forms.php';
@@ -95,7 +89,7 @@ case 'new_fieldcategory':
     $form = $obj->getForm();
     $form->display();
     
-    xoops_cp_footer();
+    include "admin_footer.php";
     break;
 
 
@@ -103,13 +97,10 @@ case 'new_fieldcategory':
 case 'edit_fieldcategory':
     // render start here
     xoops_cp_header();
-    // render main admin menu
-    include (XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['xoopsModule']->dirname() . '/admin/menu.php');
-    echo moduleAdminTabMenu($adminmenu, $currentFile);
     // render submenu
     $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
-    $submenuItem[] = ($op == 'new_fieldcategory' ? _XADDRESSES_AM_FIELDCAT_NEW : '<a href="' . $currentFile . '?op=new_fieldcategory">' . _XADDRESSES_AM_FIELDCAT_NEW . '</a>');
-    $submenuItem[] = ($op == 'list_fieldcategories' ? _XADDRESSES_AM_FIELDCAT_LIST : '<a href="' . $currentFile . '?op=list_fieldcategories">' . _XADDRESSES_AM_FIELDCAT_LIST . '</a>');
+    $submenuItem[] = ($op == 'new_fieldcategory' ? _AM_XADDRESSES_FIELDCAT_NEW : '<a href="' . $currentFile . '?op=new_fieldcategory">' . _AM_XADDRESSES_FIELDCAT_NEW . '</a>');
+    $submenuItem[] = ($op == 'list_fieldcategories' ? _AM_XADDRESSES_FIELDCAT_LIST : '<a href="' . $currentFile . '?op=list_fieldcategories">' . _AM_XADDRESSES_FIELDCAT_LIST . '</a>');
     xaddressesAdminSubmenu ($submenuItem);
 
     include_once '../include/forms.php';
@@ -117,7 +108,7 @@ case 'edit_fieldcategory':
     $form = $obj->getForm();
     $form->display();
     
-    xoops_cp_footer();
+    include "admin_footer.php";
     break;
 
 
@@ -135,7 +126,7 @@ case 'save_fieldcategory':
     $obj->setVar('cat_description', $_REQUEST['cat_description']);
     $obj->setVar('cat_weight', $_REQUEST['cat_weight']);
     if ( $fieldCategoryHandler->insert($obj)  ) {
-        redirect_header($currentFile, 3, sprintf(_XADDRESSES_AM_SAVEDSUCCESS, _XADDRESSES_AM_CATEGORY) );
+        redirect_header($currentFile, 3, sprintf(_AM_XADDRESSES_SAVEDSUCCESS, _AM_XADDRESSES_CATEGORY) );
     } else {
         // render start here
         xoops_cp_header();
@@ -144,8 +135,8 @@ case 'save_fieldcategory':
         echo moduleAdminTabMenu($adminmenu, $currentFile);
         // render submenu
         $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
-        $submenuItem[] = ($op == 'new_fieldcategory' ? _XADDRESSES_AM_FIELDCAT_NEW : '<a href="' . $currentFile . '?op=new_fieldcategory">' . _XADDRESSES_AM_FIELDCAT_NEW . '</a>');
-        $submenuItem[] = ($op == 'list_fieldcategories' ? _XADDRESSES_AM_FIELDCAT_LIST : '<a href="' . $currentFile . '?op=list_fieldcategories">' . _XADDRESSES_AM_FIELDCAT_LIST . '</a>');
+        $submenuItem[] = ($op == 'new_fieldcategory' ? _AM_XADDRESSES_FIELDCAT_NEW : '<a href="' . $currentFile . '?op=new_fieldcategory">' . _AM_XADDRESSES_FIELDCAT_NEW . '</a>');
+        $submenuItem[] = ($op == 'list_fieldcategories' ? _AM_XADDRESSES_FIELDCAT_LIST : '<a href="' . $currentFile . '?op=list_fieldcategories">' . _AM_XADDRESSES_FIELDCAT_LIST . '</a>');
         xaddressesAdminSubmenu ($submenuItem);
         
         include_once '../include/forms.php';
@@ -153,7 +144,7 @@ case 'save_fieldcategory':
         $form =& $obj->getForm();
         $form->display();
         
-        xoops_cp_footer();
+        include "admin_footer.php";
     }
     break;
 
@@ -166,14 +157,14 @@ case 'delete_fieldcategory':
             redirect_header($currentFile, 3, implode(',', $GLOBALS['xoopsSecurity']->getErrors() ));
         }
         if ( $fieldCategoryHandler->delete($obj)  ) {
-            redirect_header($currentFile, 3, sprintf(_XADDRESSES_AM_DELETEDSUCCESS, _XADDRESSES_AM_CATEGORY) );
+            redirect_header($currentFile, 3, sprintf(_AM_XADDRESSES_DELETEDSUCCESS, _AM_XADDRESSES_CATEGORY) );
         } else {
             echo $obj->getHtmlErrors();
         }
     } else {
         // render start here
         xoops_cp_header();
-        xoops_confirm(array('ok' => 1, 'id' => $_REQUEST['id'], 'op' => 'delete_fieldcategory'), $_SERVER['REQUEST_URI'], sprintf(_XADDRESSES_AM_RU_SURE_DEL, $obj->getVar('cat_title') ));
+        xoops_confirm(array('ok' => 1, 'id' => $_REQUEST['id'], 'op' => 'delete_fieldcategory'), $_SERVER['REQUEST_URI'], sprintf(_AM_XADDRESSES_RU_SURE_DEL, $obj->getVar('cat_title') ));
         xoops_cp_footer();
     }
     break;

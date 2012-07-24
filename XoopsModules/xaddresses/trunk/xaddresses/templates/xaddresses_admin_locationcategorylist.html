@@ -1,13 +1,13 @@
 <form action="locationcategory.php" method="post" id="locationcategoryform">
 <table>
     <tr>
-        <th><{$smarty.const._XADDRESSES_AM_CAT_ID}></th>
-        <th><{$smarty.const._XADDRESSES_AM_CAT_TITLE}></th>
-        <th><{$smarty.const._XADDRESSES_AM_CAT_DESCRIPTION}></th>
-        <th><{$smarty.const._XADDRESSES_AM_CAT_IMG}></th>
-        <th><{$smarty.const._XADDRESSES_AM_CAT_WEIGHT}></th>
-        <th><{$smarty.const._XADDRESSES_AM_CAT_INFO}></th>
-        <th><{$smarty.const._XADDRESSES_AM_ACTION}></th>
+        <th><{$smarty.const._AM_XADDRESSES_CAT_ID}></th>
+        <th><{$smarty.const._AM_XADDRESSES_CAT_TITLE}></th>
+        <th><{$smarty.const._AM_XADDRESSES_CAT_DESCRIPTION}></th>
+        <th><{$smarty.const._AM_XADDRESSES_CAT_IMG}></th>
+        <th><{$smarty.const._AM_XADDRESSES_CAT_WEIGHT}></th>
+        <th><{$smarty.const._AM_XADDRESSES_CAT_INFO}></th>
+        <th><{$smarty.const._AM_XADDRESSES_ACTION}></th>
     </tr>
 <{foreach from=$categoriesList item='category'}>
     <tr class="<{cycle values='odd, even'}>">
@@ -33,7 +33,7 @@
         </td>
         <td>
         <{if ($category.canView)}>
-            <a href="locationcategory.php?op=view_locationcategory&amp;cat_id=<{$category.category->getVar('cat_id')}>" title="<{$smarty.const._XADDRESSES_AM_DISPLAY}>"><{$smarty.const._XADDRESSES_AM_DISPLAY}></a>
+            <a href="locationcategory.php?op=view_locationcategory&amp;cat_id=<{$category.category->getVar('cat_id')}>" title="<{$smarty.const._AM_XADDRESSES_DISPLAY}>"><{$smarty.const._AM_XADDRESSES_DISPLAY}></a>
             &nbsp;
         <{/if}>
         <{if $category.canEdit}>

@@ -291,7 +291,7 @@ class XaddressesField extends XoopsObject
                 if (!empty($value)) {
                        return formatTimestamp($value, 'm');
                    } else {
-                       return $value = _XADDRESSES_MI_NEVER_LOGGED_IN;
+                       return $value = _MI_XADDRESSES_NEVER_LOGGED_IN;
                    }
                 break;
 /*

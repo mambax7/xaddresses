@@ -1,5 +1,108 @@
 <?php
-// list category children
+function xaddresses_checkModuleAdmin() {
+    if ( file_exists($GLOBALS['xoops']->path('/Frameworks/moduleclasses/moduleadmin/moduleadmin.php'))){
+        include_once $GLOBALS['xoops']->path('/Frameworks/moduleclasses/moduleadmin/moduleadmin.php');
+        return true;
+    } else {
+        echo xoops_error("Error: You don't use the Frameworks \"admin module\". Please install this Frameworks");
+        return false;
+    }
+}
+
+
+
+function xaddresses_CleanVars(&$global, $key, $default = '', $type = 'int') {
+    switch ($type) {
+        case 'array':
+            $ret = (isset($global[$key]) && is_array($global[$key])) ? $global[$key] : $default;
+            break;
+        case 'date':
+            $ret = (isset($global[$key])) ? strtotime($global[$key]) : $default;
+            break;
+        case 'string':
+            $ret = (isset($global[$key])) ? filter_var($global[$key], FILTER_SANITIZE_MAGIC_QUOTES) : $default;
+            break;
+        case 'int': default:
+            $ret = (isset($global[$key])) ? filter_var($global[$key], FILTER_SANITIZE_NUMBER_INT) : $default;
+            break;
+    }
+    if ($ret === false) {
+        return $default;
+    }
+    return $ret;
+}
+
+
+
+function xaddresses_checkModule($dirname) {
+    $moduleHandler =& xoops_gethandler('module');
+    $checkedModule =& $moduleHandler->getByDirname($dirname);
+    if (is_dir(XOOPS_ROOT_PATH . '/modules/' . $dirname)) {
+        if ((is_object($checkedModule)) && ($checkedModule instanceof XoopsModule)) {
+            if ($checkedModule->isactive()) {
+                return round($checkedModule->getVar('version') / 100, 2);
+            } else {
+                return _AM_XADDRESSES_IMPORT_MOD_NOTACTIVE;
+            }
+        } else {
+            return _AM_XADDRESSES_IMPORT_MOD_NOTINSTALLED;
+        }
+    } else {
+        return _AM_XADDRESSES_IMPORT_MOD_NOTPRESENT;
+    }
+}
+
+
+
+function xaddresses_meta_keywords($content) {
+	global $xoopsTpl, $xoTheme;
+	$myts =& MyTextSanitizer::getInstance();
+	$content= $myts->undoHtmlSpecialChars($myts->displayTbox($content));
+	if(isset($xoTheme) && is_object($xoTheme)) {
+		$xoTheme->addMeta( 'meta', 'keywords', strip_tags($content));
+	} else {	// Compatibility for old Xoops versions
+		$xoopsTpl->assign('xoops_meta_keywords', strip_tags($content));
+	}
+}
+
+function xaddresses_meta_description($content) {
+	global $xoopsTpl, $xoTheme;
+	$myts =& MyTextSanitizer::getInstance();
+	$content= $myts->undoHtmlSpecialChars($myts->displayTarea($content));
+	if(isset($xoTheme) && is_object($xoTheme)) {
+		$xoTheme->addMeta( 'meta', 'description', strip_tags($content));
+	} else {	// Compatibility for old Xoops versions
+		$xoopsTpl->assign('xoops_meta_description', strip_tags($content));
+	}
+}
+
+/**
+ * Convert StringToTime Date
+ *
+ * @param mixed $date
+ * @return
+ */
+function xaddresses_convertDate($date)
+{
+    if (strpos(_SHORTDATESTRING, "/"))
+    {
+       $date=str_replace("/", "-", $date);
+    }
+    return strtotime($date);
+}
+
+
+
+// 
+/**
+ * Internal function that return list category children
+ *
+ * Returns an array of category children
+ *
+ * @param string	$permtype	The type of permission
+ * @return array Permitted categories Ids
+ */
+
 function xaddresses_getChildrenTree ($cat_id = 0, $categories, $prefix = '', $sufix = '', $order = '') {
     $prefix = $prefix . '--';
     $sufix = $sufix . '';
@@ -29,7 +132,6 @@ function xaddresses_getChildrenTree ($cat_id = 0, $categories, $prefix = '', $su
  * @param string	$permtype	The type of permission
  * @return array Permitted categories Ids
  */
-
 function xaddresses_getMyItemIds($permtype = 'in_category_view') {
     static $permissions = array();
     $gpermHandler =& xoops_gethandler('groupperm');
@@ -196,5 +298,20 @@ function delDir($dir, $if_not_empty = true) {
         // NOP
     }
     return rmdir($dir);
+}
+
+/***************Blocks***************/
+function xaddresses_block_addCatSelect($cats) {
+	if(is_array($cats))
+	{
+		$cat_sql = "(".current($cats);
+		array_shift($cats);
+		foreach($cats as $cat)
+		{
+			$cat_sql .= ",".$cat;
+		}
+		$cat_sql .= ")";
+	}
+	return $cat_sql;
 }
 ?>

@@ -30,42 +30,7 @@ function xoops_module_install_xaddresses(&$xoopsModule) {
     // Create xaddresses main upload directory
     $dir = XOOPS_ROOT_PATH . "/uploads/xaddresses";
 	if (!makeDir($dir))
-        $msg.= sprintf(_XADDRESSES_MI_WARNING_DIRNOTCREATED, $dir);
-/*
-    $xaddressesfield_Handler =& xoops_getModuleHandler('field', 'xaddresses');
-    $obj =& $xaddressesfield_Handler->create();
-    $obj->setVar('title', _XADDRESSES_AM_FORMHOMEPAGE);
-    $obj->setVar('img', 'homepage.png');
-    $obj->setVar('weight', 1);
-    $obj->setVar('search', 0);
-    $obj->setVar('status', 1);
-    $obj->setVar('status_def', 1);
-    $xaddressesfield_Handler->insert($obj);
-    $obj =& $xaddressesfield_Handler->create();
-    $obj->setVar('title', _XADDRESSES_AM_FORMVERSION);
-    $obj->setVar('img', 'version.png');
-    $obj->setVar('weight', 2);
-    $obj->setVar('search', 0);
-    $obj->setVar('status', 1);
-    $obj->setVar('status_def', 1);
-    $xaddressesfield_Handler->insert($obj);
-    $obj =& $xaddressesfield_Handler->create();
-    $obj->setVar('title', _XADDRESSES_AM_FORMSIZE);
-    $obj->setVar('img', 'size.png');
-    $obj->setVar('weight', 3);
-    $obj->setVar('search', 0);
-    $obj->setVar('status', 1);
-    $obj->setVar('status_def', 1);
-    $xaddressesfield_Handler->insert($obj);
-    $obj =& $xaddressesfield_Handler->create();
-    $obj->setVar('title', _XADDRESSES_AM_FORMPLATFORM);
-    $obj->setVar('img', 'platform.png');
-    $obj->setVar('weight', 4);
-    $obj->setVar('search', 0);
-    $obj->setVar('status', 1);
-    $obj->setVar('status_def', 1);
-    $xaddressesfield_Handler->insert($obj);
-*/   
+        $msg.= sprintf(_MI_XADDRESSES_WARNING_DIRNOTCREATED, $dir);
     if (empty($msg))
         return $ret;
     else

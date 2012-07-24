@@ -34,18 +34,18 @@ class XaddressesFieldcategory extends XoopsObject
         include_once $GLOBALS['xoops']->path('class/xoopsformloader.php');
         if (!isset($form) || empty($form) || get_class($form) != 'XoopsThemeForm') {
             $formIsNew = true;
-            $title = $this->isNew() ? _XADDRESSES_AM_FIELDCAT_NEW : _XADDRESSES_AM_FIELDCAT_EDIT;
+            $title = $this->isNew() ? _AM_XADDRESSES_FIELDCAT_NEW : _AM_XADDRESSES_FIELDCAT_EDIT;
             $form = new XoopsThemeForm($title, 'form', $action, 'post', true);
         } else {
             $formIsNew = false;
         }
-        $form->addElement(new XoopsFormText(_XADDRESSES_AM_FIELDCAT_TITLE, 'cat_title', 35, 255, $this->getVar('cat_title')));
+        $form->addElement(new XoopsFormText(_AM_XADDRESSES_FIELDCAT_TITLE, 'cat_title', 35, 255, $this->getVar('cat_title')));
         if (!$this->isNew()) {
             //Load groups
             $form->addElement(new XoopsFormHidden('id', $this->getVar('cat_id')));
         }
-        $form->addElement(new XoopsFormTextArea(_XADDRESSES_AM_FIELDCAT_DESCRIPTION, 'cat_description', $this->getVar('cat_description', 'e')));
-        $form->addElement(new XoopsFormText(_XADDRESSES_AM_FIELDCAT_WEIGHT, 'cat_weight', 35, 35, $this->getVar('cat_weight', 'e')));
+        $form->addElement(new XoopsFormTextArea(_AM_XADDRESSES_FIELDCAT_DESCRIPTION, 'cat_description', $this->getVar('cat_description', 'e')));
+        $form->addElement(new XoopsFormText(_AM_XADDRESSES_FIELDCAT_WEIGHT, 'cat_weight', 35, 35, $this->getVar('cat_weight', 'e')));
 
         if ($formIsNew) {
             // Captcha
@@ -54,7 +54,7 @@ class XaddressesFieldcategory extends XoopsObject
             // Hidden Fields
             $form->addElement(new XoopsFormHidden('op', 'save_fieldcategory') );
             // Submit button		
-                $button_tray = new XoopsFormElementTray(_XADDRESSES_AM_ACTION, '' ,'');
+                $button_tray = new XoopsFormElementTray(_AM_XADDRESSES_ACTION, '' ,'');
                 $button_tray->addElement(new XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
                 $button_tray->addElement(new XoopsFormButton('', 'reset', _RESET, 'reset'));
                     $cancel_button = new XoopsFormButton('', 'cancel', _CANCEL, 'button');

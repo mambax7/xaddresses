@@ -1,13 +1,19 @@
 <form action="fieldcategory.php" method="post" id="fieldcategoryform">
 <table>
     <tr>
-        <th><{$smarty.const._XADDRESSES_AM_FIELDCAT_TITLE}></th>
-        <th><{$smarty.const._XADDRESSES_AM_FIELDCAT_DESCRIPTION}></th>
-        <th><{$smarty.const._XADDRESSES_AM_FIELDCAT_WEIGHT}></th>
-        <th><{$smarty.const._XADDRESSES_AM_ACTION}></th>
+        <th><{$smarty.const._AM_XADDRESSES_FIELDCAT_TITLE}></th>
+        <th><{$smarty.const._AM_XADDRESSES_FIELDCAT_DESCRIPTION}></th>
+        <th><{$smarty.const._AM_XADDRESSES_FIELDCAT_WEIGHT}></th>
+        <th><{$smarty.const._AM_XADDRESSES_ACTION}></th>
+    </tr>
+    <tr class="odd">
+        <td><{$smarty.const._AM_XADDRESSES_FIELD_CATEGORY_NONE}></td>
+        <td></td>
+        <td>0</td>
+        <td></td>
     </tr>
 <{foreach item=category from=$categories}>
-    <tr class="<{cycle values='odd, even'}>">
+    <tr class="<{cycle values='even, odd'}>">
         <td><{$category.cat_title}></td>
         <td><{$category.cat_description}></td>
         <td>
