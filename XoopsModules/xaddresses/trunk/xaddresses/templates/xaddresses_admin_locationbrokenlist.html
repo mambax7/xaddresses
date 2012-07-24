@@ -1,0 +1,28 @@
+<form action="location.php" method="post" id="locationform">
+<table>
+    <tr>
+        <th><{$smarty.const._AM_XADDRESSES_LOC_ID}></th>
+        <th><{$smarty.const._AM_XADDRESSES_LOC_BROKEN_DATE}></th>
+        <th><{$smarty.const._AM_XADDRESSES_LOC_BROKEN_SENDER}></th>
+        <th><{$smarty.const._AM_XADDRESSES_LOC_BROKEN_DESCRIPTION}></th>
+        <th><{$smarty.const._AM_XADDRESSES_ACTION}></th>
+    </tr>
+<{foreach from=$brokenReports item='brokenReport'}>
+    <tr class="<{cycle values='odd, even'}>">
+        <td><{$brokenReport.loc_id}></td>
+        <td><{$brokenReport.report_date}></td>
+        <td>
+            <{$brokenReport.report_sender_linkeduname}>
+            <br />
+            <{$smarty.const._AM_XADDRESSES_LOC_BROKEN_SENDER_IP}>: <{$brokenReport.report_ip}>
+        </td>
+        <td><{$brokenReport.report_description}></td>
+        <td>
+            <a href="location.php?op=edit_broken&amp;report_id=<{$brokenReport.report_id}>" title="<{$smarty.const._AM_XADDRESSES_LOC_BROKEN_EDIT_LOC}>"><{$smarty.const._AM_XADDRESSES_LOC_BROKEN_EDIT_LOC}></a>
+            &nbsp;
+            <a href="location.php?op=delete_broken&amp;report_id=<{$brokenReport.report_id}>" title="<{$smarty.const._AM_XADDRESSES_LOC_BROKEN_DEL}>"><{$smarty.const._AM_XADDRESSES_LOC_BROKEN_DEL}></a>
+        </td>
+    </tr>
+<{/foreach}>
+</table>
+</form>
