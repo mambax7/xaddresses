@@ -1,0 +1,20 @@
+<{* breadcrumb *}>
+<{if ($breadcrumb)}>
+    <{foreach item=bread from=$breadcrumb}>
+        <a href="<{$bread.url}>"><{$bread.title}></a>
+        &gt;
+    <{/foreach}>
+<{$smarty.const._MA_XADDRESSES_SEARCH}>
+<br />
+<{/if}>
+
+<ul>
+    <li><{$total_locations}></li>
+</ul>
+
+<br />
+
+<{if $errorMessage!= ''}>
+	<div class="errorMsg"><{$errorMessage}></div>   
+<{/if}>
+<{$themeForm}>
