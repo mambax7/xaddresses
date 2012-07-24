@@ -28,7 +28,7 @@ $criteria = new CriteriaCompo();
 $criteria->add(new Criteria('loc_id', $loc_id));
 $criteria->add(new Criteria('loc_suggested', false));
 if ($locationHandler->getCount($criteria) == 0) {
-    redirect_header('index.php', 3, _XADDRESSES_MD_SINGLELOC_NONEXISTENT);
+    redirect_header('index.php', 3, _MA_XADDRESSES_SINGLELOC_NONEXISTENT);
     exit();
 }
 
@@ -62,7 +62,7 @@ while ($category->getVar('cat_pid') != 0) {
     $breadcrumb[] = $crumb;
 }
 if ($xoopsModuleConfig['show_home_in_breadcrumb']) {
-    $crumb['title'] = _XADDRESSES_MD_BREADCRUMB_HOME;
+    $crumb['title'] = _MA_XADDRESSES_BREADCRUMB_HOME;
     $crumb['url'] = 'index.php';
     $breadcrumb[] = $crumb;
 }
@@ -77,13 +77,13 @@ switch ($op) {
 default:
 case "new_vote":
     // Set title for template    
-    $title = _XADDRESSES_MD_LOC_RATELOCATION . '&nbsp;-&nbsp;';
+    $title = _MA_XADDRESSES_LOC_RATELOCATION . '&nbsp;-&nbsp;';
     $title.= $location->getVar('loc_title') . '&nbsp;-&nbsp;';
     $title.= $category->getVar('cat_title') . '&nbsp;-&nbsp;';
     $title.= $GLOBALS['xoopsModule']->name();
     $xoopsTpl->assign('xoops_pagetitle', $title);
     // Set description for template
-    $xoTheme->addMeta( 'meta', 'description', strip_tags(_XADDRESSES_MD_LOC_RATELOCATION . ' (' . $location->getVar('loc_title') . ')'));
+    $xoTheme->addMeta( 'meta', 'description', strip_tags(_MA_XADDRESSES_LOC_RATELOCATION . ' (' . $location->getVar('loc_title') . ')'));
 // IN PROGRESS
     // Set themeForm for template
     $vote =& $votedataHandler->create();
@@ -129,7 +129,7 @@ case "save_vote":
         $locations = $locationHandler->getall($criteria);
         foreach (array_keys($locations) as $i) {
             if ($locations[$i]->getVar('loc_submitter') == $ratingUserId) {
-                redirect_header('locationview.php?loc_id=' . $loc_id, 2, _XADDRESSES_MD_LOC_RATE_DONOTVOTE);
+                redirect_header('locationview.php?loc_id=' . $loc_id, 2, _MA_XADDRESSES_LOC_RATE_DONOTVOTE);
                 exit();
             }
         }
@@ -139,7 +139,7 @@ case "save_vote":
         $votes = $votedataHandler->getall($criteria);
         foreach (array_keys($votes) as $i) {
             if ($votes[$i]->getVar('rating_user') == $ratingUserId) {
-                redirect_header('locationview.php?loc_id=' . $loc_id, 2, _XADDRESSES_MD_LOC_RATE_VOTEONCE);
+                redirect_header('locationview.php?loc_id=' . $loc_id, 2, _MA_XADDRESSES_LOC_RATE_VOTEONCE);
                 exit();
             }
         }
@@ -152,7 +152,7 @@ case "save_vote":
         $criteria->add(new Criteria('rating_hostname', getenv("REMOTE_ADDR")));
         $criteria->add(new Criteria('rating_timestamp', $yesterday, '>'));
         if ($votedataHandler->getCount($criteria) >= 1) {
-            redirect_header('locationview.php?loc_id=' . $loc_id, 2, _XADDRESSES_MD_LOC_RATE_VOTEONCE);
+            redirect_header('locationview.php?loc_id=' . $loc_id, 2, _MA_XADDRESSES_LOC_RATE_VOTEONCE);
             exit();
         }
     }
@@ -165,16 +165,13 @@ case "save_vote":
     }
 
 
-
-    $vote =& $votedataHandler->create();
-    $vote->setVar('loc_id', $loc_id);
-    $vote->setVar('rating_user', $ratingUserId);
-    $vote->setVar('rating', $rating);
-    $vote->setVar('rating_hostname', getenv("REMOTE_ADDR"));
-    $vote->setVar('rating_timestamp', time());
-    if ($errorFlag == true) {
-        $xoopsTpl->assign('errorMessage', $errorMessage);
-    } else {
+    if ($errorFlag == false) {
+        $vote =& $votedataHandler->create();
+        $vote->setVar('loc_id', $loc_id);
+        $vote->setVar('rating_user', $ratingUserId);
+        $vote->setVar('rating', $rating);
+        $vote->setVar('rating_hostname', getenv("REMOTE_ADDR"));
+        $vote->setVar('rating_timestamp', time());
         if ($votedataHandler->insert($vote)) {
             $criteria = new CriteriaCompo();
             $criteria->add(new Criteria('loc_id', $loc_id));
@@ -189,13 +186,19 @@ case "save_vote":
             $location->setVar('loc_rating', number_format($rating, 1));
             $location->setVar('loc_votes', $countVotes);
             if ($locationHandler->insert($location)) {
-                redirect_header('locationview.php?loc_id=' . $loc_id, 2, _XADDRESSES_MD_LOC_RATE_VOTEOK);
+                redirect_header('locationview.php?loc_id=' . $loc_id, 2, _MA_XADDRESSES_LOC_RATE_VOTEOK);
             }
-            echo $location->getHtmlErrors();
+                $errorFlag = true;
+                $errorMessage.= $location->getHtmlErrors();
+        } else {
+            $errorFlag == true;
+            $errorMessage.= $vote->getHtmlErrors();
         }
-        echo $vote->getHtmlErrors();
     }
+    
     // Set themeForm for template
+    if ($errorFlag == true)
+        $xoopsTpl->assign('errorMessage', $errorMessage);
     $form =& $vote->getForm($loc_id, $currentFile);
     $xoopsTpl->assign('themeForm', $form->render());   
     break;    

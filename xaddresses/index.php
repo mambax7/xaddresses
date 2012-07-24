@@ -55,23 +55,30 @@ $criteria->setSort('cat_weight ASC, cat_title');
 $criteria->setOrder('ASC');
 $criteria->add(new Criteria('cat_id', '(' . implode(',', $viewableCategoriesIds) . ')','IN'));
 $mainCategories = $categoryHandler->getAll($criteria);
+$mainCategoriesAsArray = $categoryHandler->getAll($criteria, null, false); // get categories as array
 
 $prefix = '';
 $sufix = '';
 $order = 'cat_weight ASC, cat_title';
 
 // get all categories sorted by tree structure
-$categoriesList = array();
-foreach ($mainCategories as $mainCategory) {
-    $categoriesList[] = array('prefix' => $prefix, 'sufix' => $sufix, 'category' => $mainCategory);
+$categoriesAsArrayList = array();
+foreach ($mainCategoriesAsArray as $mainCategoryAsArray) {
+    $categoriesAsArrayList[] = array('prefix' => $prefix, 'sufix' => $sufix, 'category' => $mainCategoryAsArray);
     $criteria = new CriteriaCompo();
-    $criteria->add(new Criteria('cat_pid', $mainCategory->getVar('cat_id')));
+    $criteria->add(new Criteria('cat_pid', $mainCategoryAsArray['cat_id']));
     $criteria->setSort('cat_weight ASC, cat_title');
     $criteria->setOrder('ASC');
     $criteria->add(new Criteria('cat_id', '(' . implode(',', $viewableCategoriesIds) . ')','IN'));
-    $subCategories = $categoryHandler->getall($criteria);
+    $subCategories = $categoryHandler->getAll($criteria);
+    $subCategoriesAsArray = $categoryHandler->getAll($criteria, null, false); // get subcategories as array
     if (count($subCategories) != 0) {
-        $categoriesList = array_merge ($categoriesList, xaddresses_getChildrenTree($mainCategory->getVar('cat_id'), $subCategories, $prefix, $sufix, $order));
+        $subcategoriesList = xaddresses_getChildrenTree($mainCategoryAsArray['cat_id'], $subCategories, $prefix, $sufix, $order);
+        $subcategoriesAsArrayList = array();
+        foreach($subcategoriesList as $subcategoryList) {
+            $subcategoriesAsArrayList[] = array('prefix' => $subcategoryList['prefix'], 'sufix' => $subcategoryList['sufix'], 'category' => $subcategoryList['category']->toArray());
+        }
+        $categoriesAsArrayList = array_merge ($categoriesAsArrayList, $subcategoriesAsArrayList);
     }
 }
 
@@ -83,7 +90,7 @@ include_once XOOPS_ROOT_PATH . '/header.php';
 // Breadcrumb
 $breadcrumb = array();
 if ($xoopsModuleConfig['show_home_in_breadcrumb']) {
-    $crumb['title'] = _XADDRESSES_MD_BREADCRUMB_HOME;
+    $crumb['title'] = _MA_XADDRESSES_BREADCRUMB_HOME;
     $crumb['url'] = 'index.php';
     $breadcrumb[] = $crumb;
 }
@@ -92,7 +99,7 @@ $breadcrumb = array_reverse($breadcrumb);
 $xoopsTpl->assign('breadcrumb', $breadcrumb);
 unset($breadcrumb, $crumb);
 
-$GLOBALS['xoopsTpl']->assign('categoriesList', $categoriesList);
+$GLOBALS['xoopsTpl']->assign('categoriesList', $categoriesAsArrayList);
 
 
 

@@ -13,14 +13,14 @@
 <{$htmlMap}>
 
 <{* standard fields *}>
-<{$smarty.const._XADDRESSES_AM_LOC_DATE}>: <{$location.loc_date}>
+<{$smarty.const._AM_XADDRESSES_LOC_DATE}>: <{$location.loc_date}>
 <br />
-<{$smarty.const._XADDRESSES_AM_LOC_SUBMITTER}>: <{$location.loc_submitter_linkeduname}>
+<{$smarty.const._AM_XADDRESSES_LOC_SUBMITTER}>: <{$location.loc_submitter_linkeduname}>
 <br />
-<{$smarty.const._XADDRESSES_MD_LOC_RATING}>: <{$location.loc_rating}>
-<{$smarty.const._XADDRESSES_MD_LOC_VOTES|replace:'%s':$location.loc_votes}>
+<{$smarty.const._MA_XADDRESSES_LOC_RATING}>: <{$location.loc_rating}>
+<{$smarty.const._MA_XADDRESSES_LOC_VOTES|replace:'%s':$location.loc_votes}>
 <br />
-<{$smarty.const._XADDRESSES_MD_LOC_COMMENTS|replace:'%s':$location.loc_comments}>
+<{$smarty.const._MA_XADDRESSES_LOC_COMMENTS|replace:'%s':$location.loc_comments}>
 <br />
 
 
@@ -30,29 +30,37 @@
     <{assign var=fieldsbycategory value=$fieldsarray[$fieldscategory.cat_id]}>
     <{foreach item=field from=$fieldsbycategory}>
         <div style="border:1px solid black;">
-        <h3><{$field.title}></h3> <{$field.value}>
+        <h3><{$field.title}></h3>
+        <small>(<{$field.type}>)</small>
+        <{if ($field.type == 'image')}>
+            <img src="<{$field.value}>" alt="<{$field.value}>" />
+        <{elseif ($field.type == 'file')}>
+            <a href="<{$field.value}>" alt="<{$field.value}>" />DOWNLOAD</a>
+        <{else}>
+            <{$field.value}>
+        <{/if}>
         </div>
     <{/foreach}>
     <hr />
 <{/foreach}>
 
 <{* operations *}>
-<a href='locationedit.php?loc_id=<{$location.loc_id}>'><{$smarty.const._XADDRESSES_MD_LOC_EDIT}></a>
+<a href='locationedit.php?loc_id=<{$location.loc_id}>'><{$smarty.const._MA_XADDRESSES_LOC_EDIT}></a>
 <{if $perm_report_broken}>
 &nbsp;|&nbsp;
-<a href='locationbroken.php?loc_id=<{$location.loc_id}>'><{$smarty.const._XADDRESSES_MD_LOC_REPORTBROKEN}></a>
+<a href='locationbroken.php?loc_id=<{$location.loc_id}>'><{$smarty.const._MA_XADDRESSES_LOC_REPORTBROKEN}></a>
 <{/if}>
 <{if $perm_suggest_modify}>
 &nbsp;|&nbsp;
-<a href='locationmodify.php?loc_id=<{$location.loc_id}>'><{$smarty.const._XADDRESSES_MD_LOC_REPORTMODIFY}></a>
+<a href='locationmodify.php?loc_id=<{$location.loc_id}>'><{$smarty.const._MA_XADDRESSES_LOC_REPORTMODIFY}></a>
 <{/if}>
 <{if $perm_rate}>
 &nbsp;|&nbsp;
-<a href='locationrate.php?loc_id=<{$location.loc_id}>'><{$smarty.const._XADDRESSES_MD_LOC_RATELOCATION}></a>
+<a href='locationrate.php?loc_id=<{$location.loc_id}>'><{$smarty.const._MA_XADDRESSES_LOC_RATELOCATION}></a>
 <{/if}>
 <{if $perm_tell_a_friend}>
 &nbsp;|&nbsp;
-<a href='<{$tell_a_friend_href}>'><{$smarty.const._XADDRESSES_MD_LOC_TELLAFRIEND}></a>
+<a href='<{$tell_a_friend_href}>'><{$smarty.const._MA_XADDRESSES_LOC_TELLAFRIEND}></a>
 <{/if}>
 <br />
 

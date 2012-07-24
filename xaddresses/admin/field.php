@@ -14,13 +14,10 @@ default:
 case 'list_fields':
     // render start here
     xoops_cp_header();
-    // main admin menu
-    include (XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['xoopsModule']->dirname() . '/admin/menu.php');
-    echo moduleAdminTabMenu($adminmenu, $currentFile);
     // submenu
     $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
-    $submenuItem[] = ($op == 'new_field' ? _XADDRESSES_AM_FIELD_NEW : '<a href="' . $currentFile . '?op=new_field">' . _XADDRESSES_AM_FIELD_NEW . '</a>');
-    $submenuItem[] = ($op == 'list_fields' ? _XADDRESSES_AM_FIELD_LIST : '<a href="' . $currentFile . '?op=list_fields">' . _XADDRESSES_AM_FIELD_LIST . '</a>');
+    $submenuItem[] = ($op == 'new_field' ? _AM_XADDRESSES_FIELD_NEW : '<a href="' . $currentFile . '?op=new_field">' . _AM_XADDRESSES_FIELD_NEW . '</a>');
+    $submenuItem[] = ($op == 'list_fields' ? _AM_XADDRESSES_FIELD_LIST : '<a href="' . $currentFile . '?op=list_fields">' . _AM_XADDRESSES_FIELD_LIST . '</a>');
     xaddressesAdminSubmenu ($submenuItem);
 
     // get fields categories
@@ -28,7 +25,7 @@ case 'list_fields':
     $criteria->setSort('cat_weight');
     $cats = $fieldCategoryHandler->getObjects($criteria, true);
     unset($criteria);
-    $categories[0] = _XADDRESSES_AM_FIELD_CATEGORY_DEFAULT;
+    $categories[0] = _AM_XADDRESSES_FIELD_CATEGORY_NONE;
     if ( count($cats) > 0 ) {
         foreach (array_keys($cats) as $i ) {
             $categories[$cats[$i]->getVar('cat_id')] = $cats[$i]->getVar('cat_title');
@@ -38,39 +35,39 @@ case 'list_fields':
     unset($categories);
 
     $valuetypes = array(
-        XOBJ_DTYPE_ARRAY =>     _XADDRESSES_AM_FIELD_ARRAY,
-        XOBJ_DTYPE_EMAIL =>     _XADDRESSES_AM_FIELD_EMAIL,
-        XOBJ_DTYPE_INT =>       _XADDRESSES_AM_FIELD_INT,
-        XOBJ_DTYPE_TXTAREA =>   _XADDRESSES_AM_FIELD_TXTAREA,
-        XOBJ_DTYPE_TXTBOX =>    _XADDRESSES_AM_FIELD_TXTBOX,
-        XOBJ_DTYPE_URL =>       _XADDRESSES_AM_FIELD_URL,
-        XOBJ_DTYPE_OTHER =>     _XADDRESSES_AM_FIELD_OTHER,
-        XOBJ_DTYPE_MTIME =>     _XADDRESSES_AM_FIELD_DATE
+        XOBJ_DTYPE_ARRAY =>     _AM_XADDRESSES_FIELD_ARRAY,
+        XOBJ_DTYPE_EMAIL =>     _AM_XADDRESSES_FIELD_EMAIL,
+        XOBJ_DTYPE_INT =>       _AM_XADDRESSES_FIELD_INT,
+        XOBJ_DTYPE_TXTAREA =>   _AM_XADDRESSES_FIELD_TXTAREA,
+        XOBJ_DTYPE_TXTBOX =>    _AM_XADDRESSES_FIELD_TXTBOX,
+        XOBJ_DTYPE_URL =>       _AM_XADDRESSES_FIELD_URL,
+        XOBJ_DTYPE_OTHER =>     _AM_XADDRESSES_FIELD_OTHER,
+        XOBJ_DTYPE_MTIME =>     _AM_XADDRESSES_FIELD_DATE
         );
     $fieldtypes = array(
-        'checkbox' =>       _XADDRESSES_AM_FIELD_CHECKBOX,
-        'group' =>          _XADDRESSES_AM_FIELD_GROUP,
-        'group_multi' =>    _XADDRESSES_AM_FIELD_GROUPMULTI,
-        'language' =>       _XADDRESSES_AM_FIELD_LANGUAGE,
-        'radio' =>          _XADDRESSES_AM_FIELD_RADIO,
-        'select' =>         _XADDRESSES_AM_FIELD_SELECT,
-        'select_multi' =>   _XADDRESSES_AM_FIELD_SELECTMULTI,
-        'textarea' =>       _XADDRESSES_AM_FIELD_TEXTAREA,
-        'dhtml' =>          _XADDRESSES_AM_FIELD_DHTMLTEXTAREA,
-        'textbox' =>        _XADDRESSES_AM_FIELD_TEXTBOX,
-        'timezone' =>       _XADDRESSES_AM_FIELD_TIMEZONE,
-        'yesno' =>          _XADDRESSES_AM_FIELD_YESNO,
-        'date' =>           _XADDRESSES_AM_FIELD_DATE,
-        'datetime' =>       _XADDRESSES_AM_FIELD_DATETIME,
-        'longdate' =>       _XADDRESSES_AM_FIELD_LONGDATE,
-        'theme' =>          _XADDRESSES_AM_FIELD_THEME,
-        'autotext' =>       _XADDRESSES_AM_FIELD_AUTOTEXT,
-        'rank' =>           _XADDRESSES_AM_FIELD_RANK,
-        'image' =>          _XADDRESSES_AM_FIELD_XOOPSIMAGE,
-        'multipleimage' =>  _XADDRESSES_AM_FIELD_MULTIPLEXOOPSIMAGE,
-        'file' =>           _XADDRESSES_AM_FIELD_FILE,
-        'multiplefile' =>   _XADDRESSES_AM_FIELD_MULTIPLEFILE,
-        'kmlmap' =>         _XADDRESSES_AM_FIELD_KMLMAP
+        'checkbox' =>       _AM_XADDRESSES_FIELD_CHECKBOX,
+        'group' =>          _AM_XADDRESSES_FIELD_GROUP,
+        'group_multi' =>    _AM_XADDRESSES_FIELD_GROUPMULTI,
+        'language' =>       _AM_XADDRESSES_FIELD_LANGUAGE,
+        'radio' =>          _AM_XADDRESSES_FIELD_RADIO,
+        'select' =>         _AM_XADDRESSES_FIELD_SELECT,
+        'select_multi' =>   _AM_XADDRESSES_FIELD_SELECTMULTI,
+        'textarea' =>       _AM_XADDRESSES_FIELD_TEXTAREA,
+        'dhtml' =>          _AM_XADDRESSES_FIELD_DHTMLTEXTAREA,
+        'textbox' =>        _AM_XADDRESSES_FIELD_TEXTBOX,
+        'timezone' =>       _AM_XADDRESSES_FIELD_TIMEZONE,
+        'yesno' =>          _AM_XADDRESSES_FIELD_YESNO,
+        'date' =>           _AM_XADDRESSES_FIELD_DATE,
+        'datetime' =>       _AM_XADDRESSES_FIELD_DATETIME,
+        'longdate' =>       _AM_XADDRESSES_FIELD_LONGDATE,
+        'theme' =>          _AM_XADDRESSES_FIELD_THEME,
+        'autotext' =>       _AM_XADDRESSES_FIELD_AUTOTEXT,
+        'rank' =>           _AM_XADDRESSES_FIELD_RANK,
+        'image' =>          _AM_XADDRESSES_FIELD_XOOPSIMAGE,
+        'multipleimage' =>  _AM_XADDRESSES_FIELD_MULTIPLEXOOPSIMAGE,
+        'file' =>           _AM_XADDRESSES_FIELD_FILE,
+        'multiplefile' =>   _AM_XADDRESSES_FIELD_MULTIPLEFILE,
+        //'kmlmap' =>         _AM_XADDRESSES_FIELD_KMLMAP
         );
 
     // get fields
@@ -94,9 +91,9 @@ case 'list_fields':
         $GLOBALS['xoopsTpl']->assign('token', $GLOBALS['xoopsSecurity']->getTokenHTML() );
         $GLOBALS['xoopsTpl']->display("db:xaddresses_admin_fieldlist.html");
     } else {
-        echo '<div class="errorMsg">' . _XADDRESSES_AM_ERROR_NO_FIELDS . '</div>';
+        echo '<div class="errorMsg">' . _AM_XADDRESSES_ERROR_NO_FIELDS . '</div>';
     }
-    xoops_cp_footer();
+    include "admin_footer.php";
     break;
 
 
@@ -104,13 +101,10 @@ case 'list_fields':
 case 'new_field':
     // render start here
     xoops_cp_header();
-    // main admin menu
-    include (XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['xoopsModule']->dirname() . '/admin/menu.php');
-    echo moduleAdminTabMenu($adminmenu, $currentFile);
     // submenu
     $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
-    $submenuItem[] = ($op == 'new_field' ? _XADDRESSES_AM_FIELD_NEW : '<a href="' . $currentFile . '?op=new_field">' . _XADDRESSES_AM_FIELD_NEW . '</a>');
-    $submenuItem[] = ($op == 'list_fields' ? _XADDRESSES_AM_FIELD_LIST : '<a href="' . $currentFile . '?op=list_fields">' . _XADDRESSES_AM_FIELD_LIST . '</a>');
+    $submenuItem[] = ($op == 'new_field' ? _AM_XADDRESSES_FIELD_NEW : '<a href="' . $currentFile . '?op=new_field">' . _AM_XADDRESSES_FIELD_NEW . '</a>');
+    $submenuItem[] = ($op == 'list_fields' ? _AM_XADDRESSES_FIELD_LIST : '<a href="' . $currentFile . '?op=list_fields">' . _AM_XADDRESSES_FIELD_LIST . '</a>');
     xaddressesAdminSubmenu ($submenuItem);
 
     include_once('../include/forms.php');
@@ -118,7 +112,7 @@ case 'new_field':
     $form = xaddresses_getFieldForm($field);
     $form->display();
     
-    xoops_cp_footer();
+    include "admin_footer.php";
     break;
 
 
@@ -126,24 +120,21 @@ case 'new_field':
 case 'edit_field':
     $field =& $fieldHandler->get($_REQUEST['field_id']);
     if ( !$field->getVar('field_config') && !$field->getVar('field_show') && !$field->getVar('field_edit')  ) { //If no configs exist
-        redirect_header($currentFile, 2, _XADDRESSES_AM_FIELDNOTCONFIGURABLE);
+        redirect_header($currentFile, 2, _AM_XADDRESSES_FIELDNOTCONFIGURABLE);
     }
     // render start here
     xoops_cp_header();
-    // main admin menu
-    include (XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['xoopsModule']->dirname() . '/admin/menu.php');
-    echo moduleAdminTabMenu($adminmenu, $currentFile);
     // submenu
     $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
-    $submenuItem[] = ($op == 'new_field' ? _XADDRESSES_AM_FIELD_NEW : '<a href="' . $currentFile . '?op=new_field">' . _XADDRESSES_AM_FIELD_NEW . '</a>');
-    $submenuItem[] = ($op == 'list_fields' ? _XADDRESSES_AM_FIELD_LIST : '<a href="' . $currentFile . '?op=list_fields">' . _XADDRESSES_AM_FIELD_LIST . '</a>');
+    $submenuItem[] = ($op == 'new_field' ? _AM_XADDRESSES_FIELD_NEW : '<a href="' . $currentFile . '?op=new_field">' . _AM_XADDRESSES_FIELD_NEW . '</a>');
+    $submenuItem[] = ($op == 'list_fields' ? _AM_XADDRESSES_FIELD_LIST : '<a href="' . $currentFile . '?op=list_fields">' . _AM_XADDRESSES_FIELD_LIST . '</a>');
     xaddressesAdminSubmenu ($submenuItem);
     
     include_once('../include/forms.php');
     $form = xaddresses_getFieldForm($field);
     $form->display();
     
-    xoops_cp_footer();
+    include "admin_footer.php";
     break;
 
 
@@ -177,7 +168,7 @@ case 'reorder_fields':
             }
             if ( count($errors) == 0 ) {
                 //no errors
-                redirect_header($currentFile, 2, sprintf(_XADDRESSES_AM_SAVEDSUCCESS, _XADDRESSES_AM_FIELDS) );
+                redirect_header($currentFile, 2, sprintf(_AM_XADDRESSES_SAVEDSUCCESS, _AM_XADDRESSES_FIELDS) );
             } else {
                 redirect_header($currentFile, 3, implode('<br />', $errors) );
             }
@@ -197,7 +188,7 @@ case 'save_field':
         $field =& $fieldHandler->get($_REQUEST['field_id']);
         // if no configs exist
         if (!$field->getVar('field_config') && !$field->getVar('field_show') && !$field->getVar('field_edit')) { 
-            redirect_header('admin.php', 2, _XADDRESSES_AM_FIELDNOTCONFIGURABLE);
+            redirect_header('admin.php', 2, _AM_XADDRESSES_FIELDNOTCONFIGURABLE);
         }
     } else {
         // if is a new field
@@ -363,21 +354,18 @@ case 'save_field':
             }
         }
         if ($redirectToEdit) {
-            redirect_header($currentFile . '?op=edit_field&amp;field_id=' . $field->getVar('field_id'), 3, sprintf("//IN PROGRESS " . _XADDRESSES_AM_NEXT_STEP, _XADDRESSES_AM_FIELD));
+            redirect_header($currentFile . '?op=edit_field&amp;field_id=' . $field->getVar('field_id'), 3, _AM_XADDRESSES_FIELD_NEXT_STEP);
         } else {
-            redirect_header($currentFile, 3, sprintf(_XADDRESSES_AM_SAVEDSUCCESS, _XADDRESSES_AM_FIELD));
+            redirect_header($currentFile, 3, sprintf(_AM_XADDRESSES_SAVEDSUCCESS, _AM_XADDRESSES_FIELD));
         }
     }
 
     // render start here
     xoops_cp_header();
-    // main admin menu
-    include (XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['xoopsModule']->dirname() . '/admin/menu.php');
-    echo moduleAdminTabMenu($adminmenu, $currentFile);
     // submenu
     $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
-    $submenuItem[] = ($op == 'new_field' ? _XADDRESSES_AM_FIELD_NEW : '<a href="' . $currentFile . '?op=new_field">' . _XADDRESSES_AM_FIELD_NEW . '</a>');
-    $submenuItem[] = ($op == 'list_fields' ? _XADDRESSES_AM_FIELD_LIST : '<a href="' . $currentFile . '?op=list_fields">' . _XADDRESSES_AM_FIELD_LIST . '</a>');
+    $submenuItem[] = ($op == 'new_field' ? _AM_XADDRESSES_FIELD_NEW : '<a href="' . $currentFile . '?op=new_field">' . _AM_XADDRESSES_FIELD_NEW . '</a>');
+    $submenuItem[] = ($op == 'list_fields' ? _AM_XADDRESSES_FIELD_LIST : '<a href="' . $currentFile . '?op=list_fields">' . _AM_XADDRESSES_FIELD_LIST . '</a>');
     xaddressesAdminSubmenu ($submenuItem);
     include_once('../include/forms.php');
 
@@ -385,7 +373,7 @@ case 'save_field':
 
     $form = xaddresses_getFieldForm($field);
     $form->display();
-    xoops_cp_footer();
+    include "admin_footer.php";
     break;
 
 
@@ -393,21 +381,21 @@ case 'save_field':
 case 'delete_field':
     $field =& $fieldHandler->get($_REQUEST['field_id']);
     if ( !$field->getVar('field_config')  ) {
-        redirect_header('index.php', 2, _XADDRESSES_AM_FIELDNOTCONFIGURABLE);
+        redirect_header('index.php', 2, _AM_XADDRESSES_FIELDNOTCONFIGURABLE);
     }
     if ( isset($_REQUEST['ok']) && $_REQUEST['ok'] == 1 ) {
         if ( !$GLOBALS['xoopsSecurity']->check()  ) {
             redirect_header($currentFile, 3, implode(',', $GLOBALS['xoopsSecurity']->getErrors() ));
         }
         if ( $fieldHandler->delete($field) ) {
-        	redirect_header($currentFile, 3, sprintf(_XADDRESSES_AM_DELETEDSUCCESS, _XADDRESSES_AM_FIELD) );
+        	redirect_header($currentFile, 3, sprintf(_AM_XADDRESSES_DELETEDSUCCESS, _AM_XADDRESSES_FIELD) );
         } else {
             echo $field->getHtmlErrors();
         }
     } else {
         // render start here
         xoops_cp_header();
-        xoops_confirm(array('ok' => 1, 'field_id' => $_REQUEST['field_id'], 'op' => 'delete_field'), $_SERVER['REQUEST_URI'], sprintf(_XADDRESSES_AM_RUSUREDEL, $field->getVar('field_title') ));
+        xoops_confirm(array('ok' => 1, 'field_id' => $_REQUEST['field_id'], 'op' => 'delete_field'), $_SERVER['REQUEST_URI'], sprintf(_AM_XADDRESSES_RUSUREDEL, $field->getVar('field_title') ));
         xoops_cp_footer();
     }
     break;

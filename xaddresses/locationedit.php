@@ -38,7 +38,7 @@ switch ($op) {
 default:
 case 'edit_location':
     if (!isset($_REQUEST['loc_id'])) {
-            redirect_header('index.php', 3, _XADDRESSES_MD_SINGLELOC_NONEXISTENT);
+            redirect_header('index.php', 3, _MA_XADDRESSES_SINGLELOC_NONEXISTENT);
             exit();
     }
     // redirect if id location not exist
@@ -47,7 +47,7 @@ case 'edit_location':
     $criteria->add(new Criteria('loc_id', $loc_id));
     $criteria->add(new Criteria('loc_suggested', false));
     if ($locationHandler->getCount($criteria) == 0) {
-        redirect_header('index.php', 3, _XADDRESSES_MD_SINGLELOC_NONEXISTENT);
+        redirect_header('index.php', 3, _MA_XADDRESSES_SINGLELOC_NONEXISTENT);
         exit();
     }
     $location = $locationHandler->get($loc_id);
@@ -67,7 +67,7 @@ case 'edit_location':
         $breadcrumb[] = $crumb;
     }
     if ($xoopsModuleConfig['show_home_in_breadcrumb']) {
-        $crumb['title'] = _XADDRESSES_MD_BREADCRUMB_HOME;
+        $crumb['title'] = _MA_XADDRESSES_BREADCRUMB_HOME;
         $crumb['url'] = 'index.php';
         $breadcrumb[] = $crumb;
     }
@@ -77,13 +77,13 @@ case 'edit_location':
     unset($breadcrumb, $crumb);
 
     // Set title for template    
-    $title = _XADDRESSES_MD_LOC_RATELOCATION . '&nbsp;-&nbsp;';
+    $title = _MA_XADDRESSES_LOC_RATELOCATION . '&nbsp;-&nbsp;';
     $title.= $location->getVar('loc_title') . '&nbsp;-&nbsp;';
     $title.= $category->getVar('cat_title') . '&nbsp;-&nbsp;';
     $title.= $GLOBALS['xoopsModule']->name();
     $xoopsTpl->assign('xoops_pagetitle', $title);
     // Set description for template
-    $xoTheme->addMeta( 'meta', 'description', strip_tags(_XADDRESSES_MD_LOC_RATELOCATION . ' (' . $location->getVar('loc_title') . ')'));
+    $xoTheme->addMeta( 'meta', 'description', strip_tags(_MA_XADDRESSES_LOC_RATELOCATION . ' (' . $location->getVar('loc_title') . ')'));
 
     // Set themeForm for template
     $form = &xaddresses_getLocationForm($location, $currentFile);
@@ -99,11 +99,11 @@ case 'new_location':
     // Set breadcrumb array for tamplate
     $breadcrumb = array();
     if ($xoopsModuleConfig['show_home_in_breadcrumb']) {
-        $crumb['title'] = _XADDRESSES_MD_BREADCRUMB_HOME;
+        $crumb['title'] = _MA_XADDRESSES_BREADCRUMB_HOME;
         $crumb['url'] = 'index.php';
         $breadcrumb[] = $crumb;
     }
-    // Set breadcrumb array for tamplate
+    // Set breadcrumb array for template
     $breadcrumb = array_reverse($breadcrumb);
     $xoopsTpl->assign('breadcrumb', $breadcrumb);
     unset($breadcrumb, $crumb);
@@ -196,26 +196,24 @@ case 'save_location':
        //     }
     }
 
-    $new_groups = isset($_POST['groups']) ? $_POST['groups'] : array();
-
     if ($errorFlag == false) {
         if ($locationHandler->insert($location)) {
             if ($location->isNew()) {
-                redirect_header($currentFile, 2, _XADDRESSES_AM_ADDRESSCREATED, false);
+                redirect_header($currentFile, 2, _AM_XADDRESSES_ADDRESSCREATED, false);
             } else {
                 redirect_header('locationview.php?loc_id=' . $location->getVar('loc_id'), 2, _US_PROFUPDATED, false);
             }
         } else {
             $errorFlag = true;
+            $errorMessage.= $location->getHtmlErrors();
         }
     }
-    
-    // TO DO
-    // TO DO
-    // TO DO
 
-    $form = xaddresses_getAddressForm($location);
-    $form->display();
+    // Set themeForm for template
+    if ($errorFlag == true)
+        $xoopsTpl->assign('errorMessage', $errorMessage);
+    $form = &xaddresses_getLocationForm($location);
+    $xoopsTpl->assign('themeForm', $form->render());
     break;
 }
 

@@ -20,13 +20,10 @@ default:
 case 'list_locationcategories':
     // render start here
     xoops_cp_header();
-    // render main admin menu
-    include (XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['xoopsModule']->dirname() . '/admin/menu.php');
-    echo moduleAdminTabMenu($adminmenu, $currentFile);
     // Submenu
     $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
-    $submenuItem[] = ($op == 'new_locationcategory' ? _XADDRESSES_AM_CAT_NEW : '<a href="' . $currentFile . '?op=new_locationcategory">' . _XADDRESSES_AM_CAT_NEW . '</a>');
-    $submenuItem[] = ($op == 'list_locationcategories' ? _XADDRESSES_AM_CAT_LIST : '' . _XADDRESSES_AM_CAT_LIST . '');
+    $submenuItem[] = ($op == 'new_locationcategory' ? _AM_XADDRESSES_CAT_NEW : '<a href="' . $currentFile . '?op=new_locationcategory">' . _AM_XADDRESSES_CAT_NEW . '</a>');
+    $submenuItem[] = ($op == 'list_locationcategories' ? _AM_XADDRESSES_CAT_LIST : '' . _AM_XADDRESSES_CAT_LIST . '');
     xaddressesAdminSubmenu ($submenuItem);
 
     $criteria = new CriteriaCompo();
@@ -61,7 +58,7 @@ case 'list_locationcategories':
 
     foreach ($categoriesList as $key=>$categoriesListItem) {
         $category = $categoriesListItem['category'];
-        $info = _XADDRESSES_AM_CAT_MAP_TYPE . ': ' . $category->getVar('cat_map_type');
+        $info = _AM_XADDRESSES_CAT_MAP_TYPE . ': ' . $category->getVar('cat_map_type');
         // count valid locations
         $criteria = new CriteriaCompo();
         $criteria->add(new Criteria('loc_suggested', false));
@@ -69,7 +66,7 @@ case 'list_locationcategories':
         $criteria->add(new Criteria('loc_cat_id', $category->getVar('cat_id')));
         $countLocations = $locationHandler->getCount($criteria);
         $info.= '<br />';
-        $info.= _XADDRESSES_AM_LOCATIONS . ': ' . $countLocations;
+        $info.= _AM_XADDRESSES_LOCATIONS . ': ' . $countLocations;
         $categoriesList[$key]['info'] = $info;
 
         if ($GLOBALS['xoopsUser']->isAdmin($GLOBALS['xoopsModule']->mid())) {
@@ -91,7 +88,7 @@ case 'list_locationcategories':
     $GLOBALS['xoopsTpl']->assign('token', $GLOBALS['xoopsSecurity']->getTokenHTML() );
     $GLOBALS['xoopsTpl']->display("db:xaddresses_admin_locationcategorylist.html");
 
-    xoops_cp_footer();
+    include "admin_footer.php";
     break;
 
 
@@ -122,7 +119,7 @@ case 'reorder_locationcategories':
             }
             if (count($errors) == 0) {
                 //no errors
-                redirect_header($currentFile, 2, sprintf(_XADDRESSES_AM_SAVEDSUCCESS, _XADDRESSES_AM_CATEGORIES));
+                redirect_header($currentFile, 2, sprintf(_AM_XADDRESSES_SAVEDSUCCESS, _AM_XADDRESSES_CATEGORIES));
             } else {
                 redirect_header($currentFile, 3, implode('<br />', $errors));
             }
@@ -135,20 +132,17 @@ case 'reorder_locationcategories':
 // new category form
 case "new_locationcategory":
     xoops_cp_header();
-    // main admin menu
-    include (XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['xoopsModule']->dirname() . '/admin/menu.php');
-    echo moduleAdminTabMenu($adminmenu, $currentFile);
     // Submenu
     $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
-    $submenuItem[] = ($op == 'new_locationcategory' ? _XADDRESSES_AM_CAT_NEW : '<a href="' . $currentFile . '?op=new_locationcategory">' . _XADDRESSES_AM_CAT_NEW . '</a>');
-    $submenuItem[] = ($op == 'list_locationcategories' ? _XADDRESSES_AM_CAT_LIST : '<a href="' . $currentFile . '?op=list_locationcategories">' . _XADDRESSES_AM_CAT_LIST . '</a>');
+    $submenuItem[] = ($op == 'new_locationcategory' ? _AM_XADDRESSES_CAT_NEW : '<a href="' . $currentFile . '?op=new_locationcategory">' . _AM_XADDRESSES_CAT_NEW . '</a>');
+    $submenuItem[] = ($op == 'list_locationcategories' ? _AM_XADDRESSES_CAT_LIST : '<a href="' . $currentFile . '?op=list_locationcategories">' . _AM_XADDRESSES_CAT_LIST . '</a>');
     xaddressesAdminSubmenu ($submenuItem);
 
     $category =& $categoryHandler->create();
     $form = $category->getForm($currentFile);
     $form->display();
 
-    xoops_cp_footer();
+    include "admin_footer.php";
     break;
 
 
@@ -156,20 +150,17 @@ case "new_locationcategory":
 // edit category form
 case "edit_locationcategory":
     xoops_cp_header();
-    // main admin menu
-    include (XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['xoopsModule']->dirname() . '/admin/menu.php');
-    echo moduleAdminTabMenu($adminmenu, $currentFile);
     // Submenu
     $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
-    $submenuItem[] = ($op == 'new_locationcategory' ? _XADDRESSES_AM_CAT_NEW : '<a href="' . $currentFile . '?op=new_locationcategory">' . _XADDRESSES_AM_CAT_NEW . '</a>');
-    $submenuItem[] = ($op == 'list_locationcategories' ? _XADDRESSES_AM_CAT_LIST : '<a href="' . $currentFile . '?op=list_locationcategories">' . _XADDRESSES_AM_CAT_LIST . '</a>');
+    $submenuItem[] = ($op == 'new_locationcategory' ? _AM_XADDRESSES_CAT_NEW : '<a href="' . $currentFile . '?op=new_locationcategory">' . _AM_XADDRESSES_CAT_NEW . '</a>');
+    $submenuItem[] = ($op == 'list_locationcategories' ? _AM_XADDRESSES_CAT_LIST : '<a href="' . $currentFile . '?op=list_locationcategories">' . _AM_XADDRESSES_CAT_LIST . '</a>');
     xaddressesAdminSubmenu ($submenuItem);
 
     $category = $categoryHandler->get($_REQUEST['cat_id']);
     $form = $category->getForm($currentFile);
     $form->display();
 
-    xoops_cp_footer();
+    include "admin_footer.php";
     break;
 
 
@@ -247,13 +238,13 @@ case 'delete_locationcategory':
             if (!$categoryHandler->delete($categoryToDelete)) {
                 echo $categoryToDelete->getHtmlErrors();
             }
-        redirect_header($currentFile, 1, _XADDRESSES_AM_REDIRECT_DEL_OK);
+        redirect_header($currentFile, 1, _AM_XADDRESSES_REDIRECT_DEL_OK);
         }
         
     } else {
         if (count($subcategories) > 0) {
             $warning = '<br />';
-            $warning.= _XADDRESSES_AM_DEL_SUB_CATS;
+            $warning.= _AM_XADDRESSES_DEL_SUB_CATS;
             $warning.= '<br />';
             foreach (array_keys($subcategories) as $i) {
                 $warning.= '<b><span style="color : Red">' . $subcategories[$i]->getVar('cat_title') . '</span></b>';
@@ -263,7 +254,7 @@ case 'delete_locationcategory':
                 $criteria->add(new Criteria('loc_cat_id', $subcategories[$i]->getVar('cat_id')));
                 $locations = $locationHandler->getall( $criteria );
                 if (count($locations) > 0) {
-                    $warning .= _XADDRESSES_AM_DELADDRESSES .'<br />';
+                    $warning .= _AM_XADDRESSES_DELADDRESSES .'<br />';
                     foreach (array_keys($locations) as $i) {
                         $warning .= '<span style="color : Red">' . $locations[$i]->getVar('loc_title') . '</span><br />';
                     }
@@ -274,7 +265,7 @@ case 'delete_locationcategory':
         }
         // render start here
         xoops_cp_header();
-        xoops_confirm(array('ok' => 1, 'cat_id' => $_REQUEST['cat_id'], 'op' => 'delete_locationcategory'), $_SERVER['REQUEST_URI'], sprintf(_XADDRESSES_AM_FORM_SURE_DEL, $category->getVar('cat_title')) . $warning);
+        xoops_confirm(array('ok' => 1, 'cat_id' => $_REQUEST['cat_id'], 'op' => 'delete_locationcategory'), $_SERVER['REQUEST_URI'], sprintf(_AM_XADDRESSES_FORM_SURE_DEL, $category->getVar('cat_title')) . $warning);
         xoops_cp_footer();
     }
     break;
@@ -294,15 +285,15 @@ case 'view_locationcategory':
     $criteria->add(new Criteria('loc_cat_id', $_REQUEST['cat_id']));
     $countLocations = $locationHandler->getCount($criteria);
     echo '<h1>' . $viewCategory->getVar('cat_title') . ' ' . 'IN_PROGRESS</h1>';
-    echo _XADDRESSES_AM_FORMTEXT . ' ' . $viewCategory->getVar('cat_description');
+    echo _AM_XADDRESSES_FORMTEXT . ' ' . $viewCategory->getVar('cat_description');
     echo '<br />';
-    echo _XADDRESSES_AM_FORMIMG . ' <img src="' . $viewCategory->getVar('cat_imgurl') . '" alt="" title="" height="60">';
+    echo _AM_XADDRESSES_FORMIMG . ' <img src="' . $viewCategory->getVar('cat_imgurl') . '" alt="" title="" height="60">';
     echo '<br />';
-    echo _XADDRESSES_AM_FORMWEIGHT . ' ' . $viewCategory->getVar('cat_weight');
+    echo _AM_XADDRESSES_FORMWEIGHT . ' ' . $viewCategory->getVar('cat_weight');
     echo '<br />';
-    echo _XADDRESSES_AM_THEREIS . ' ' . $countLocations . ' ' . _XADDRESSES_AM_ADDRESSESINCAT;
+    echo _AM_XADDRESSES_THEREIS . ' ' . $countLocations . ' ' . _AM_XADDRESSES_ADDRESSESINCAT;
     echo '<br />';
-    echo _XADDRESSES_AM_FORMACTION;
+    echo _AM_XADDRESSES_FORMACTION;
     echo ' <br />';
     echo '<a href="' . $currentFile . '?op=edit_locationcategory&cat_id=' . $_REQUEST['cat_id'] . '">' . _EDIT . '</a>';
     echo '&nbsp;';
@@ -337,12 +328,12 @@ case 'save_locationcategory':
     // Check values
     if ((int)$_REQUEST['cat_weight']==0 && $_REQUEST['cat_weight'] != '0') {
         $errorFlag = true;
-        $errorMessage = _XADDRESSES_AM_ERROR_WEIGHT . '<br />';
+        $errorMessage = _AM_XADDRESSES_ERROR_WEIGHT . '<br />';
     }
     if (isset($_REQUEST['cat_id'])) {
         if ($_REQUEST['cat_id'] == $_REQUEST['cat_pid']) {
             $errorFlag = true;
-            $errorMessage .= _XADDRESSES_AM_ERROR_CAT;
+            $errorMessage .= _AM_XADDRESSES_ERROR_CAT;
         }
     }
     if ($errorFlag == true) {
@@ -380,7 +371,7 @@ case 'save_locationcategory':
                 $notificationHandler =& xoops_gethandler('notification');
                 $notificationHandler->triggerEvent('global', 0, 'new_category', $tags);
             }
-            redirect_header($currentFile . '?op=list_categories', 1, sprintf(_XADDRESSES_AM_SAVEDSUCCESS, $category->getVar('cat_title')));
+            redirect_header($currentFile . '?op=list_categories', 1, sprintf(_AM_XADDRESSES_SAVEDSUCCESS, $category->getVar('cat_title')));
         }
         echo $category->getHtmlErrors();
     }

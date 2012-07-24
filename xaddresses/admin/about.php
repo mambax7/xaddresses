@@ -10,10 +10,6 @@ $versionInfo =& $module_handler->get($GLOBALS['xoopsModule']->getVar('mid'));
 // render start here
 xoops_cp_header();
 
-// main admin menu
-include (XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['xoopsModule']->dirname() . '/admin/menu.php');
-echo moduleAdminTabMenu($adminmenu, $currentFile);
-
 echo "
     <style type=\"text/css\">
     label,text {
@@ -36,27 +32,27 @@ echo "<fieldset><legend style='font-weight: bold; color: #900;'>" . $GLOBALS['xo
 echo "<div style='padding: 8px;'>";
 echo "<img src='" . XOOPS_URL . "/modules/" . $GLOBALS['xoopsModule']->getVar('dirname') . "/" . $versionInfo->getInfo('image') . "' alt='' hspace='10' vspace='0' /></a>\n";
 echo "<div style='padding: 5px;'><strong>" . $versionInfo->getInfo('name') . " version " . $versionInfo->getInfo('version') . "</strong></div>\n";
-echo "<label>" . _XADDRESSES_AM_ABOUT_RELEASEDATE . ":</label><text>" . date(_SHORTDATESTRING, $versionInfo->getInfo('release')) . "</text><br />";
-echo "<label>" . _XADDRESSES_AM_ABOUT_AUTHOR . ":</label><text>" . $versionInfo->getInfo('author') . "</text><br />";
-echo "<label>" . _XADDRESSES_AM_ABOUT_CREDITS . ":</label><text>" . $versionInfo->getInfo('credits') . "</text><br />";
-echo "<label>" . _XADDRESSES_AM_ABOUT_LICENSE . ":</label><text><a href=\"".$versionInfo->getInfo('license_file')."\" target=\"_blank\" >" . $versionInfo->getInfo('license') . "</a></text>\n";
+echo "<label>" . _AM_XADDRESSES_ABOUT_RELEASEDATE . ":</label><text>" . date(_SHORTDATESTRING, strtotime($versionInfo->getInfo('release_date'))) . "</text><br />";
+echo "<label>" . _AM_XADDRESSES_ABOUT_AUTHOR . ":</label><text>" . $versionInfo->getInfo('author') . "</text><br />";
+echo "<label>" . _AM_XADDRESSES_ABOUT_CREDITS . ":</label><text>" . $versionInfo->getInfo('credits') . "</text><br />";
+echo "<label>" . _AM_XADDRESSES_ABOUT_LICENSE . ":</label><text><a href=\"".$versionInfo->getInfo('license_file')."\" target=\"_blank\" >" . $versionInfo->getInfo('license') . "</a></text>\n";
 echo "</div>";
 echo "</fieldset>";
 echo "<br clear=\"all\" />";
 
-echo "<fieldset><legend style='font-weight: bold; color: #900;'>" . _XADDRESSES_AM_ABOUT_MODULEINFOS . "</legend>";
+echo "<fieldset><legend style='font-weight: bold; color: #900;'>" . _AM_XADDRESSES_ABOUT_MODULEINFOS . "</legend>";
 echo "<div style='padding: 8px;'>";
-echo "<label>" . _XADDRESSES_AM_ABOUT_STATUS . ":</label><text>" . $versionInfo->getInfo('module_status') . "</text><br />";
-echo "<label>" . _XADDRESSES_AM_ABOUT_MODULEWEBSITE . ":</label><text>" . "<a href='" . $versionInfo->getInfo('support_site_url') . "' target='_blank'>" . $versionInfo->getInfo('support_site_name') . "</a>" . "</text><br />";
+echo "<label>" . _AM_XADDRESSES_ABOUT_STATUS . ":</label><text>" . $versionInfo->getInfo('module_status') . "</text><br />";
+echo "<label>" . _AM_XADDRESSES_ABOUT_MODULEWEBSITE . ":</label><text>" . "<a href='" . $versionInfo->getInfo('support_site_url') . "' target='_blank'>" . $versionInfo->getInfo('support_site_name') . "</a>" . "</text><br />";
 echo "</div>";
 echo "</fieldset>";
 echo "<br clear=\"all\" />";
 
-echo "<fieldset><legend style='font-weight: bold; color: #900;'>" . _XADDRESSES_AM_ABOUT_AUTHORINFOS . "</legend>";
+echo "<fieldset><legend style='font-weight: bold; color: #900;'>" . _AM_XADDRESSES_ABOUT_AUTHORINFOS . "</legend>";
 echo "<div style='padding: 8px;'>";
-echo "<label>" . _XADDRESSES_AM_ABOUT_AUTHOR . ":</label><text>" . $versionInfo->getInfo('author') . "</text><br />";
-echo "<label>" . _XADDRESSES_AM_ABOUT_AUTHORWEBSITE . ":</label><text>" . "<a href='" . $versionInfo->getInfo('author_website_url') . "' target='_blank'>" . $versionInfo->getInfo('author_website_name') . "</a>" . "</text><br />";
-echo "<label>" . _XADDRESSES_AM_ABOUT_AUTHOREMAIL . ":</label><text>" . "<a href='emailto:" . $versionInfo->getInfo('author_mail') . "' target='_blank'>" . $versionInfo->getInfo('author_mail') . "</a>" . "</text><br />";
+echo "<label>" . _AM_XADDRESSES_ABOUT_AUTHOR . ":</label><text>" . $versionInfo->getInfo('author') . "</text><br />";
+echo "<label>" . _AM_XADDRESSES_ABOUT_AUTHORWEBSITE . ":</label><text>" . "<a href='" . $versionInfo->getInfo('author_website_url') . "' target='_blank'>" . $versionInfo->getInfo('author_website_name') . "</a>" . "</text><br />";
+echo "<label>" . _AM_XADDRESSES_ABOUT_AUTHOREMAIL . ":</label><text>" . "<a href='emailto:" . $versionInfo->getInfo('author_mail') . "' target='_blank'>" . $versionInfo->getInfo('author_mail') . "</a>" . "</text><br />";
 echo "</div>";
 
 echo "<br />";
@@ -83,7 +79,7 @@ if (file_exists(XOOPS_ROOT_PATH . "/modules/" . $GLOBALS['xoopsModule']->getVar(
     $file = XOOPS_ROOT_PATH . "/modules/" . $GLOBALS['xoopsModule']->getVar('dirname') . "/language/english/description.html";
 }
 if (is_readable($file)) {
-    echo "<fieldset><legend style='font-weight: bold; color: #900;'>" . _XADDRESSES_AM_ABOUT_DESCRIPTION . "</legend>";
+    echo "<fieldset><legend style='font-weight: bold; color: #900;'>" . _AM_XADDRESSES_ABOUT_DESCRIPTION . "</legend>";
     echo "<div style='padding: 8px;'>";
     echo "<div>". implode('', file($file)) . "</div>";
     echo "</div>";
@@ -98,7 +94,7 @@ if (file_exists(XOOPS_ROOT_PATH . "/modules/" . $GLOBALS['xoopsModule']->getVar(
     $file = XOOPS_ROOT_PATH . "/modules/" . $GLOBALS['xoopsModule']->getVar('dirname') . "/language/english/changelog.txt";
 }
 if (is_readable($file)) {
-    echo "<fieldset><legend style='font-weight: bold; color: #900;'>" . _XADDRESSES_AM_ABOUT_CHANGELOG . "</legend>";
+    echo "<fieldset><legend style='font-weight: bold; color: #900;'>" . _AM_XADDRESSES_ABOUT_CHANGELOG . "</legend>";
     echo "<div style='padding: 8px;'>";
     echo "<div>" . utf8_encode(implode('<br />', file($file))) . "</div>";
     echo "</div>";
@@ -106,5 +102,5 @@ if (is_readable($file)) {
     echo "<br clear=\"all\" />";
 }
 
-xoops_cp_footer();
+include "admin_footer.php";
 ?>

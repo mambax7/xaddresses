@@ -26,18 +26,18 @@ class XaddressesMarker extends XoopsObject
 		if ($action === false) {
 			$action = $_SERVER['REQUEST_URI'];
 		}
-        $title = $this->isNew() ? sprintf(_XADDRESSES_AM_ADD, _XADDRESSES_AM_MARKER) : sprintf(_XADDRESSES_AM_EDIT, _XADDRESSES_AM_MARKER);
+        $title = $this->isNew() ? sprintf(_AM_XADDRESSES_ADD, _AM_XADDRESSES_MARKER) : sprintf(_AM_XADDRESSES_EDIT, _AM_XADDRESSES_MARKER);
         $form = new XoopsThemeForm($title, 'marker', $action, 'post');
-        $form->addElement(new XoopsFormText(_XADDRESSES_AM_MARKER_TITLE, 'marker_title', 35, 255, $this->getVar('marker_title')));
+        $form->addElement(new XoopsFormText(_AM_XADDRESSES_MARKER_TITLE, 'marker_title', 35, 255, $this->getVar('marker_title')));
 
         //description
-        $form->addElement(new XoopsFormTextArea(_XADDRESSES_AM_MARKER_DESCRIPTION, 'marker_description', $this->getVar('marker_description', 'e')));
+        $form->addElement(new XoopsFormTextArea(_AM_XADDRESSES_MARKER_DESCRIPTION, 'marker_description', $this->getVar('marker_description', 'e')));
 
         //image
-        $form->addElement(new FormXoopsImage(_XADDRESSES_AM_MARKER_IMAGE, 'marker_image', $this->getVar('marker_image'))); // custom form class
+        $form->addElement(new FormXoopsImage(_AM_XADDRESSES_MARKER_IMAGE, 'marker_image', $this->getVar('marker_image'))); // custom form class
 
         //shadow
-        $form->addElement(new FormXoopsImage(_XADDRESSES_AM_MARKER_SHADOW, 'marker_shadow', $this->getVar('marker_shadow'))); // custom form class
+        $form->addElement(new FormXoopsImage(_AM_XADDRESSES_MARKER_SHADOW, 'marker_shadow', $this->getVar('marker_shadow'))); // custom form class
 
         
         $form->addElement(new XoopsFormCaptcha(), true);        
