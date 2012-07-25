@@ -444,9 +444,9 @@ function xaddresses_getLocationForm(&$location, $action = false, &$form = null)
     	$groups = XOOPS_GROUP_ANONYMOUS;
     }
     // Get ids of categories in which locations can be viewed/edited/submitted
-    $viewableCategoriesIds = $groupPermHandler->getItemIds('in_category_view', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
-    $editableCategoriesIds = $groupPermHandler->getItemIds('in_category_edit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
-    $submitableCategoriesIds = $groupPermHandler->getItemIds('in_category_submit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
+    $viewableCategoriesIds = xaddresses_getMyItemIds('in_category_view');
+    $editableCategoriesIds = xaddresses_getMyItemIds('in_category_edit');
+    $submitableCategoriesIds = xaddresses_getMyItemIds('in_category_submit');
     // Get ids of fields that can be edited
     $editableFields = $groupPermHandler->getItemIds('field_edit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
     // Get other permissions
@@ -471,22 +471,19 @@ function xaddresses_getLocationForm(&$location, $action = false, &$form = null)
         $formGoogleMap->setDescription(_AM_XADDRESSES_LOC_COORDINATES_DESC);
     $form->addElement($formGoogleMap);
 
-
     // location category
     $criteria = new CriteriaCompo();
     $criteria->setSort('cat_weight ASC, cat_title');
     $criteria->setOrder('ASC');
-    $criteria->add(new Criteria('cat_id', ' (' . implode(',', $editableCategoriesIds) . ')', 'IN'));
-    $categoriesArray = $categoryHandler->getall($criteria);
-    $categoriesTree = new XoopsObjectTree($categoriesArray, 'cat_id', 'cat_pid');
-        //$categoryId = (!is_null($location->getVar('loc_cat_id')) ? $location->getVar('loc_cat_id') : $categoriesArray[1]->getVar('cat_id'));
+    $criteria->add(new Criteria('cat_id', ' (' . implode(',', $editableCategoriesIds) . ')', 'IN')); // get only editable categories
+    $editableCategoriesArray = $categoryHandler->getall($criteria);
+    $editableCategoriesTree = new XoopsObjectTree($editableCategoriesArray, 'cat_id', 'cat_pid');
         $categoryId = $location->getVar('loc_cat_id');
-        $formLocCategory = new XoopsFormLabel(_AM_XADDRESSES_LOC_CAT, $categoriesTree->makeSelBox('loc_cat_id', 'cat_title', '--', $location->getVar('loc_cat_id'), false));
+        $formLocCategory = new XoopsFormLabel(_AM_XADDRESSES_LOC_CAT, $editableCategoriesTree->makeSelBox('loc_cat_id', 'cat_title', '--', $location->getVar('loc_cat_id'), false));
         $formLocCategory->setDescription(_AM_XADDRESSES_LOC_CAT_DESC);
     $form->addElement($formLocCategory, true);
 
-//$categoriesTree->makeSelBox ($name, $fieldName, $prefix= '-', $selected= '', $addEmptyOption=false, $key=0, $extra= '')
-
+    // location date
     if (!$location->isNew()) {
         // location date
         if ($permModifyDate) {
@@ -497,7 +494,10 @@ function xaddresses_getLocationForm(&$location, $action = false, &$form = null)
         }
         $formDateTime->setDescription(_AM_XADDRESSES_LOC_DATE_DESC);
         $form->addElement($formDateTime, true);
-        // location submitter
+    }
+
+    // location submitter
+    if (!$location->isNew()) {
         if ($permModifySubmitter) {
             $formSubmitter = new XoopsFormSelectUser (_AM_XADDRESSES_LOC_SUBMITTER, 'loc_submitter', true, $location->getVar('loc_submitter'), 1, false);
         } else {
@@ -510,8 +510,7 @@ function xaddresses_getLocationForm(&$location, $action = false, &$form = null)
         $form->addElement($formSubmitter, true);
     }
 
-    
-    // Get extra fields categories
+    // get extra fields categories
     $fieldsCategoriesArray = array();
     $fieldsCategoriesArray[0] = array(
         'cat_id' => 0,
@@ -524,7 +523,7 @@ function xaddresses_getLocationForm(&$location, $action = false, &$form = null)
     $fieldsCategories = $fieldCategoryHandler->getall($criteria, null, false, true); //get fieldscategories as array
     $fieldsCategoriesArray = array_merge($fieldsCategoriesArray, $fieldsCategories);
 
-    // Get all extra fields
+    // get all extra fields
     $fields = $locationHandler->loadFields();
     if (count($fields) > 0) {
         // populate $elements[cat_id][field_weight][] tri-dimensional array with {@link XaddressesField} objects
@@ -628,9 +627,9 @@ function xaddresses_getModifyForm(&$location, $action = false, &$form = null)
     	$groups = XOOPS_GROUP_ANONYMOUS;
     }
     // Get ids of categories in which locations can be viewed/edited/submitted
-    $viewableCategoriesIds = $groupPermHandler->getItemIds('in_category_view', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
-    $editableCategoriesIds = $groupPermHandler->getItemIds('in_category_edit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
-    $submitableCategoriesIds = $groupPermHandler->getItemIds('in_category_submit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
+    $viewableCategoriesIds = xaddresses_getMyItemIds('in_category_view');
+    $editableCategoriesIds = xaddresses_getMyItemIds('in_category_edit');
+    $submitableCategoriesIds = xaddresses_getMyItemIds('in_category_submit');
     // Get ids of fields that can be edited
     $editableFields = $groupPermHandler->getItemIds('field_edit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
     // Get other permissions

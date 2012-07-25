@@ -46,12 +46,12 @@ case "search":
     $criteria->add(new Criteria('loc_status', 0, '!='));
     $countLocations = $locationHandler->getCount($criteria);
     unset($criteria);
-    $GLOBALS['xoopsTpl']->assign('total_locations', sprintf(_XADDRESSES_AM_INDEX_COUNTLOCATIONS, $countLocations));
+    $GLOBALS['xoopsTpl']->assign('total_locations', sprintf(_AM_XADDRESSES_INDEX_COUNTLOCATIONS, $countLocations));
 
     // Breadcrumb
     $breadcrumb = array();
     if ($xoopsModuleConfig['show_home_in_breadcrumb']) {
-        $crumb['title'] = _XADDRESSES_MD_BREADCRUMB_HOME;
+        $crumb['title'] = _MA_XADDRESSES_BREADCRUMB_HOME;
         $crumb['url'] = 'index.php';
         $breadcrumb[] = $crumb;
     }
@@ -61,19 +61,19 @@ case "search":
     unset($breadcrumb, $crumb);
 
     include_once $GLOBALS['xoops']->path('class/xoopsformloader.php');
-    $searchform = new XoopsThemeForm(_XADDRESSES_MD_SEARCH, 'searchform', $currentFile, 'post');
+    $searchform = new XoopsThemeForm(_MA_XADDRESSES_SEARCH, 'searchform', $currentFile, 'post');
     $searchform->setExtra('enctype="multipart/form-data"');
 
     // location title
-        $formLocTitle = new XoopsFormElementTray(_XADDRESSES_MD_SEARCH_TITLE);
-        $formLocTitle->setDescription(_XADDRESSES_MD_SEARCH_TITLE_DESC);
+        $formLocTitle = new XoopsFormElementTray(_MA_XADDRESSES_SEARCH_TITLE);
+        $formLocTitle->setDescription(_MA_XADDRESSES_SEARCH_TITLE_DESC);
         $formLocTitle->addElement(new XoopsFormSelectMatchOption('', 'loc_title_match'));
         $formLocTitle->addElement(new XoopsFormText('', 'loc_title', 35, 255));
     $searchform->addElement($formLocTitle);
 
     // location coordinates
-        $formMaxDistance = new XoopsFormElementTray(_XADDRESSES_MD_SEARCH_MAXDISTANCE, '<br />');
-        $formMaxDistance->setDescription(_XADDRESSES_MD_SEARCH_MAXDISTANCE_DESC);
+        $formMaxDistance = new XoopsFormElementTray(_MA_XADDRESSES_SEARCH_MAXDISTANCE, '<br />');
+        $formMaxDistance->setDescription(_MA_XADDRESSES_SEARCH_MAXDISTANCE_DESC);
             $formMaxDistanceSelect = new XoopsFormSelect('', 'loc_maxdistance');
             $formMaxDistanceText = new XoopsFormText('', 'loc_maxdistance', 35, 255);
         $formMaxDistance->addElement($formMaxDistanceText);
@@ -101,8 +101,8 @@ case "search":
         $htmlSelBox = $categoriesTree->makeSelBox('loc_cat_id', 'cat_title', '--', 0, false, 0, "multiple='multiple' size='{formSelectCategoryMaxLines}'");
         $htmlSelBox = str_replace('name="loc_cat_id"', 'name="loc_cat_id[]"', $htmlSelBox);
         //$htmlSelBox = str_replace("<select ", "<select multiple='multiple' size='5' ", $htmlSelBox);
-        $formLocCategory = new XoopsFormLabel(_XADDRESSES_MD_SEARCH_CAT, $htmlSelBox);
-        $formLocCategory->setDescription(_XADDRESSES_MD_SEARCH_CAT_DESC);
+        $formLocCategory = new XoopsFormLabel(_MA_XADDRESSES_SEARCH_CAT, $htmlSelBox);
+        $formLocCategory->setDescription(_MA_XADDRESSES_SEARCH_CAT_DESC);
     $searchform->addElement($formLocCategory);
 
     
@@ -167,22 +167,22 @@ case "search":
     $searchform->addElement(new XoopsFormLabel('// IN PROGRESS', '// IN PROGRESS'));
 
     asort($sortby_arr);
-        $sortby_arr = array_merge(array("" => _XADDRESSES_AM_SORT_BY_NONE, "loc_date" => _XADDRESSES_AM_SORT_BY_DATE, "loc_title" =>_XADDRESSES_AM_SORT_BY_TITLE, "loc_cat_id" =>_XADDRESSES_AM_SORT_BY_CAT), $sortby_arr);
-        $sortby_select = new XoopsFormSelect(_XADDRESSES_AM_SORT_BY, 'sortby');
+        $sortby_arr = array_merge(array("" => _AM_XADDRESSES_SORT_BY_NONE, "loc_date" => _AM_XADDRESSES_SORT_BY_DATE, "loc_title" =>_AM_XADDRESSES_SORT_BY_TITLE, "loc_cat_id" =>_AM_XADDRESSES_SORT_BY_CAT), $sortby_arr);
+        $sortby_select = new XoopsFormSelect(_AM_XADDRESSES_SORT_BY, 'sortby');
         $sortby_select->addOptionArray($sortby_arr);
     $searchform->addElement($sortby_select);
 
-        $order_select = new XoopsFormRadio(_XADDRESSES_AM_ORDER, 'order', 0);
-        $order_select->addOption(0, _XADDRESSES_AM_ORDER_ASC);
-        $order_select->addOption(1, _XADDRESSES_AM_ORDER_DESC);
+        $order_select = new XoopsFormRadio(_AM_XADDRESSES_ORDER, 'order', 0);
+        $order_select->addOption(0, _AM_XADDRESSES_ORDER_ASC);
+        $order_select->addOption(1, _AM_XADDRESSES_ORDER_DESC);
     $searchform->addElement($order_select);
 
-        $limit_text = new XoopsFormText(_XADDRESSES_MD_SEARCH_PERPAGE, 'limit', 15, 10, $limit_default);
+        $limit_text = new XoopsFormText(_MA_XADDRESSES_SEARCH_PERPAGE, 'limit', 15, 10, $limit_default);
         $searchform->addElement($limit_text);
         $searchform->addElement(new XoopsFormHidden('op', 'results'));
     $searchform->addElement(new XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
 
-    $GLOBALS['xoopsTpl']->assign('page_title', _XADDRESSES_MD_SEARCH);
+    $GLOBALS['xoopsTpl']->assign('page_title', _MA_XADDRESSES_SEARCH);
     $GLOBALS['xoopsTpl']->assign('themeForm', $searchform->render());
     break;
 

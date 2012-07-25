@@ -398,6 +398,9 @@ define("_AM_XADDRESSES_ERROR_WEIGHT","weight must be a number");
 define("_AM_XADDRESSES_REDIRECT_DEL_OK","Successfuly deleted");
 //define("_AM_XADDRESSES_REDIRECT_NODELFIELD","You can not delete this field (Basic Field)");
 define("_AM_XADDRESSES_REDIRECT_SAVE","Successfully registred");
+define("_AM_XADDRESSES_VIEW_NOT_ALLOWED", "Sorry, but you cannot view locations");
+define("_AM_XADDRESSES_EDIT_NOT_ALLOWED", "Sorry, but you cannot edit locations");
+define("_AM_XADDRESSES_SUBMIT_NOT_ALLOWED", "Sorry, but you cannot submit locations");
 
 // Other Messages
 define("_AM_XADDRESSES_RU_SURE_DEL", "Are you sure you want to delete %s");

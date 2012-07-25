@@ -50,8 +50,16 @@ case 'edit_location':
         redirect_header('index.php', 3, _MA_XADDRESSES_SINGLELOC_NONEXISTENT);
         exit();
     }
+    // get location
     $location = $locationHandler->get($loc_id);
+    // redirect if not right edit permissions
+    if (in_array($location->getVar('loc_cat_id'), $editableCategoriesIds)) {
+        redirect_header('index.php', 3, _AM_XADDRESSES_EDIT_NOT_ALLOWED);
+        exit();
+    }
+    // get location's category
     $category = $categoryHandler->get($location->getVar('loc_cat_id'));
+
     // Breadcrumb
     $breadcrumb = array();
     $crumb['title'] = $location->getVar('loc_title');
@@ -93,6 +101,11 @@ case 'edit_location':
 
 
 case 'new_location':
+    // redirect if not right submit permissions
+    if (count($submitableCategoriesIds) == 0) {
+        redirect_header('index.php', 3, _AM_XADDRESSES_SUBMIT_NOT_ALLOWED);
+        exit();
+    }
     $location =& $locationHandler->create();
     // Breadcrumb
     // NOP
