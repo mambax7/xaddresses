@@ -32,9 +32,10 @@ if (is_object($GLOBALS['xoopsUser'])) {
 }
 
 // Permission
-//$viewableCategories = $groupPermHandler->getItemIds('in_category_view', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
-//$editableCategories = $groupPermHandler->getItemIds('in_category_edit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
-//$submitableCategories = $groupPermHandler->getItemIds('in_category_submit', $groups, $GLOBALS['xoopsModule']->getVar('mid') );
+$viewableCategoriesIds = xaddresses_getMyItemIds('in_category_view');
+$editableCategoriesIds = xaddresses_getMyItemIds('in_category_edit');
+$submitableCategoriesIds =  xaddresses_getMyItemIds('in_category_submit');
+
 // Get extra permissions
 $permModifySubmitter = ($groupPermHandler->checkRight('others', 1, $groups, $GLOBALS['xoopsModule']->getVar('mid'))) ? true : false ;
 $permModifyDate = ($groupPermHandler->checkRight('others', 2, $groups, $GLOBALS['xoopsModule']->getVar('mid'))) ? true : false ;

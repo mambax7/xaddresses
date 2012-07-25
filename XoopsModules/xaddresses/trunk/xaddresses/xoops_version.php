@@ -18,7 +18,7 @@ $modversion['license_url'] = "www.gnu.org/licenses/gpl-2.0.html/";
 
 $modversion['release_info'] = "RC";
 $modversion['release_file'] = XOOPS_URL."/modules/{$dirname}/docs/RC";
-$modversion['release_date'] = "2012/07/23"; // 'Y/m/d'
+$modversion['release_date'] = "2012/07/25"; // 'Y/m/d'
 
 $modversion['manual'] = 'Help';
 $modversion['manual_file'] = XOOPS_URL."/modules/{$dirname}/docs/help.html";
@@ -74,7 +74,7 @@ $modversion['onInstall'] = 'include/install_function.php';
 //$modversion['onUpdate'] = 'include/update_function.php';
 $modversion['onUninstall'] = 'include/uninstall_function.php';
 
-// Menu
+// Main menu
 $modversion['hasMain'] = true;
 if (is_object($GLOBALS['xoopsModule']) && $GLOBALS['xoopsModule']->getVar('dirname') == $modversion['dirname']) {
     $i = 0;
@@ -85,18 +85,22 @@ if (is_object($GLOBALS['xoopsModule']) && $GLOBALS['xoopsModule']->getVar('dirna
         // Check if xoopsUser is a module administrator
         $isAdmin = ($GLOBALS['xoopsUser']->isAdmin($GLOBALS['xoopsModule']->getVar('mid')));
     }
-    // Add the Submit new item button
+    // Add the Submit new item button (if user has right submit permissions)
     if ($isAdmin || (isset($GLOBALS['xoopsModuleConfig']['allowsubmit']) &&
         $GLOBALS['xoopsModuleConfig']['allowsubmit'] == true &&
             (is_object($GLOBALS['xoopsUser']) ||
             (isset($GLOBALS['xoopsModuleConfig']['anonpost']) && $GLOBALS['xoopsModuleConfig']['anonpost'] == 1)))) {
-        $i++;
-        $modversion['sub'][$i]['name'] = _MI_XADDRESSES_SUBMIT;
-        $modversion['sub'][$i]['url'] = "locationedit.php?op=new_location";
+        $submitableCategoriesIds =  xaddresses_getMyItemIds('in_category_submit');
+        if (count($submitableCategoriesIds) > 0) {
+            $i++;
+            $modversion['sub'][$i]['name'] = _MI_XADDRESSES_SUBMIT;
+            $modversion['sub'][$i]['url'] = "locationedit.php?op=new_location";
+        }
     }
         $i++;
         $modversion['sub'][$i]['name'] = _MI_XADDRESSES_SEARCH;
         $modversion['sub'][$i]['url'] = "locationsearch.php";
+    // Add the Module Administration button (if user has right permissions)
     if ($isAdmin) {
         $i++;
         $modversion['sub'][$i]['name'] = _MI_XADDRESSES_ADMIN;
