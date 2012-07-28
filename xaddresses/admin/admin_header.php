@@ -27,28 +27,36 @@
  */
 
 include_once dirname(dirname(dirname(dirname(__FILE__)))) . '/mainfile.php';
-include_once XOOPS_ROOT_PATH . '/include/cp_functions.php';
+
+// Include xoops admin header
+include_once XOOPS_ROOT_PATH . '/include/cp_header.php';
+include_once XOOPS_ROOT_PATH . '/include/config.php';
+include_once XOOPS_ROOT_PATH . '/include/functions.php';
+
+include_once XOOPS_ROOT_PATH . '/class/xoopsformloader.php';
+include_once XOOPS_ROOT_PATH . '/class/tree.php';
+include_once XOOPS_ROOT_PATH . '/class/pagenav.php';
+xoops_load ('XoopsUserUtility');
+
+// Include module functions
 include_once '../include/config.php';
 include_once '../include/functions.php';
 
-    include_once XOOPS_ROOT_PATH . '/class/xoopsformloader.php';
-    include_once XOOPS_ROOT_PATH . '/class/tree.php';
-    include_once XOOPS_ROOT_PATH . '/class/pagenav.php';
-    xoops_load ('XoopsUserUtility');
 
+    
 $pathDir = $GLOBALS['xoops']->path('/Frameworks/moduleclasses/moduleadmin');
-$globlang = $GLOBALS['xoopsConfig']['language'];
+$globalLanguage = $GLOBALS['xoopsConfig']['language'];
 
-if ( file_exists($pathDir.'/language/'.$globlang.'/main.php')){
-	include_once $pathDir.'/language/'.$globlang.'/main.php';        
+if ( file_exists($pathDir . '/language/' . $globalLanguage . '/main.php')){
+	include_once $pathDir . '/language/' . $globalLanguage . '/main.php';        
 } else {
-	include_once $pathDir.'/language/english/main.php';        
+	include_once $pathDir . '/language/english/main.php';        
 }
     
-if ( file_exists($pathDir.'/moduleadmin.php')){
-	include_once $pathDir.'/moduleadmin.php';
+if ( file_exists($pathDir . '/moduleadmin.php')){
+	include_once $pathDir . '/moduleadmin.php';
 	//return true;
-}else{
+} else {
 	xoops_cp_header();
 	echo xoops_error(_AM_XADDRESSES_NOFRAMEWORKS);
 	xoops_cp_footer();
@@ -87,7 +95,7 @@ $xoopsTpl->assign('pathImageIcon', $pathImageIcon);
 $xoopsTpl->assign('pathImageAdmin', $pathImageAdmin);
 //xoops_cp_header();
 
-//Load languages
+//Load module languages
 xoops_loadLanguage('admin', $xoopsModule->getVar("dirname"));
 xoops_loadLanguage('modinfo', $xoopsModule->getVar("dirname"));
 xoops_loadLanguage('main', $xoopsModule->getVar("dirname"));

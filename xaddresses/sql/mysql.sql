@@ -65,7 +65,7 @@ CREATE TABLE `xaddresses_field` (
   `field_show`          tinyint(1) unsigned     NOT NULL default '0',
   `field_config`        tinyint(1) unsigned     NOT NULL default '0',
   `field_options`       text,
-  `field_extras`       text,
+  `field_extras`        text,
   PRIMARY KEY  (`field_id`),
   UNIQUE KEY `field_name` (`field_name`)
 ) ENGINE=MyISAM;
