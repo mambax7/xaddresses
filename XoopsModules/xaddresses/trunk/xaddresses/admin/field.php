@@ -241,22 +241,6 @@ case 'save_field':
         } else {
             $field->setVar('field_options', array());
         }
-
-        // field_extras
-        $fieldTypesWithExtras = array(); // IN PROGRESS
-        if (in_array($field->getVar('field_type'), $fieldTypesWithExtras)) {
-            $extras = $field->getVar('field_extras');
-            if (!empty($_REQUEST['addExtra'])) {
-                foreach ($_REQUEST['addExtra'] as $extra) {
-                    if ( empty($extra['value'])) continue;
-                    $extras[$extra['key']] = $extra['value'];
-                    $redirectToEdit = true;
-                }
-            }
-            $field->setVar('field_extras', $extras);
-        } else {
-            $field->setVar('field_extras', array());
-        }
     }
     
     if ($field->getVar('field_edit')) {
@@ -282,16 +266,12 @@ case 'save_field':
                 $field->setVar('field_default', $field_default);
             }
         }
-        
+
         // field_extras
-        if (isset($_REQUEST['field_extras'])) {
-            $field_extras = $field->getValueForSave($_REQUEST['field_extras']);
-            //Check for multiple selections
-            if (is_array($field_extras)) {
-                $field->setVar('field_extras', serialize($field_extras));
-            } else {
-                $field->setVar('field_extras', $field_extras);
-            }
+        if (!empty($_REQUEST['field_extras'])) {
+            $field->setVar('field_extras', $_REQUEST['field_extras']);
+        } else {
+            $field->setVar('field_extras', array());
         }
     }
 

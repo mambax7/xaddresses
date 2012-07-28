@@ -107,7 +107,7 @@ class FormXoopsImage extends XoopsFormElement
     {
         $html = "<div>";
         $html.= "<input type='text' name='" . $this->getName() . "' title='" . $this->getTitle() . "' size='" . $this->getSize() ."' maxlength='" . $this->getMaxlength() ."' value='" . $this->getValue() . "' />";
-        $html.= "<img src='" . XOOPS_URL . "/images/image.gif' alt='" . _FORMXOOPSIMAGE_IMAGEMANAGER . "' title='" . _FORMXOOPSIMAGE_IMAGEMANAGER . "' onclick='randomId = Math.random().toString(); this.parentNode.firstChild.id = \"input_\" + randomId; openWithSelfMain(&quot;" . XOOPS_URL . "/modules/ajaxfilemanager/imagemanager/imagemanager.php?target=input_&quot; + randomId + &quot;&amp;editor=src&quot;,&quot;imagemanager&quot;,800,600);' onmouseover='style.cursor=\"hand\"'/>";
+        $html.= "<img src='" . XOOPS_URL . "/images/image.gif' alt='" . _FORMXOOPSIMAGE_IMAGEMANAGER . "' title='" . _FORMXOOPSIMAGE_IMAGEMANAGER . "' onclick='randomId = Math.random().toString(); this.parentNode.firstChild.id = \"input_\" + randomId; openWithSelfMain(&quot;" . XOOPS_URL . "/imagemanager.php?target=input_&quot; + randomId + &quot;&amp;editor=src&quot;,&quot;imagemanager&quot;,800,600);' onmouseover='style.cursor=\"hand\"'/>";
         $html.= sprintf($this->getPreviewformat(), $this->getSrc());
         $html.= "</div>";
         return $html;

@@ -78,8 +78,8 @@ define('_MI_XADDRESSES_USEAJAXFILEMANAGER_DESC', 'You have to install AJAXFILEMA
     
     define('_MI_XADDRESSES_AUTOAPPROVE',"Auto approve new addresses without admin intervention ?");
     define('_MI_XADDRESSES_AUTOAPPROVE_DESC', '');
-    define("_MI_XADDRESSES_FORM_OPTIONS","Editor");
-    define("_MI_XADDRESSES_FORM_OPTIONS_DESC","");
+define("_MI_XADDRESSES_FORM_OPTIONS","[Editor] Choose an editor for categories description");
+define("_MI_XADDRESSES_FORM_OPTIONS_DESC","<ul><li><b>dhtmltextarea:</b> default Xoops editor</li><li><b>textarea:</b> standard html textarea</li><li><b>tinymce:</b> enhanced WYSIWYG editor</li><li>...</li></ul>");
     define('_MI_XADDRESSES_TOPORDER','How to display items on the index page?');
     define('_MI_XADDRESSES_TOPORDER1','Date (DESC)');
     define('_MI_XADDRESSES_TOPORDER2','Date (ASC)');

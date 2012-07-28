@@ -154,15 +154,14 @@ function xaddresses_getFieldForm(&$field, $action = false, &$form = null)
             break;
         }
         //field_notnull
-            //$fiedlnotnullradio = new XoopsFormRadioYN(_AM_XADDRESSES_FIELD_NOTNULL, 'field_notnull', $field->getVar('field_notnull', 'e'));
-            //$fiedlnotnullradio->setDescription(_AM_XADDRESSES_FIELD_NOTNULL_DESC);
-        //$form->addElement($fiedlnotnullradio);
+            //$fieldNotNullRadio = new XoopsFormRadioYN(_AM_XADDRESSES_FIELD_NOTNULL, 'field_notnull', $field->getVar('field_notnull', 'e'));
+            //$fieldNotNullRadio->setDescription(_AM_XADDRESSES_FIELD_NOTNULL_DESC);
+        //$form->addElement($fieldNotNullRadio);
 
         //field_options
-        $fieldTypesWithOptions = array('select', 'select-multi', 'radio', 'checkbox');
+        $fieldTypesWithOptions = array('select', 'select_multi', 'radio', 'checkbox');
         if (in_array($field->getVar('field_type'), $fieldTypesWithOptions)) {
             $options = $field->getVar('field_options');
-//            print_r($options);
             if (count($options) > 0) {
                 $remove_options = new XoopsFormCheckBox(_AM_XADDRESSES_FIELD_REMOVEOPTIONS, 'removeOptions');
                 $remove_options->columns = 3;
@@ -184,42 +183,55 @@ function xaddresses_getFieldForm(&$field, $action = false, &$form = null)
             $option_text .= "</table>";
             $form->addElement(new XoopsFormLabel(_AM_XADDRESSES_FIELD_ADDOPTION, $option_text) );
         }
-/* IN_PROGRESS
-        //field_extras
-        $fieldTypeswithextras = array('image');
-        if (in_array($field->getVar('field_type'), $fieldTypeswithextras)) {
-            $extras = $field->getVar('field_extras');
-            if (count($extras) > 0) {
-                $remove_extras = new XoopsFormCheckBox(_AM_XADDRESSES_REMOVEEXTRAS, 'removeExtras');
-                $remove_extras->columns = 3;
-                asort($extras);
-                foreach (array_keys($extras) as $key) {
-                    $extras[$key] .= "[{$key}]";
-                }
-                $remove_options->addOptionArray($extras);
-                $form->addElement($remove_extras);
-            }
-            $extra_text = "<table cellspacing='1'><tr><td width='20%'>" . _AM_XADDRESSES_KEY . "</td><td>" . _AM_XADDRESSES_VALUE . "</td></tr>";
-            for ($i = 0; $i < 3; $i++) {
-                $extra_text .= "<tr>";
-                $extra_text .= "<td><input type='text' name='addExtra[{$i}][key]' id='addExtra[{$i}][key]' size='15' /></td>";
-                $extra_text .= "<td><input type='text' name='addExtra[{$i}][value]' id='addExtra[{$i}][value]' size='35' /></td>";
-                $extra_text .= "</tr>";
-                $extra_text .= "<tr height='3px'><td colspan='2'> </td></tr>";
-            }
-            $extra_text .= "</table>";
-            $form->addElement(new XoopsFormLabel(_AM_XADDRESSES_ADDEXTRA, $extra_text) );
-        }
-*/
     }
     //field_default & field_maxlength
     if ($field->getVar('field_edit')) {
+        //field_extras
+        $fieldTypeswithextras = array('textarea', 'dhtml');
+        if (in_array($field->getVar('field_type'), $fieldTypeswithextras)) {
+            $extras = $field->getVar('field_extras');
+        }
+    
         switch ($field->getVar('field_type')) {
         case "textbox":
+                $fieldLengthText = new XoopsFormText(_AM_XADDRESSES_FIELD_LENGTH, 'field_length', 4, 4, $field->getVar('field_length', 'e'));
+                $fieldLengthText->setDescription(_AM_XADDRESSES_FIELD_LENGTH_DESC);
+            $form->addElement($fieldLengthText);
+                $fieldMaxLengthText = new XoopsFormText(_AM_XADDRESSES_FIELD_MAXLENGTH, 'field_maxlength', 4, 4, $field->getVar('field_maxlength', 'e'));
+                $fieldMaxLengthText->setDescription(_AM_XADDRESSES_FIELD_MAXLENGTH_DESC);
+            $form->addElement($fieldMaxLengthText);
+                $fieldDefaultTextarea = new XoopsFormTextArea(_AM_XADDRESSES_FIELD_DEFAULT, 'field_default', $field->getVar('field_default', 'e'));
+                $fieldDefaultTextarea->setDescription(_AM_XADDRESSES_FIELD_DEFAULT_DESC);
+            $form->addElement($fieldDefaultTextarea);
+            break;
         case "textarea":
+            if (empty($extras['rows'])) {$extras['rows'] = 4;} // default rows value
+            if (empty($extras['cols'])) {$extras['cols'] = 30;} // default cols value
+                $fieldTextareaRowsText = new XoopsFormText(_AM_XADDRESSES_FIELD_TEXTAREAROWS, 'field_extras[rows]', 4, 4, $extras['rows']);
+                $fieldTextareaRowsText->setDescription(_AM_XADDRESSES_FIELD_TEXTAREAROWS_DESC);
+            $form->addElement($fieldTextareaRowsText);
+                $fieldTextareaColsText = new XoopsFormText(_AM_XADDRESSES_FIELD_TEXTAREACOLS, 'field_extras[cols]', 4, 4, $extras['cols']);
+                $fieldTextareaColsText->setDescription(_AM_XADDRESSES_FIELD_TEXTAREACOLS_DESC);
+            $form->addElement($fieldTextareaColsText);
+                $fieldDefaultTextarea = new XoopsFormTextArea(_AM_XADDRESSES_FIELD_DEFAULT, 'field_default', $field->getVar('field_default', 'e'));
+                $fieldDefaultTextarea->setDescription(_AM_XADDRESSES_FIELD_DEFAULT_DESC);
+            $form->addElement($fieldDefaultTextarea);
+            break;
         case "dhtml":
+            if (empty($extras['rows'])) {$extras['rows'] = 4;} // default rows value
+            if (empty($extras['cols'])) {$extras['cols'] = 30;} // default cols value
+                $fieldTextareaRowsText = new XoopsFormText(_AM_XADDRESSES_FIELD_TEXTAREAROWS, 'field_extras[rows]', 4, 4, $extras['rows']);
+                $fieldTextareaRowsText->setDescription(_AM_XADDRESSES_FIELD_TEXTAREAROWS_DESC);
+            $form->addElement($fieldTextareaRowsText);
+                $fieldTextareaColsText = new XoopsFormText(_AM_XADDRESSES_FIELD_TEXTAREACOLS, 'field_extras[cols]', 4, 4, $extras['cols']);
+                $fieldTextareaColsText->setDescription(_AM_XADDRESSES_FIELD_TEXTAREACOLS_DESC);
+            $form->addElement($fieldTextareaColsText);
+                $fieldDefaultTextarea = new XoopsFormDhtmlTextArea(_AM_XADDRESSES_FIELD_DEFAULT, 'field_default', $field->getVar('field_default', 'e'));
+                $fieldDefaultTextarea->setDescription(_AM_XADDRESSES_FIELD_DEFAULT_DESC);
+            $form->addElement($fieldDefaultTextarea);
+            break;
         case "kmlmap":
-                $fieldLengthText = new XoopsFormText(_AM_XADDRESSES_FIELD_LENGTH, 'field_length', 35, 35, $field->getVar('field_length', 'e'));
+                $fieldLengthText = new XoopsFormText(_AM_XADDRESSES_FIELD_LENGTH, 'field_length', 3, 3, $field->getVar('field_length', 'e'));
                 $fieldLengthText->setDescription(_AM_XADDRESSES_FIELD_LENGTH_DESC);
             $form->addElement($fieldLengthText);
                 $fieldMaxLengthText = new XoopsFormText(_AM_XADDRESSES_FIELD_MAXLENGTH, 'field_maxlength', 35, 35, $field->getVar('field_maxlength', 'e'));
@@ -336,6 +348,7 @@ function xaddresses_getFieldForm(&$field, $action = false, &$form = null)
         $form->addElement($fieldRequiredRadio);
     }
 
+
     // Permissions
 
     
@@ -368,6 +381,7 @@ function xaddresses_getFieldForm(&$field, $action = false, &$form = null)
     $searchableTypes = array(
         'textbox',
         'textarea',
+        'dhtml',
         'select',
         'radio',
         'yesno',

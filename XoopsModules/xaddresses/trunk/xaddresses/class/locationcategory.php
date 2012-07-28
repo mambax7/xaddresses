@@ -2,7 +2,6 @@
 defined('XOOPS_ROOT_PATH') or die("XOOPS root path not defined");
 xoops_load('formxoopsimage', 'xaddresses'); // load custom form class
 
-
 class XaddressesLocationcategory extends XoopsObject
 {
     function __construct()
@@ -11,9 +10,9 @@ class XaddressesLocationcategory extends XoopsObject
         $this->initVar('cat_pid', XOBJ_DTYPE_INT, null, false);
         $this->initVar('cat_title', XOBJ_DTYPE_TXTBOX);
         $this->initVar('cat_description', XOBJ_DTYPE_TXTAREA);
-        $this->initVar('cat_dohtml', XOBJ_DTYPE_INT, 1, false); // For html form
+        $this->initVar('cat_dohtml', XOBJ_DTYPE_INT, true, false); // For html form
         $this->initVar('cat_imgurl',XOBJ_DTYPE_TXTBOX, null, false);
-        $this->initVar('cat_weight', XOBJ_DTYPE_INT);
+        $this->initVar('cat_weight', XOBJ_DTYPE_INT, 0);
         $this->initVar('cat_map_type', XOBJ_DTYPE_TXTBOX);
     }
 
@@ -32,7 +31,7 @@ class XaddressesLocationcategory extends XoopsObject
     */
     function getForm($action = false, &$form = null)
     {
-        global $xoopsModuleConfig;
+        global $xoopsDB, $xoopsModule, $xoopsModuleConfig, $xoopsUser;
         if ($action === false) {
             $action = $_SERVER['REQUEST_URI'];
         }
@@ -48,42 +47,46 @@ class XaddressesLocationcategory extends XoopsObject
 
         $form->setExtra('enctype="multipart/form-data"');
 
+        // Category title
         $form->addElement(new XoopsFormText(_AM_XADDRESSES_CAT_TITLE, 'cat_title', 35, 255, $this->getVar('cat_title')), true);
+
+        // Hidden fields
         if (!$this->isNew()) {
             //Load groups
             $form->addElement(new XoopsFormHidden('cat_id', $this->getVar('cat_id')));
             $form->addElement(new XoopsFormHidden('cat_modified', true));
         }
 
-        // Description
-        $editor_configs = array();
-        $editor_configs['name'] = 'cat_description';
-        $editor_configs['value'] = $this->getVar('cat_description', 'e');
-        $editor_configs['rows'] = 20;
-        $editor_configs['cols'] = 160;
-        $editor_configs['width'] = '100%';
-        $editor_configs['height'] = '400px';
-        $editor_configs['editor'] = $xoopsModuleConfig['editor'];
+        // Category description
+            $editor_configs = array();
+            $editor_configs['name'] = 'cat_description';
+            $editor_configs['value'] = $this->getVar('cat_description', 'e');
+            $editor_configs['rows'] = 20;
+            $editor_configs['cols'] = 160;
+            $editor_configs['width'] = '100%';
+            $editor_configs['height'] = '400px';
+            $editor_configs['editor'] = $GLOBALS['xoopsModuleConfig']['text_editor'];
         $form->addElement( new XoopsFormEditor(_AM_XADDRESSES_CAT_DESCRIPTION, 'cat_description', $editor_configs), false);
-        //$form->addElement(new XoopsFormTextArea(_AM_XADDRESSES_DESCRIPTION, 'cat_description', $this->getVar('cat_description', 'e')));
 
-        // Image
+        // Category image
         $form->addElement(new FormXoopsImage (_AM_XADDRESSES_CAT_IMG, 'cat_imgurl', 40, 255, $this->getVar('cat_imgurl'))); // custom form class
 
         // Parent category
-        $xaddressescat_Handler =& xoops_getModuleHandler('locationcategory', 'xaddresses');
-        $criteria = new CriteriaCompo();
-        $criteria->setSort('cat_weight ASC, cat_title');
-        $criteria->setOrder('ASC');
-		$xaddressescat_arr = $xaddressescat_Handler->getall($criteria);
-		$mytree = new XoopsObjectTree($xaddressescat_arr, 'cat_id', 'cat_pid');
-		$form->addElement(new XoopsFormLabel(_AM_XADDRESSES_CAT_PARENT, $mytree->makeSelBox('cat_pid', 'cat_title','--',$this->getVar('cat_pid'), true)));
+            $xaddressescat_Handler =& xoops_getModuleHandler('locationcategory', 'xaddresses');
+            $criteria = new CriteriaCompo();
+            $criteria->setSort('cat_weight ASC, cat_title');
+            $criteria->setOrder('ASC');
+            $xaddressescat_arr = $xaddressescat_Handler->getall($criteria);
+            $mytree = new XoopsObjectTree($xaddressescat_arr, 'cat_id', 'cat_pid');
+            $categoryCategortSelect = new XoopsFormLabel(_AM_XADDRESSES_CAT_PARENT, $mytree->makeSelBox('cat_pid', 'cat_title','--',$this->getVar('cat_pid'), true));
+            $categoryCategortSelect->setDescription(_AM_XADDRESSES_CAT_PARENT_DESC);
+		$form->addElement($categoryCategortSelect);
 
-        // Weight
+        // Category weight
         $form->addElement(new XoopsFormText(_AM_XADDRESSES_CAT_WEIGHT, 'cat_weight', 35, 35, $this->getVar('cat_weight', 'e')), true);
 
         // Map Setting
-        $form->addElement(new XoopsFormLabel (_AM_XADDRESSES_CAT_MAP_SETTING, _AM_XADDRESSES_CAT_MAP_SETTING, ''));
+        $form->addElement(new XoopsFormLabel (_AM_XADDRESSES_CAT_MAP_SETTING, '<b>' . _AM_XADDRESSES_CAT_MAP_SETTING . '</b>', ''));
         // Maptype
             $select_map_type = new XoopsFormSelect (_AM_XADDRESSES_CAT_MAP_TYPE, 'cat_map_type', $this->getVar('cat_map_type'), 1, false);
             $select_map_type->addOption('ROADMAP', 'ROADMAP');
@@ -93,8 +96,8 @@ class XaddressesLocationcategory extends XoopsObject
             $select_map_type->setDescription(_AM_XADDRESSES_CAT_MAP_TYPE_DESC);
         $form->addElement($select_map_type);
 
-        // Permissions
-        $form->addElement(new XoopsFormLabel (_AM_XADDRESSES_CAT_PERMISSIONS, _AM_XADDRESSES_CAT_PERMISSIONS, ''));
+        // Category permissions
+        $form->addElement(new XoopsFormLabel (_AM_XADDRESSES_CAT_PERMISSIONS, '<b>' . _AM_XADDRESSES_CAT_PERMISSIONS . '</b>', ''));
  
         $memberHandler = & xoops_gethandler('member');
         $groupPermHandler =& xoops_gethandler('groupperm');

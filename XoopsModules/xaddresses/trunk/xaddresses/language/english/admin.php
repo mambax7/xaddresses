@@ -166,8 +166,10 @@ define("_AM_XADDRESSES_CAT_EDIT","Modify Category");
 define("_AM_XADDRESSES_CAT_ID","Id");
 define("_AM_XADDRESSES_CAT_TITLE","Title");
 define("_AM_XADDRESSES_CAT_DESCRIPTION","Description");
+define("_AM_XADDRESSES_CAT_DESCRIPTION_DESC","Leave empty if category is a main category");
 define("_AM_XADDRESSES_CAT_IMG","Category image");
 define("_AM_XADDRESSES_CAT_PARENT","In the category");
+define("_AM_XADDRESSES_CAT_PARENT_DESC","Leave empty if category is a main category");
 define("_AM_XADDRESSES_CAT_WEIGHT","Weight");
 
 define("_AM_XADDRESSES_CAT_MAP_SETTING","GoogleMaps settings");
@@ -255,8 +257,14 @@ define("_AM_XADDRESSES_FIELD_NOTNULL_DESC", "Not Null?");
 
 //define("_AM_XADDRESSES_FIELD_ADDEXTRA", "Maximum Length");
 //define("_AM_XADDRESSES_FIELD_ADDEXTRA_DESC", "// IN PROGRESS");
+
 define("_AM_XADDRESSES_FIELD_LENGTH", "Field Length In Form");
 define("_AM_XADDRESSES_FIELD_LENGTH_DESC", "// IN PROGRESS");
+define("_AM_XADDRESSES_FIELD_TEXTAREAROWS", "Field rows attribute");
+define("_AM_XADDRESSES_FIELD_TEXTAREAROWS_DESC", "Specifies the visible number of lines in a text area");
+define("_AM_XADDRESSES_FIELD_TEXTAREACOLS", "Field cols attribute");
+define("_AM_XADDRESSES_FIELD_TEXTAREACOLS_DESC", "Specifies the visible width of a text area");
+
 define("_AM_XADDRESSES_FIELD_MAXLENGTH", "Maximum Field Length");
 define("_AM_XADDRESSES_FIELD_MAXLENGTH_DESC", "// IN PROGRESS");
 define("_AM_XADDRESSES_FIELD_DEFAULT", "Default");

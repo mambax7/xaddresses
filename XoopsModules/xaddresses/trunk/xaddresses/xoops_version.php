@@ -1,13 +1,13 @@
 <?php
 if (!defined('XOOPS_ROOT_PATH')){ exit(); }
 $dirname = basename( dirname( __FILE__ ) ) ;
-
+include_once XOOPS_ROOT_PATH . "/modules/{$dirname}/include/functions.php";
 xoops_load('XoopsLists');
 
 $modversion['name'] = _MI_XADDRESSES_NAME;
 $modversion['version'] = '1.0';
 $modversion['description'] = _MI_XADDRESSES_DESC;
-$modversion['author'] = "Rota Lucio";
+$modversion['author'] = 'Rota Lucio';
 $modversion['author_mail'] = 'lucio.rota@gmail.com';
 $modversion['author_website_url'] = 'http://luciorota.altervista.org';
 $modversion['author_website_name'] = 'http://luciorota.altervista.org';
@@ -17,11 +17,11 @@ $modversion['license'] = 'GNU GPL 2.0 see Licence';
 $modversion['license_url'] = "www.gnu.org/licenses/gpl-2.0.html/";
 
 $modversion['release_info'] = "RC";
-$modversion['release_file'] = XOOPS_URL."/modules/{$dirname}/docs/RC";
-$modversion['release_date'] = "2012/07/25"; // 'Y/m/d'
+$modversion['release_file'] = XOOPS_URL . "/modules/{$dirname}/docs/RC";
+$modversion['release_date'] = "2012/07/27"; // 'Y/m/d'
 
 $modversion['manual'] = 'Help';
-$modversion['manual_file'] = XOOPS_URL."/modules/{$dirname}/docs/help.html";
+$modversion['manual_file'] = XOOPS_URL . "/modules/{$dirname}/docs/help.html";
 $modversion['min_php'] = '5.2';
 $modversion['min_xoops'] = '2.4.5'; // 'XOOPS 2.5';
 $modversion['min_admin']= '1.1';
@@ -34,7 +34,7 @@ $modversion['dirmoduleadmin'] = "Frameworks/moduleclasses";
 $modversion['icons16'] = "modules/{$dirname}/images/icons/16x16";
 $modversion['icons32'] = "modules/{$dirname}/images/icons/32x32";
 
-//About
+// About
 $modversion['demo_site_url'] = "IN PROGRESS";
 $modversion['demo_site_name'] = "IN PROGRESS";
 $modversion['forum_site_url'] = "IN PROGRESS";
@@ -54,15 +54,13 @@ $modversion['adminindex'] = "admin/index.php";
 $modversion['adminmenu'] = "admin/menu.php";
 // Mysql file
 $modversion['sqlfile']['mysql'] = "sql/mysql.sql";
-// Mysql file
-$modversion['sqlfile']['mysql'] = "sql/mysql.sql";
 // Tables created by sql file (without prefix!)
 $modversion['tables'][0] = "xaddresses_locationcategory";
 $modversion['tables'][1] = "xaddresses_location";
 
 $modversion['tables'][2] = "xaddresses_fieldcategory";
 $modversion['tables'][3] = "xaddresses_field";
-// IN PROGRESS
+
 $modversion['tables'][4] = "xaddresses_broken";
 $modversion['tables'][5] = "xaddresses_modify";
 $modversion['tables'][6] = "xaddresses_votedata";
@@ -80,12 +78,10 @@ if (is_object($GLOBALS['xoopsModule']) && $GLOBALS['xoopsModule']->getVar('dirna
     $i = 0;
     $isAdmin = false;
     if (!empty($GLOBALS['xoopsUser'])) {
-        //$modversion['sub'][0]['name'] = _MI_XADDRESSES_TODO;
-        //$modversion['sub'][0]['url'] = "public-useralbum.php?id=".$GLOBALS['xoopsUser']->uid();
-        // Check if xoopsUser is a module administrator
+        // check if xoopsUser is a module administrator
         $isAdmin = ($GLOBALS['xoopsUser']->isAdmin($GLOBALS['xoopsModule']->getVar('mid')));
     }
-    // Add the Submit new item button (if user has right submit permissions)
+    // add the Submit new item button (if user has right submit permissions)
     if ($isAdmin || (isset($GLOBALS['xoopsModuleConfig']['allowsubmit']) &&
         $GLOBALS['xoopsModuleConfig']['allowsubmit'] == true &&
             (is_object($GLOBALS['xoopsUser']) ||
@@ -100,7 +96,7 @@ if (is_object($GLOBALS['xoopsModule']) && $GLOBALS['xoopsModule']->getVar('dirna
         $i++;
         $modversion['sub'][$i]['name'] = _MI_XADDRESSES_SEARCH;
         $modversion['sub'][$i]['url'] = "locationsearch.php";
-    // Add the Module Administration button (if user has right permissions)
+    // add the Module Administration button (if user has right permissions)
     if ($isAdmin) {
         $i++;
         $modversion['sub'][$i]['name'] = _MI_XADDRESSES_ADMIN;
@@ -108,7 +104,9 @@ if (is_object($GLOBALS['xoopsModule']) && $GLOBALS['xoopsModule']->getVar('dirna
     }
 }
 
-// Pour les blocs
+
+
+// Blocks
 $modversion['blocks'][1]['file'] = "xaddresses_top.php";
 $modversion['blocks'][1]['name'] = _MI_XADDRESSES_BNAME1;
 $modversion['blocks'][1]['description'] = _MI_XADDRESSES_BNAMEDSC1;
@@ -155,7 +153,7 @@ $modversion['hasComments'] = true;
 $modversion['comments']['itemName'] = 'loc_id';
 $modversion['comments']['pageName'] = 'locationview.php';
 $modversion['comments']['extraParams'] = array('loc_cat_id');
-// Comment callback functions
+// comment callback functions
 $modversion['comments']['callbackFile'] = 'include/comment_functions.php';
 $modversion['comments']['callback']['approve'] = 'xaddresses_com_approve';
 $modversion['comments']['callback']['update'] = 'xaddresses_com_update';
@@ -192,7 +190,7 @@ $i++;
 $modversion['templates'][$i]['file'] = 'xaddresses_locationsearchresults.html';
 $modversion['templates'][$i]['description'] = '';
 
-// Admin Templates
+// admin templates
 $i++;
 $modversion['templates'][$i]['file'] = 'xaddresses_admin_locationcategorylist.html';
 $modversion['templates'][$i]['description'] = '';
@@ -201,14 +199,14 @@ $i++;
 $modversion['templates'][$i]['file'] = 'xaddresses_admin_locationlist.html';
 $modversion['templates'][$i]['description'] = '';
 //$modversion['templates'][$i]['type'] = 'admin';
-    $i++;
-    $modversion['templates'][$i]['file'] = 'xaddresses_admin_locationbrokenlist.html';
-    $modversion['templates'][$i]['description'] = '';
-    //$modversion['templates'][$i]['type'] = 'admin';
-    $i++;
-    $modversion['templates'][$i]['file'] = 'xaddresses_admin_locationmodifylist.html';
-    $modversion['templates'][$i]['description'] = '';
-    //$modversion['templates'][$i]['type'] = 'admin';
+$i++;
+$modversion['templates'][$i]['file'] = 'xaddresses_admin_locationbrokenlist.html';
+$modversion['templates'][$i]['description'] = '';
+//$modversion['templates'][$i]['type'] = 'admin';
+$i++;
+$modversion['templates'][$i]['file'] = 'xaddresses_admin_locationmodifylist.html';
+$modversion['templates'][$i]['description'] = '';
+//$modversion['templates'][$i]['type'] = 'admin';
 $i++;
 $modversion['templates'][$i]['file'] = 'xaddresses_admin_fieldcategorylist.html';
 $modversion['templates'][$i]['description'] = '';
@@ -218,7 +216,7 @@ $modversion['templates'][$i]['file'] = 'xaddresses_admin_fieldlist.html';
 $modversion['templates'][$i]['description'] = '';
 //$modversion['templates'][$i]['type'] = 'admin';
 
-// Image Manager Templates
+// image manager templates
 $i++;
 $modversion['templates'][$i]['file'] = 'xaddresses_imagemanager.html';
 $modversion['templates'][$i]['description'] = '';
@@ -229,7 +227,7 @@ $modversion['templates'][$i]['description'] = '';
 
 
 // Preferences
-// FOR FUTURE XOOPS VERSIONS
+// MAYBE FOR FUTURE XOOPS VERSIONS
 /*
 $i = 0;
 $i++;
@@ -245,16 +243,15 @@ $modversion['config']['category'][$i]['name'] = 'location';
 $modversion['config']['category'][$i]['title'] = _MI_XADDRESSES_LOCATION_CONFIG;
 $modversion['config']['category'][$i]['description'] = _MI_XADDRESSES_LOCATION_CONFIG_DESC;
 */
-
 $i = 0;
 $i++;
-    $modversion['config'][$i]['name']           = 'google_apikey';
-    $modversion['config'][$i]['title']          = '_MI_XADDRESSES_GOOGLE_APIKEY';
-    $modversion['config'][$i]['description']    = '_MI_XADDRESSES_GOOGLE_APIKEY_DESC';
-    $modversion['config'][$i]['formtype']       = 'textbox';
-    $modversion['config'][$i]['valuetype']      = 'text';
-    $modversion['config'][$i]['default']        = '';
-    $modversion["config"][$i]["category"]       = "global";
+$modversion['config'][$i]['name']           = 'google_apikey';
+$modversion['config'][$i]['title']          = '_MI_XADDRESSES_GOOGLE_APIKEY';
+$modversion['config'][$i]['description']    = '_MI_XADDRESSES_GOOGLE_APIKEY_DESC';
+$modversion['config'][$i]['formtype']       = 'textbox';
+$modversion['config'][$i]['valuetype']      = 'text';
+$modversion['config'][$i]['default']        = '';
+$modversion["config"][$i]["category"]       = "global";
 $i++;
     $modversion['config'][$i]['name']           = 'popular';
     $modversion['config'][$i]['title']          = '_MI_XADDRESSES_POPULAR';
@@ -302,7 +299,7 @@ $modversion['config'][$i]['description']    = '_MI_XADDRESSES_LIST_NUMBER_DESC';
 $modversion['config'][$i]['formtype']       = 'textbox';
 $modversion['config'][$i]['valuetype']      = 'int';
 $modversion['config'][$i]['default']        = 5;
-$modversion["config"][$i]["category"]       = "global";
+$modversion['config'][$i]['category']       = 'global';
 $i++;
 $modversion['config'][$i]['name']           = 'index_list_titlelenght';
 $modversion['config'][$i]['title']          = '_MI_XADDRESSES_LIST_TITLELENGHT';
@@ -310,7 +307,7 @@ $modversion['config'][$i]['description']    = '_MI_XADDRESSES_LIST_TITLELENGHT_D
 $modversion['config'][$i]['formtype']       = 'textbox';
 $modversion['config'][$i]['valuetype']      = 'int';
 $modversion['config'][$i]['default']        = 20;
-$modversion["config"][$i]["category"]       = "global";
+$modversion['config'][$i]['category']       = 'global';
 $i++;
 $modversion['config'][$i]['name']           = 'show_home_in_breadcrumb';
 $modversion['config'][$i]['title']          = '_MI_XADDRESSES_SHOWHOMEINBREADCRUMB';
@@ -318,7 +315,7 @@ $modversion['config'][$i]['description']    = '_MI_XADDRESSES_SHOWHOMEINBREADCRU
 $modversion['config'][$i]['formtype']       = 'yesno';
 $modversion['config'][$i]['valuetype']      = 'int';
 $modversion['config'][$i]['default']        = 1; // true/yes
-$modversion["config"][$i]["category"]       = "global";
+$modversion['config'][$i]['category']       = 'global';
 $i++;
 $modversion['config'][$i]['name']           = 'usetellafriend';
 $modversion['config'][$i]['title']          = '_MI_XADDRESSES_USETELLAFRIEND';
@@ -326,7 +323,7 @@ $modversion['config'][$i]['description']    = '_MI_XADDRESSES_USETELLAFRIEND_DES
 $modversion['config'][$i]['formtype']       = 'yesno';
 $modversion['config'][$i]['valuetype']      = 'int';
 $modversion['config'][$i]['default']        = 0; // false/no
-$modversion["config"][$i]["category"]       = "global";
+$modversion['config'][$i]['category']       = 'global';
 $i++;
 $modversion['config'][$i]['name']           = 'usetag';
 $modversion['config'][$i]['title']          = '_MI_XADDRESSES_USETAG';
@@ -334,7 +331,7 @@ $modversion['config'][$i]['description']    = '_MI_XADDRESSES_USETAG_DESC';
 $modversion['config'][$i]['formtype']       = 'yesno';
 $modversion['config'][$i]['valuetype']      = 'int';
 $modversion['config'][$i]['default']        = 0; // false/no
-$modversion["config"][$i]["category"]       = "global";
+$modversion['config'][$i]['category']       = 'global';
 $i++;
 $modversion['config'][$i]['name']           = 'useajaxfilemanager';
 $modversion['config'][$i]['title']          = '_MI_XADDRESSES_USEAJAXFILEMANAGER';
@@ -342,7 +339,7 @@ $modversion['config'][$i]['description']    = '_MI_XADDRESSES_USAJAXFILEMANAGER_
 $modversion['config'][$i]['formtype']       = 'yesno';
 $modversion['config'][$i]['valuetype']      = 'int';
 $modversion['config'][$i]['default']        = 0; // false/no
-$modversion["config"][$i]["category"]       = "global";
+$modversion['config'][$i]['category']       = 'global';
     $i++;
     $modversion['config'][$i]['name']           = 'autoapprove';
     $modversion['config'][$i]['title']          = '_MI_XADDRESSES_AUTOAPPROVE';
@@ -352,14 +349,17 @@ $modversion["config"][$i]["category"]       = "global";
     $modversion['config'][$i]['default']        = 0;
     $modversion["config"][$i]["category"]       = "global";
 $i++;
-$modversion["config"][$i]["name"]           = "editor";
-$modversion["config"][$i]["title"]          = "_MI_XADDRESSES_FORM_OPTIONS";
-$modversion["config"][$i]["description"]    = "_MI_XADDRESSES_FORM_OPTIONS_DESC";
-$modversion["config"][$i]["formtype"]       = "select";
-$modversion["config"][$i]["valuetype"]      = "text";
-$modversion["config"][$i]["default"]        = "dhtmltextarea";
-$modversion["config"][$i]["options"]        = XoopsLists::getDirListAsArray(XOOPS_ROOT_PATH . "/class/xoopseditor");
-$modversion["config"][$i]["category"]       = "global";
+$modversion['config'][$i]['name']           = 'text_editor';
+$modversion['config'][$i]['title']          = '_MI_XADDRESSES_FORM_OPTIONS';
+$modversion['config'][$i]['description']    = '_MI_XADDRESSES_FORM_OPTIONS_DESC';
+$modversion['config'][$i]['formtype']       = 'select';
+$modversion['config'][$i]['valuetype']      = 'text';
+$modversion['config'][$i]['default']        = 'dhtmltextarea';
+//xoops_load('xoopseditorhandler');
+//$editor_handler = XoopsEditorHandler::getInstance();
+//$modversion['config'][$i]['options'] = array_flip($editor_handler->getList());
+$modversion['config'][$i]['options']        = XoopsLists::getDirListAsArray(XOOPS_ROOT_PATH . '/class/xoopseditor');
+$modversion['config'][$i]['category']       = 'global';
     $i++;
     $modversion['config'][$i]['name']           = 'toporder';
     $modversion['config'][$i]['title']          = '_MI_XADDRESSES_TOPORDER';

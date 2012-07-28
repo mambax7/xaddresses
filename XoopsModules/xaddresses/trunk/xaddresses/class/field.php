@@ -40,7 +40,7 @@ class XaddressesField extends XoopsObject
      * Tricky solution
      */
     function setVar($key, $value, $not_gpc = false)
-    {
+    {error_log(print_r($value),true);
         if ($key == 'field_options' && is_array($value)) {
             foreach (array_keys($value) as $idx) {
                 $value[$idx] = base64_encode($value[$idx]);
@@ -69,6 +69,8 @@ class XaddressesField extends XoopsObject
     **/
     function getEditElement($location)
     {
+        include_once $GLOBALS['xoops']->path('class/xoopsformloader.php');
+
         $value = $location->getVar($this->getVar('field_name'), 'e');
         if (is_null($value)) {
             $value = $this->getVar('field_default');
@@ -86,7 +88,16 @@ class XaddressesField extends XoopsObject
                 $options[$optkey] = $optval;
             }
         }
-        include_once $GLOBALS['xoops']->path('class/xoopsformloader.php');
+        $extras = $this->getVar('field_extras');
+        if (is_array($extras)) {
+            //asort($extras);
+            foreach (array_keys($extras) as $key) {
+                $extval = defined($extras[$key]) ? constant($extras[$key]) : $extras[$key];
+                $extkey = defined($key) ? constant($key) : $key;
+                unset($extras[$key]);
+                $extras[$extkey] = $extval;
+            }
+        }
         switch ($this->getVar('field_type')) {
             default:
             case "autotext":
@@ -97,10 +108,12 @@ class XaddressesField extends XoopsObject
                 $element = new XoopsFormText($caption, $name, $this->getVar('field_length'), $this->getVar('field_maxlength'), $value);
                 break;
             case "textarea":
-                $element = new XoopsFormTextArea($caption, $name, $value, 4, 30);
+                //$element = new XoopsFormTextArea($caption, $name, $value, 4, 30);
+                $element = new XoopsFormTextArea($caption, $name, $value, $extras['rows'], $extras['cols']);
                 break;
             case "dhtml":
-                $element = new XoopsFormDhtmlTextArea($caption, $name, $value, 10, 30);
+                //$element = new XoopsFormDhtmlTextArea($caption, $name, $value, 10, 30);
+                $element = new XoopsFormDhtmlTextArea($caption, $name, $value, $extras['rows'], $extras['cols']);
                 break;
             case "select":
                 $element = new XoopsFormSelect($caption, $name, $value);
@@ -157,9 +170,8 @@ class XaddressesField extends XoopsObject
                 $element->setExtra("style='width: 280px;'");
                 break;
             case "rank":
-                $element = new XoopsFormSelect($caption, $name, $value);
-
                 include_once $GLOBALS['xoops']->path('class/xoopslists.php');
+                $element = new XoopsFormSelect($caption, $name, $value);
                 $ranks = XoopsLists::getUserRankList();
                 $element->addOption(0, "--------------");
                 $element->addOptionArray($ranks);
@@ -428,96 +440,96 @@ class XaddressesFieldHandler extends XoopsPersistableObjectHandler
     /**
     * save an location field in the database
     *
-    * @param object $obj reference to the object
+    * @param object $field reference to the object
     * @param bool $force whether to force the query execution despite security settings
     * @param bool $checkObject check if the object is dirty and clean the attributes
     * @return bool FALSE if failed, TRUE if already present and unchanged or successful
     */
-    function insert(&$obj, $force = false)
+    function insert(&$field, $force = false)
     {
         $locationHandler =& xoops_getmodulehandler('location', 'xaddresses');
-        $obj->setVar('field_name', str_replace(' ', '_', $obj->getVar('field_name')));
-        $obj->cleanVars();
+        $field->setVar('field_name', str_replace(' ', '_', $field->getVar('field_name')));
+        $field->cleanVars();
         $defaultstring = "";
-        switch ($obj->getVar('field_type')) {
+        switch ($field->getVar('field_type')) {
             case "datetime":
             case "date":
-                $obj->setVar('field_valuetype', XOBJ_DTYPE_INT);
-                $obj->setVar('field_maxlength', 10);
+                $field->setVar('field_valuetype', XOBJ_DTYPE_INT);
+                $field->setVar('field_maxlength', 10);
                 break;
             case "longdate":
-                $obj->setVar('field_valuetype', XOBJ_DTYPE_MTIME);
+                $field->setVar('field_valuetype', XOBJ_DTYPE_MTIME);
                 break;
             case "yesno":
-                $obj->setVar('field_valuetype', XOBJ_DTYPE_INT);
-                $obj->setVar('field_maxlength', 1);
+                $field->setVar('field_valuetype', XOBJ_DTYPE_INT);
+                $field->setVar('field_maxlength', 1);
                 break;
             case "textbox":
-                if ($obj->getVar('field_valuetype') != XOBJ_DTYPE_INT) {
-                    $obj->setVar('field_valuetype', XOBJ_DTYPE_TXTBOX);
+                if ($field->getVar('field_valuetype') != XOBJ_DTYPE_INT) {
+                    $field->setVar('field_valuetype', XOBJ_DTYPE_TXTBOX);
                 }
                 break;
             case "autotext":
-                if ($obj->getVar('field_valuetype') != XOBJ_DTYPE_INT) {
-                    $obj->setVar('field_valuetype', XOBJ_DTYPE_TXTAREA);
+                if ($field->getVar('field_valuetype') != XOBJ_DTYPE_INT) {
+                    $field->setVar('field_valuetype', XOBJ_DTYPE_TXTAREA);
                 }
                 break;
             case "group_multi":
             case "select_multi":
             case "checkbox":
-                $obj->setVar('field_valuetype', XOBJ_DTYPE_ARRAY);
+                $field->setVar('field_valuetype', XOBJ_DTYPE_ARRAY);
                 break;
             case "language":
             case "timezone":
             case "theme":
-                $obj->setVar('field_valuetype', XOBJ_DTYPE_TXTBOX);
+                $field->setVar('field_valuetype', XOBJ_DTYPE_TXTBOX);
                 break;
             case "image":
-                $obj->setVar('field_valuetype', XOBJ_DTYPE_TXTBOX);
+                $field->setVar('field_valuetype', XOBJ_DTYPE_TXTBOX);
                 break;
             case "file":
-                $obj->setVar('field_valuetype', XOBJ_DTYPE_TXTBOX);
+                $field->setVar('field_valuetype', XOBJ_DTYPE_TXTBOX);
                 break;
 // IN_PROGRESS
             case "multipleimage":
-                $obj->setVar('field_valuetype', XOBJ_DTYPE_ARRAY);
+                $field->setVar('field_valuetype', XOBJ_DTYPE_ARRAY);
                 break;
             case "multiplefile":
-                $obj->setVar('field_valuetype', XOBJ_DTYPE_ARRAY);
+                $field->setVar('field_valuetype', XOBJ_DTYPE_ARRAY);
                 break;
 // IN_PROGRESS
             case "dhtml":
             case "textarea":
-                $obj->setVar('field_valuetype', XOBJ_DTYPE_TXTAREA);
+                $field->setVar('field_valuetype', XOBJ_DTYPE_TXTAREA);
                 break;
             case "kmlmap":
-                $obj->setVar('field_valuetype', XOBJ_DTYPE_TXTAREA);
+                $field->setVar('field_valuetype', XOBJ_DTYPE_TXTAREA);
                 break;
         }
 
-        if ($obj->getVar('field_valuetype') == "") {
-            $obj->setVar('field_valuetype', XOBJ_DTYPE_TXTBOX);
+        if ($field->getVar('field_valuetype') == "") {
+            $field->setVar('field_valuetype', XOBJ_DTYPE_TXTBOX);
         }
 
-        if (!in_array($obj->getVar('field_name'), $this->getLocationVars())) {
-            if ($obj->isNew()) {
+        if (!in_array($field->getVar('field_name'), $this->getLocationVars())) {
+            if ($field->isNew()) {
                 //add column to table
                 $changetype = "ADD";
             } else {
                 //update column information
-                $changetype = "CHANGE `" . $obj->getVar('field_name', 'n') . "`";
+                $changetype = "CHANGE `" . $field->getVar('field_name', 'n') . "`";
             }
-            $maxlengthstring = $obj->getVar('field_maxlength') > 0 ? "(" . $obj->getVar('field_maxlength') . ")" : "";
-            $lengthstring = $obj->getVar('field_length') > 0 ? "(" . $obj->getVar('field_length') . ")" : "";
+            $maxlengthstring = $field->getVar('field_maxlength') > 0 ? "(" . $field->getVar('field_maxlength') . ")" : "";
+            $lengthstring = $field->getVar('field_length') > 0 ? "(" . $field->getVar('field_length') . ")" : "";
             $notnullstring = " NOT NULL";
             //set type
-            switch ($obj->getVar('field_valuetype')) {
+            switch ($field->getVar('field_valuetype')) {
                 default:
                 case XOBJ_DTYPE_ARRAY:
                 case XOBJ_DTYPE_UNICODE_ARRAY:
                     $type = "mediumtext";
                     $maxlengthstring = "";
-                    $obj->setVar('field_maxlength', null);
+                    $field->setVar('field_maxlength', null);
                     break;
                 case XOBJ_DTYPE_UNICODE_EMAIL:
                 case XOBJ_DTYPE_UNICODE_TXTBOX:
@@ -530,37 +542,37 @@ class XaddressesFieldHandler extends XoopsPersistableObjectHandler
                     if (!$lengthstring) {
                         //so set it to max if length is not set - or should it fail?
                         $lengthstring = "(40)";
-                        $obj->setVar('field_length', 40);
+                        $field->setVar('field_length', 40);
                     }
                     // varchars must have a maxlength
                     if (!$maxlengthstring) {
                         //so set it to max if maxlength is not set - or should it fail?
                         $maxlengthstring = "(255)";
-                        $obj->setVar('field_maxlength', 255);
+                        $field->setVar('field_maxlength', 255);
                     }
-                    //if ( $obj->getVar('field_default')  ) {
-                        $defaultstring = " DEFAULT " . $this->db->quote($obj->cleanVars['field_default']);
+                    //if ( $field->getVar('field_default')  ) {
+                        $defaultstring = " DEFAULT " . $this->db->quote($field->cleanVars['field_default']);
                     //}
                     break;
                 case XOBJ_DTYPE_INT:
                     $type = "int";
-                    if ($obj->getVar('field_default') || $obj->getVar('field_default') !== '') {
-                        $defaultstring = " DEFAULT '" . intval($obj->cleanVars['field_default']) . "'";
-                        $obj->setVar('field_default', intval($obj->cleanVars['field_default']));
+                    if ($field->getVar('field_default') || $field->getVar('field_default') !== '') {
+                        $defaultstring = " DEFAULT '" . intval($field->cleanVars['field_default']) . "'";
+                        $field->setVar('field_default', intval($field->cleanVars['field_default']));
                     }
                     break;
                 case XOBJ_DTYPE_DECIMAL:
                     $type = "decimal(14,6)";
-                    if ($obj->getVar('field_default') || $obj->getVar('field_default') !== '') {
-                        $defaultstring = " DEFAULT '" . doubleval($obj->cleanVars['field_default']) . "'";
-                        $obj->setVar('field_default', doubleval($obj->cleanVars['field_default']));
+                    if ($field->getVar('field_default') || $field->getVar('field_default') !== '') {
+                        $defaultstring = " DEFAULT '" . doubleval($field->cleanVars['field_default']) . "'";
+                        $field->setVar('field_default', doubleval($field->cleanVars['field_default']));
                     }
                     break;
                 case XOBJ_DTYPE_FLOAT:
                     $type = "float(15,9)";
-                    if ($obj->getVar('field_default') || $obj->getVar('field_default') !== '') {
-                        $defaultstring = " DEFAULT '" . floatval($obj->cleanVars['field_default']) . "'";
-                        $obj->setVar('field_default', floatval($obj->cleanVars['field_default']));
+                    if ($field->getVar('field_default') || $field->getVar('field_default') !== '') {
+                        $defaultstring = " DEFAULT '" . floatval($field->cleanVars['field_default']) . "'";
+                        $field->setVar('field_default', floatval($field->cleanVars['field_default']));
                     }
                     break;
                 case XOBJ_DTYPE_OTHER:
@@ -568,19 +580,19 @@ class XaddressesFieldHandler extends XoopsPersistableObjectHandler
                 case XOBJ_DTYPE_TXTAREA:
                     $type = "text";
                     $maxlengthstring = "";
-                    $obj->setVar('field_maxlength', null);
+                    $field->setVar('field_maxlength', null);
                     $notnullstring = "";
                     break;
                 case XOBJ_DTYPE_MTIME:
                     $type = "date";
                     $maxlengthstring = "";
-                    $obj->setVar('field_maxlength', null);
+                    $field->setVar('field_maxlength', null);
                     break;
             }
 
             $sql = "ALTER TABLE `" . $locationHandler->table . "`";
             $sql.= " " . $changetype;
-            $sql.= " " . "`" . $obj->cleanVars['field_name'] . "`";
+            $sql.= " " . "`" . $field->cleanVars['field_name'] . "`";
             $sql.= " " . $type . $maxlengthstring . $notnullstring . $defaultstring;
             if (!$this->db->query($sql)) {
                 return false;
@@ -588,41 +600,41 @@ class XaddressesFieldHandler extends XoopsPersistableObjectHandler
         }
 
         //change this to also update the cached field information storage
-        $obj->setDirty();
-        if (!parent::insert($obj, $force)) {
+        $field->setDirty();
+        if (!parent::insert($field, $force)) {
             return false;
         }
-        return $obj->getVar('field_id');
+        return $field->getVar('field_id');
 
     }
 
     /**
     * delete a location field from the database
     *
-    * @param object $obj reference to the object to delete
+    * @param object $field reference to the object to delete
     * @param bool $force
     * @return bool FALSE if failed.
     **/
-    function delete(&$obj, $force = false)
+    function delete(&$field, $force = false)
     {
         $locationHandler =& xoops_getmodulehandler('location', 'xaddresses');
         // remove column from table
         $sql = "ALTER TABLE " . $locationHandler->table;
-        $sql.= " DROP `" . $obj->getVar('field_name', 'n') . "`";
+        $sql.= " DROP `" . $field->getVar('field_name', 'n') . "`";
         if ($this->db->query($sql)) {
             //change this to update the cached field information storage
-            if (!parent::delete($obj, $force)) {
+            if (!parent::delete($field, $force)) {
                 return false;
             }
 
-            if ($obj->getVar('field_show') || $obj->getVar('field_edit')) {
+            if ($field->getVar('field_show') || $field->getVar('field_edit')) {
                 $moduleHandler =& xoops_gethandler('module');
                 $module = $moduleHandler->getByDirname('xaddresses');
                 if (is_object($module)) {
                     // Remove group permissions
                     $groupPermHandler =& xoops_gethandler('groupperm');
                     $criteria = new CriteriaCompo(new Criteria('gperm_modid', $module->getVar('mid')));
-                    $criteria->add(new Criteria('gperm_itemid', $obj->getVar('field_id')));
+                    $criteria->add(new Criteria('gperm_itemid', $field->getVar('field_id')));
                     return $groupPermHandler->deleteAll($criteria);
                 }
             }
