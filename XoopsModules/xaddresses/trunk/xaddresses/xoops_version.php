@@ -16,9 +16,9 @@ $modversion['help'] = 'page=help';
 $modversion['license'] = 'GNU GPL 2.0 see Licence';
 $modversion['license_url'] = "www.gnu.org/licenses/gpl-2.0.html/";
 
-$modversion['release_info'] = "RC";
+$modversion['release_info'] = 'in progress';
 $modversion['release_file'] = XOOPS_URL . "/modules/{$dirname}/docs/RC";
-$modversion['release_date'] = "2012/07/27"; // 'Y/m/d'
+$modversion['release_date'] = "2012/07/30"; // 'Y/m/d'
 
 $modversion['manual'] = 'Help';
 $modversion['manual_file'] = XOOPS_URL . "/modules/{$dirname}/docs/help.html";
@@ -35,16 +35,18 @@ $modversion['icons16'] = "modules/{$dirname}/images/icons/16x16";
 $modversion['icons32'] = "modules/{$dirname}/images/icons/32x32";
 
 // About
-$modversion['demo_site_url'] = "IN PROGRESS";
-$modversion['demo_site_name'] = "IN PROGRESS";
-$modversion['forum_site_url'] = "IN PROGRESS";
-$modversion['forum_site_name'] = "IN PROGRESS";
-$modversion['module_website_url'] = "IN PROGRESS";
-$modversion['module_website_name'] = "IN PROGRESS";
+$modversion['demo_site_url'] = '';
+$modversion['demo_site_name'] = '';
+$modversion['forum_site_url'] = '';
+$modversion['forum_site_name'] = '';
+$modversion['module_website_url'] = '';
+$modversion['module_website_name'] = '';
 //$modversion['support_site_url']	= "http://www.xoops.org";
 //$modversion['support_site_name'] = "www.xoops.org";
 $modversion['release'] = "release";
-$modversion['module_status'] = 'In progress'; //"Stable";
+$modversion['module_status'] = 'in progress'; //"Stable";
+
+
 
 // Admin things
 $modversion['hasAdmin'] = true;
@@ -52,6 +54,9 @@ $modversion['hasAdmin'] = true;
 $modversion['system_menu'] = true;
 $modversion['adminindex'] = "admin/index.php";
 $modversion['adminmenu'] = "admin/menu.php";
+
+
+
 // Mysql file
 $modversion['sqlfile']['mysql'] = "sql/mysql.sql";
 // Tables created by sql file (without prefix!)
@@ -67,10 +72,14 @@ $modversion['tables'][6] = "xaddresses_votedata";
 // TO DO
 $modversion['tables'][7] = "xaddresses_marker";
 
+
+
 // Scripts to run upon installation or update
 $modversion['onInstall'] = 'include/install_function.php';
 //$modversion['onUpdate'] = 'include/update_function.php';
 $modversion['onUninstall'] = 'include/uninstall_function.php';
+
+
 
 // Main menu
 $modversion['hasMain'] = true;
@@ -226,23 +235,7 @@ $modversion['templates'][$i]['description'] = '';
 
 
 
-// Preferences
-// MAYBE FOR FUTURE XOOPS VERSIONS
-/*
-$i = 0;
-$i++;
-$modversion['config']['category'][$i]['name'] = 'global';
-$modversion['config']['category'][$i]['title'] = _MI_XADDRESSES_GLOBAL_CONFIG;
-$modversion['config']['category'][$i]['description'] = _MI_XADDRESSES_GLOBAL_CONFIG_DESC;
-$i++;
-$modversion['config']['category'][$i]['name'] = 'category';
-$modversion['config']['category'][$i]['title'] = _MI_XADDRESSES_CATEGORY_CONFIG;
-$modversion['config']['category'][$i]['description'] = _MI_XADDRESSES_CATEGORY_CONFIG_DESC;
-$i++;
-$modversion['config']['category'][$i]['name'] = 'location';
-$modversion['config']['category'][$i]['title'] = _MI_XADDRESSES_LOCATION_CONFIG;
-$modversion['config']['category'][$i]['description'] = _MI_XADDRESSES_LOCATION_CONFIG_DESC;
-*/
+// Preferences/Config
 $i = 0;
 $i++;
 $modversion['config'][$i]['name']           = 'google_apikey';
@@ -355,9 +348,6 @@ $modversion['config'][$i]['description']    = '_MI_XADDRESSES_FORM_OPTIONS_DESC'
 $modversion['config'][$i]['formtype']       = 'select';
 $modversion['config'][$i]['valuetype']      = 'text';
 $modversion['config'][$i]['default']        = 'dhtmltextarea';
-//xoops_load('xoopseditorhandler');
-//$editor_handler = XoopsEditorHandler::getInstance();
-//$modversion['config'][$i]['options'] = array_flip($editor_handler->getList());
 $modversion['config'][$i]['options']        = XoopsLists::getDirListAsArray(XOOPS_ROOT_PATH . '/class/xoopseditor');
 $modversion['config'][$i]['category']       = 'global';
     $i++;

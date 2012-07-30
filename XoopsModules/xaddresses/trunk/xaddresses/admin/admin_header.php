@@ -27,32 +27,36 @@
  */
 
 include_once dirname(dirname(dirname(dirname(__FILE__)))) . '/mainfile.php';
+$dirname = basename(dirname(dirname( __FILE__ ) ));
 
 // Include xoops admin header
 include_once XOOPS_ROOT_PATH . '/include/cp_header.php';
-include_once XOOPS_ROOT_PATH . '/include/config.php';
-include_once XOOPS_ROOT_PATH . '/include/functions.php';
-
 include_once XOOPS_ROOT_PATH . '/class/xoopsformloader.php';
 include_once XOOPS_ROOT_PATH . '/class/tree.php';
 include_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 xoops_load ('XoopsUserUtility');
 
+$module_handler =& xoops_gethandler('module');
+$xoopsModule = & $module_handler->getByDirname($dirname); 
+$moduleInfo =& $module_handler->get($xoopsModule->getVar('mid'));
+$pathImageIcon = XOOPS_URL .'/'. $moduleInfo->getInfo('icons16');
+$pathImageAdmin = XOOPS_URL .'/'. $moduleInfo->getInfo('icons32');
+$pathImageModule = XOOPS_URL . '/modules/'. $GLOBALS['xoopsModule']->getVar('dirname') .'/images';
+
 // Include module functions
-include_once '../include/config.php';
-include_once '../include/functions.php';
+include_once XOOPS_ROOT_PATH . "/modules/{$dirname}/include/config.php";
+include_once XOOPS_ROOT_PATH . "/modules/{$dirname}/include/functions.php";
 
 
-    
+
+// Check and load moduleadmin classes
 $pathDir = $GLOBALS['xoops']->path('/Frameworks/moduleclasses/moduleadmin');
 $globalLanguage = $GLOBALS['xoopsConfig']['language'];
-
 if ( file_exists($pathDir . '/language/' . $globalLanguage . '/main.php')){
 	include_once $pathDir . '/language/' . $globalLanguage . '/main.php';        
 } else {
 	include_once $pathDir . '/language/english/main.php';        
 }
-    
 if ( file_exists($pathDir . '/moduleadmin.php')){
 	include_once $pathDir . '/moduleadmin.php';
 	//return true;
@@ -62,14 +66,6 @@ if ( file_exists($pathDir . '/moduleadmin.php')){
 	xoops_cp_footer();
 	//return false;
 }
-
-$dirname = basename(dirname(dirname( __FILE__ ) ));
-$module_handler =& xoops_gethandler('module');
-$xoopsModule = & $module_handler->getByDirname($dirname); 
-$moduleInfo =& $module_handler->get($xoopsModule->getVar('mid'));
-$pathImageIcon = XOOPS_URL .'/'. $moduleInfo->getInfo('icons16');
-$pathImageAdmin = XOOPS_URL .'/'. $moduleInfo->getInfo('icons32');
-$pathImageModule = XOOPS_URL . '/modules/'. $GLOBALS['xoopsModule']->getVar('dirname') .'/images';
 
 $myts =& MyTextSanitizer::getInstance();
 

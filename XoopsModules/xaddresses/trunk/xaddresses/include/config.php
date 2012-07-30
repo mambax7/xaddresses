@@ -27,11 +27,11 @@
  */
 
 if( ! defined( 'XOOPS_ROOT_PATH' ) ) exit ;
-define("XADDRESSES_PATH", XOOPS_ROOT_PATH."/modules/xaddresses");
-define("XADDRESSES_URL", XOOPS_URL."/modules/xaddresses");
+define("XADDRESSES_PATH", XOOPS_ROOT_PATH . "/modules/xaddresses");
+define("XADDRESSES_URL", XOOPS_URL . "/modules/xaddresses");
 
 // module information
-$mod_img = XADDRESSES_URL."/images/luciorota.altervista.org/xoops_logo.png";
+$mod_img = XADDRESSES_URL . "/images/luciorota.altervista.org/xoops_logo.png";
 $mod_copyright = "<a href='http://luciorota.altervista.org/xoops/' title='luciorota.altervista.org/xoops' target='_blank'>
-                     <img src='".$mod_img."' alt='luciorota.altervista.org/xoops' /></a>";
+                     <img src='" . $mod_img . "' alt='luciorota.altervista.org/xoops' /></a>";
 ?>
