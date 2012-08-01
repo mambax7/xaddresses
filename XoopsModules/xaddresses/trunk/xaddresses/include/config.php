@@ -17,13 +17,13 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *  ---------------------------------------------------------------------------
- *  @copyright  Rota Lucio ( http://luciorota.altervista.org/xoops/ )
- *  @license    GPL see LICENSE
- *  @package    xaddresses
- *  @author     Rota Lucio ( lucio.rota@gmail.com )
  *
- *  Version : 1.0 Mon 2012/07/23 14:17:52 : XOOPS Exp $
- * ****************************************************************************
+ * @copyright       The XOOPS Project http://sourceforge.net/projects/xoops/
+ * @license         http://www.fsf.org/copyleft/gpl.html& ...  public license
+ * @package         xaddresses
+ * @since           1.0
+ * @author          luciorota <lucio.rota@gmail.com>
+ * @version         $Id$
  */
 
 if( ! defined( 'XOOPS_ROOT_PATH' ) ) exit ;
@@ -32,6 +32,6 @@ define("XADDRESSES_URL", XOOPS_URL . "/modules/xaddresses");
 
 // module information
 $mod_img = XADDRESSES_URL . "/images/luciorota.altervista.org/xoops_logo.png";
-$mod_copyright = "<a href='http://luciorota.altervista.org/xoops/' title='luciorota.altervista.org/xoops' target='_blank'>
-                     <img src='" . $mod_img . "' alt='luciorota.altervista.org/xoops' /></a>";
-?>
+$mod_copyright = "<a href='http://luciorota.altervista.org/xoops/' title='luciorota.altervista.org/xoops' target='_blank'>";
+$mod_copyright.= "<img src='" . $mod_img . "' alt='luciorota.altervista.org/xoops' />";
+$mod_copyright.= "</a>";

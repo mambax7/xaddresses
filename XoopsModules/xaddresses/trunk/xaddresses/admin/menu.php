@@ -17,13 +17,13 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *  ---------------------------------------------------------------------------
- *  @copyright  Rota Lucio ( http://luciorota.altervista.org/xoops/ )
- *  @license    GPL see LICENSE
- *  @package    xaddresses
- *  @author     Rota Lucio ( lucio.rota@gmail.com )
  *
- *  Version : 1.0 Mon 2012/07/23 14:17:52 : XOOPS Exp $
- * ****************************************************************************
+ * @copyright       The XOOPS Project http://sourceforge.net/projects/xoops/
+ * @license         http://www.fsf.org/copyleft/gpl.html& ...  public license
+ * @package         xaddresses
+ * @since           1.0
+ * @author          luciorota <lucio.rota@gmail.com>
+ * @version         $Id$
  */
 
 $dirname = basename( dirname( dirname( __FILE__ ) ) ) ;
@@ -82,13 +82,4 @@ $adminmenu[$i]['title'] = _MI_XADDRESSES_ADMENU_ABOUT;
 $adminmenu[$i]['link'] = "admin/about.php";
 $adminmenu[$i]['desc'] = _MI_XADDRESSES_ADMENU_ABOUT_DESC;
 $adminmenu[$i]['icon'] = "../../{$pathImageAdmin}/information.png";
-/*
-$i++;
-$adminmenu[$i]['name'] = 'Help';
-$adminmenu[$i]['title'] = _MI_XADDRESSES_ADMENU_HELP;
-$adminmenu[$i]['link'] = "admin/help.php";
-$adminmenu[$i]['desc'] = _MI_XADDRESSES_ADMENU_HELP_DESC;
-$adminmenu[$i]['icon'] = "../../{$pathImageAdmin}/help.png";
-*/
 unset( $i );
-?>
