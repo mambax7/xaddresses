@@ -1,13 +1,37 @@
 <?php
+/**
+ * ****************************************************************************
+ *  - A Project by Developers TEAM For Xoops - ( http://www.xoops.org )
+ * ****************************************************************************
+ *  XADDRESSES - MODULE FOR XOOPS
+ *  Copyright (c) 2007 - 2012
+ *  Rota Lucio ( http://luciorota.altervista.org/xoops/ )
+ *
+ *  You may not change or alter any portion of this comment or credits
+ *  of supporting developers from this source code or any supporting
+ *  source code which is considered copyrighted (c) material of the
+ *  original comment or credit authors.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *  ---------------------------------------------------------------------------
+ *
+ * @copyright       The XOOPS Project http://sourceforge.net/projects/xoops/
+ * @license         http://www.fsf.org/copyleft/gpl.html& ...  public license
+ * @package         xaddresses
+ * @since           1.0
+ * @author          luciorota <lucio.rota@gmail.com>
+ * @version         $Id$
+ */
+ 
 $currentFile = basename(__FILE__);
 include 'admin_header.php';
 $op = isset($_REQUEST['op']) ? $_REQUEST['op'] : (isset($_REQUEST['id']) ? "edit_fieldcategory" : 'list_fieldcategories');
 
 // load classes
 $fieldCategoryHandler =& xoops_getmodulehandler('fieldcategory', 'xaddresses');
-
-
-
 
 
 
@@ -130,9 +154,6 @@ case 'save_fieldcategory':
     } else {
         // render start here
         xoops_cp_header();
-        // render main admin menu
-        include (XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['xoopsModule']->dirname() . '/admin/menu.php');
-        echo moduleAdminTabMenu($adminmenu, $currentFile);
         // render submenu
         $status_display = isset($_REQUEST['status_display']) ? $_REQUEST['status_display'] : 1;
         $submenuItem[] = ($op == 'new_fieldcategory' ? _AM_XADDRESSES_FIELDCAT_NEW : '<a href="' . $currentFile . '?op=new_fieldcategory">' . _AM_XADDRESSES_FIELDCAT_NEW . '</a>');
@@ -169,4 +190,3 @@ case 'delete_fieldcategory':
     }
     break;
 }
-?>

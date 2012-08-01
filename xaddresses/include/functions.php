@@ -1,4 +1,31 @@
 <?php
+/**
+ * ****************************************************************************
+ *  - A Project by Developers TEAM For Xoops - ( http://www.xoops.org )
+ * ****************************************************************************
+ *  XADDRESSES - MODULE FOR XOOPS
+ *  Copyright (c) 2007 - 2012
+ *  Rota Lucio ( http://luciorota.altervista.org/xoops/ )
+ *
+ *  You may not change or alter any portion of this comment or credits
+ *  of supporting developers from this source code or any supporting
+ *  source code which is considered copyrighted (c) material of the
+ *  original comment or credit authors.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *  ---------------------------------------------------------------------------
+ *
+ * @copyright       The XOOPS Project http://sourceforge.net/projects/xoops/
+ * @license         http://www.fsf.org/copyleft/gpl.html& ...  public license
+ * @package         xaddresses
+ * @since           1.0
+ * @author          luciorota <lucio.rota@gmail.com>
+ * @version         $Id$
+ */
+
 function xaddresses_checkModuleAdmin() {
     if ( file_exists($GLOBALS['xoops']->path('/Frameworks/moduleclasses/moduleadmin/moduleadmin.php'))){
         include_once $GLOBALS['xoops']->path('/Frameworks/moduleclasses/moduleadmin/moduleadmin.php');
@@ -152,7 +179,7 @@ function xaddresses_getMyItemIds($permtype = 'in_category_view') {
 * @param   integer    $ret     numerical size
 * @return  string     $size    letteral size
 **/
-function numToLet($size) {
+function xaddresses_numToLet($size) {
     if($size>0) {
         $unit=array('B','KB','MB','GB','TB','PB');
         return @round($size/pow(1024,($i=floor(log($size,1024)))),2).' '.$unit[$i];
@@ -167,7 +194,7 @@ function numToLet($size) {
 * @param   string     $size    letteral size
 * @return  integer    $ret     numerical size
 **/
-function letToNum($size) { 
+function xaddresses_letToNum($size) { 
     $l = substr($size, -1);
     $ret = substr($size, 0, -1);
     switch(strtoupper($l)) {
@@ -199,7 +226,7 @@ function letToNum($size) {
  * it just keeps going through all of the directories in the folder you specify.
  *
  */
-function getDir($path = '.', $level = 0) {
+function xaddresses_getDir($path = '.', $level = 0) {
     $ret = array();
     $ignore = array('cgi-bin', '.', '..');
     // Directories to ignore when listing output. Many hosts will deny PHP access to the cgi-bin.
@@ -214,7 +241,7 @@ function getDir($path = '.', $level = 0) {
             if(is_dir("$path/$file")){
             // Its a directory, so we need to keep reading down...
                 $ret[] = "<strong>$spaces $file</strong>";
-                $ret = array_merge($ret, getDir($path . DIRECTORY_SEPARATOR . $file, ($level+1)));
+                $ret = array_merge($ret, xaddresses_getDir($path . DIRECTORY_SEPARATOR . $file, ($level+1)));
                 // Re-call this same function but on a new directory.
                 // this is what makes function recursive.
             } else {
@@ -234,9 +261,9 @@ function getDir($path = '.', $level = 0) {
  * Create a new directory that contains the file index.html
  *
  */
-function makeDir($dir, $perm = 0777) {
+function xaddresses_makeDir($dir, $perm = 0777) {
     if (!is_dir($dir)){
-        if (!@mkdir($dir, $perm)){
+        if (!@xaddresses_mkdir($dir, $perm)){
             return false;
         } else {
             if ($fileHandler = @fopen($dir . '/index.html', 'w'))
@@ -257,14 +284,14 @@ function makeDir($dir, $perm = 0777) {
  * Returns TRUE on success or FALSE on failure
  *
  */
-function copyDir($source, $destination) {
+function xaddresses_copyDir($source, $destination) {
     if (!$dirHandler = opendir($source))
         return false;
     @mkdir($destination);
     while(false !== ( $file = readdir($dirHandler)) ) {
         if (( $file != '.' ) && ( $file != '..' )) {
             if ( is_dir($source . '/' . $file) ) {
-                if (!copyDir($source . '/' . $file, $destination . '/' . $file))
+                if (!xaddresses_copyDir($source . '/' . $file, $destination . '/' . $file))
                     return false;
             }
             else {
@@ -286,13 +313,13 @@ function copyDir($source, $destination) {
  * $if_not_empty: if FALSE it delete directory only if false
  * Returns TRUE on success or FALSE on failure
  */
-function delDir($dir, $if_not_empty = true) {
+function xaddresses_delDir($dir, $if_not_empty = true) {
     if (!file_exists($dir)) return true;
     if ($if_not_empty == true) {
         if (!is_dir($dir)) return unlink($dir);
         foreach (scandir($dir) as $item) {
             if ($item == '.' || $item == '..') continue;
-            if (!delDir($dir . '/' . $item)) return false;
+            if (!xaddresses_delDir($dir . '/' . $item)) return false;
         }
     } else {
         // NOP

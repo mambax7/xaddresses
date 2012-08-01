@@ -1,4 +1,31 @@
 <?php
+/**
+ * ****************************************************************************
+ *  - A Project by Developers TEAM For Xoops - ( http://www.xoops.org )
+ * ****************************************************************************
+ *  XADDRESSES - MODULE FOR XOOPS
+ *  Copyright (c) 2007 - 2012
+ *  Rota Lucio ( http://luciorota.altervista.org/xoops/ )
+ *
+ *  You may not change or alter any portion of this comment or credits
+ *  of supporting developers from this source code or any supporting
+ *  source code which is considered copyrighted (c) material of the
+ *  original comment or credit authors.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *  ---------------------------------------------------------------------------
+ *
+ * @copyright       The XOOPS Project http://sourceforge.net/projects/xoops/
+ * @license         http://www.fsf.org/copyleft/gpl.html& ...  public license
+ * @package         xaddresses
+ * @since           1.0
+ * @author          luciorota <lucio.rota@gmail.com>
+ * @version         $Id$
+ */
+
 if (!defined('XOOPS_ROOT_PATH')){ exit(); }
 $dirname = basename( dirname( __FILE__ ) ) ;
 include_once XOOPS_ROOT_PATH . "/modules/{$dirname}/include/functions.php";
@@ -18,7 +45,7 @@ $modversion['license_url'] = "www.gnu.org/licenses/gpl-2.0.html/";
 
 $modversion['release_info'] = 'in progress';
 $modversion['release_file'] = XOOPS_URL . "/modules/{$dirname}/docs/RC";
-$modversion['release_date'] = "2012/07/30"; // 'Y/m/d'
+$modversion['release_date'] = "2012/08/01"; // 'Y/m/d'
 
 $modversion['manual'] = 'Help';
 $modversion['manual_file'] = XOOPS_URL . "/modules/{$dirname}/docs/help.html";
@@ -507,4 +534,3 @@ $modversion['notification']['event'][$i]['caption'] = _MI_XADDRESSES_LOCATION_AP
 $modversion['notification']['event'][$i]['description'] = _MI_XADDRESSES_LOCATION_APPROVE_NOTIFYDESC;
 $modversion['notification']['event'][$i]['mail_template'] = 'location_approve_notify';
 $modversion['notification']['event'][$i]['mail_subject'] = _MI_XADDRESSES_LOCATION_APPROVE_NOTIFYSBJ;
-?>
