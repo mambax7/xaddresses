@@ -1,5 +1,5 @@
 <?php
-define("_MA_XADDRESSES_BREADCRUMB_HOME", "HOME");
+define("_MA_XADDRESSES_BREADCRUMB_HOME","HOME");
 
 // locationview.php:
 define("_MA_XADDRESSES_LOC_COMMENTS","Comments (%s)");
@@ -58,13 +58,13 @@ define("_MA_XADDRESSES_LOC_SUBMIT_TAKEDAYS","This will take many days to see you
 
 // locationsearch.php
 define("_MA_XADDRESSES_SEARCH","Search");
-define("_MA_XADDRESSES_SEARCH_TITLE", "Filter location title");
-define("_MA_XADDRESSES_SEARCH_TITLE_DESC", "It's possible to choose bewteen various matchs");
-define("_MA_XADDRESSES_SEARCH_MAXDISTANCE", "Filter by distance from");
-define("_MA_XADDRESSES_SEARCH_MAXDISTANCE_DESC", "It's possible to filter by distance from a choosen point");
-define("_MA_XADDRESSES_SEARCH_CAT", "Filter by categories");
-define("_MA_XADDRESSES_SEARCH_CAT_DESC", "It's possible to select more categories");
-define("_MA_XADDRESSES_SEARCH_PERPAGE", "Locations per page");
+define("_MA_XADDRESSES_SEARCH_TITLE","Filter location title");
+define("_MA_XADDRESSES_SEARCH_TITLE_DESC","It's possible to choose bewteen various matchs");
+define("_MA_XADDRESSES_SEARCH_MAXDISTANCE","Filter by distance from");
+define("_MA_XADDRESSES_SEARCH_MAXDISTANCE_DESC","It's possible to filter by distance from a choosen point");
+define("_MA_XADDRESSES_SEARCH_CAT","Filter by categories");
+define("_MA_XADDRESSES_SEARCH_CAT_DESC","It's possible to select more categories");
+define("_MA_XADDRESSES_SEARCH_PERPAGE","Locations per page");
 //define("_MA_XADDRESSES_SEARCH","Filter in the modules list");
 //define("_MA_XADDRESSES_SEARCH_ALL1","All");
 //define("_MA_XADDRESSES_SEARCH_ALL2","All");
@@ -165,13 +165,13 @@ define("_AM_XADDRESSES_FORMSIZE","File Size(bytes)");
     define("_AM_XADDRESSES_FORMURL","Download URL");
 define("_AM_XADDRESSES_FORMVERSION","Version");
 
-//générique
+//gÃ©nÃ©rique
 define("_MA_XADDRESSES_EDITTHISDL","Edit this download");
 define("_MA_XADDRESSES_MOREDETAILS",">> more details");
 define("_MA_XADDRESSES_NUMBYTES","%s bytes");
 
 //visit.php
-define("_MA_XADDRESSES_NOPERMISETOLINK", "This file does not belongs to the website grom where you are comming.<br /><br />thanks for writng an email to the webmaster of the website from where you are comming and telling him :<br /><b>NO OWNERSHIP OF LINKS FROM OTHER SITES !! (LEECH)</b><br /><br /><b>Leecher definition :</b> Someone who is lazy to link to its own server or steals the hard work done by other people <br /><br />You are already <b>registered</b>.");
+define("_MA_XADDRESSES_NOPERMISETOLINK","This file does not belongs to the website grom where you are comming.<br /><br />thanks for writng an email to the webmaster of the website from where you are comming and telling him :<br /><b>NO OWNERSHIP OF LINKS FROM OTHER SITES !! (LEECH)</b><br /><br /><b>Leecher definition :</b> Someone who is lazy to link to its own server or steals the hard work done by other people <br /><br />You are already <b>registered</b>.");
 
 //Message d'erreur
 define("_MA_XADDRESSES_ERROR_NOCAT","You have to choose a category!");
